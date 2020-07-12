@@ -15,8 +15,6 @@ steps:
     chart: ./
   when:
     event:
-    - push
-    - tag
     - pull_request
 
 - name: discord
