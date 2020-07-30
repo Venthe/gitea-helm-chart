@@ -1,14 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}-http
+  name: {{ include "gitea.fullname" . }}-http
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "gitea.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.http.serviceType }}
+  type: {{ .Values.service.http.type }}
+  clusterIP: None
   ports:
   - name: http
     port: {{ .Values.service.http.port }}
@@ -17,4 +15,4 @@ spec:
     {{- end }}
     targetPort: {{ .Values.service.http.port }}
   selector:
-    app: {{ template "fullname" . }}
+    {{- include "gitea.selectorLabels" . | nindent 4 }}
