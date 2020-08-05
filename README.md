@@ -10,32 +10,37 @@ Readme will be updated with examples in the next few days
 	* 1.1. [Dependencies](#Dependencies)
 * 2. [Installing](#Installing)
 * 3. [Prerequisites](#Prerequisites)
-* 4. [Configuration](#Configuration)
-	* 4.1. [Image](#Image)
+* 4. [Examples](#Examples)
+	* 4.1. [Ports and external url](#Portsandexternalurl)
 	* 4.2. [Persistence](#Persistence)
-	* 4.3. [Ingress](#Ingress)
-	* 4.4. [Service](#Service)
-	* 4.5. [Gitea Configuration](#GiteaConfiguration)
-	* 4.6. [Gitea repository](#Gitearepository)
-	* 4.7. [Gitea Ldap](#GiteaLdap)
-	* 4.8. [Gitea Server](#GiteaServer)
-	* 4.9. [Gitea Repository](#GiteaRepository)
-	* 4.10. [Gitea UI](#GiteaUI)
-	* 4.11. [Gitea Database](#GiteaDatabase)
-	* 4.12. [Gitea Admin](#GiteaAdmin)
-	* 4.13. [Gitea Security](#GiteaSecurity)
-	* 4.14. [Gitea OpenID](#GiteaOpenID)
-	* 4.15. [Gitea Service](#GiteaService)
-	* 4.16. [Gitea Webhook](#GiteaWebhook)
-	* 4.17. [Gitea Mailer](#GiteaMailer)
-	* 4.18. [Gitea Cache](#GiteaCache)
-	* 4.19. [Gitea Attachment](#GiteaAttachment)
-	* 4.20. [Gitea Log](#GiteaLog)
-	* 4.21. [Gitea Git](#GiteaGit)
-	* 4.22. [Gitea Extra Config](#GiteaExtraConfig)
-	* 4.23. [Memcached BuiltIn](#MemcachedBuiltIn)
-	* 4.24. [Mysql BuiltIn](#MysqlBuiltIn)
-	* 4.25. [Postgresql BuiltIn](#PostgresqlBuiltIn)
+	* 4.3. [Admin User](#AdminUser)
+	* 4.4. [Ldap Settings](#LdapSettings)
+* 5. [Configuration](#Configuration)
+	* 5.1. [Image](#Image)
+	* 5.2. [Persistence](#Persistence-1)
+	* 5.3. [Ingress](#Ingress)
+	* 5.4. [Service](#Service)
+	* 5.5. [Gitea Configuration](#GiteaConfiguration)
+	* 5.6. [Gitea repository](#Gitearepository)
+	* 5.7. [Gitea Ldap](#GiteaLdap)
+	* 5.8. [Gitea Server](#GiteaServer)
+	* 5.9. [Gitea Repository](#GiteaRepository)
+	* 5.10. [Gitea UI](#GiteaUI)
+	* 5.11. [Gitea Database](#GiteaDatabase)
+	* 5.12. [Gitea Admin](#GiteaAdmin)
+	* 5.13. [Gitea Security](#GiteaSecurity)
+	* 5.14. [Gitea OpenID](#GiteaOpenID)
+	* 5.15. [Gitea Service](#GiteaService)
+	* 5.16. [Gitea Webhook](#GiteaWebhook)
+	* 5.17. [Gitea Mailer](#GiteaMailer)
+	* 5.18. [Gitea Cache](#GiteaCache)
+	* 5.19. [Gitea Attachment](#GiteaAttachment)
+	* 5.20. [Gitea Log](#GiteaLog)
+	* 5.21. [Gitea Git](#GiteaGit)
+	* 5.22. [Gitea Extra Config](#GiteaExtraConfig)
+	* 5.23. [Memcached BuiltIn](#MemcachedBuiltIn)
+	* 5.24. [Mysql BuiltIn](#MysqlBuiltIn)
+	* 5.25. [Postgresql BuiltIn](#PostgresqlBuiltIn)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -73,9 +78,107 @@ Dependencies:
 * Helm 3.0+
 * PV provisioner for persistent data support
 
-##  4. <a name='Configuration'></a>Configuration
+##  4. <a name='Examples'></a>Examples
 
-###  4.1. <a name='Image'></a>Image
+###  4.1. <a name='Portsandexternalurl'></a>Ports and external url
+
+By default port 3000 is used for web traffic and 22 for ssh. Those can be changed:
+
+```yaml
+  service:
+    http: 
+      port: 3000
+    ssh:
+      port: 22
+```
+
+For git to display the clone urls correctly the externalDomain setting has to be used. However the externalDomain does not change where gitea is published (Use ingress for this). ExternalDomain is just for displaying the correct clone URL. Same for externalPorts. Those are only used for display the correct clone URL.
+
+```yaml
+  gitea:
+    server:
+      http:
+        externalDomain: gitea.example.com
+        externalPort: 3000
+      ssh:
+        externalDomain: gitea.example.com
+        externalPort: 22
+```
+
+###  4.2. <a name='Persistence'></a>Persistence
+
+Gitea will be deployed as a statefulset. By simply enabling the persistence and setting the storage class according to your cluster
+everything else will be taken care of. The following example will create a PVC as a part of the statefulset. This PVC will not be deleted
+even if you uninstall the chart.
+When using Postgresql as dependency, this will also be deployed as a statefulset by default. 
+
+If you want to manage your own PVC you can simply pass the PVC name to the chart. 
+
+```yaml
+  persistence:
+    enabled: true
+    existingClaim: MyAwesomeGiteaClaim
+```
+
+In case that peristence has been disabled it will simply use an empty dir volume.
+
+Postgresql handles the persistence in the exact same way. 
+You can interact with the postgres settings as displayed in the following example:
+
+```yaml
+  postgresql:
+    persistence:
+      enabled: true
+      existingClaim: MyAwesomeGiteaPostgresClaim
+```
+
+Mysql also handles persistence the same, even though it is not deployed as a statefulset.
+You can interact with the postgres settings as displayed in the following example:
+
+```yaml
+  mysql:
+    persistence:
+      enabled: true
+      existingClaim: MyAwesomeGiteaMysqlClaim
+```
+
+###  4.3. <a name='AdminUser'></a>Admin User
+
+This chart enables you to create a default admin user. It is also possible to update the password for this user by upgrading or redeloying the chart.
+It is not possible to delete an admin user after it has been created. This has to be done in the ui.
+
+```yaml
+  gitea:
+    config:
+      adminUser: "MyAwesomeGiteaAdmin"
+      adminPassword: "AReallyAwesomeGiteaPassword"
+      adminEmail: "gi@tea.com"
+```
+
+###  4.4. <a name='LdapSettings'></a>Ldap Settings
+
+Like the admin user the ldap settings can be updated but also disabled or deleted.
+
+```yaml
+  gitea:
+    ldap:
+      enabled: true
+      name: 'MyAwesomeGiteaLdap'
+      securityProtocol: unencrypted
+      host: "127.0.0.1"
+      port: "389"
+      userSearchBase: ou=Users,dc=example,dc=com
+      userFilter: sAMAccountName=%s
+      adminFilter: CN=Admin,CN=Group,DC=example,DC=com
+      emailAttribute: mail
+      bindDn: CN=ldap read,OU=Spezial,DC=example,DC=com
+      bindPassword: JustAnotherBindPw
+      usernameAttribute: CN
+```
+
+##  5. <a name='Configuration'></a>Configuration
+
+###  5.1. <a name='Image'></a>Image
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
@@ -83,7 +186,7 @@ Dependencies:
 |image.version| Image Version | 1.12.2 |
 |image.pullPolicy| Image pull policy | Always |
 
-###  4.2. <a name='Persistence'></a>Persistence
+###  5.2. <a name='Persistence-1'></a>Persistence
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
@@ -93,7 +196,7 @@ Dependencies:
 |persistence.accessModes|AccessMode for persistence||
 |persistence.storageClass|Storage class for repository persistence|standard|
 
-###  4.3. <a name='Ingress'></a>Ingress
+###  5.3. <a name='Ingress'></a>Ingress
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
@@ -102,7 +205,7 @@ Dependencies:
 |ingress.hosts| add hosts for ingress as string list | git.example.com |
 |ingress.tls|add ingress tls settings|[]|
 
-###  4.4. <a name='Service'></a>Service
+###  5.4. <a name='Service'></a>Service
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
@@ -112,7 +215,7 @@ Dependencies:
 |service.ssh.port| Port for ssh traffic | 22 |
 |service.ssh.annotations| Additional ssh annotations for the ssh service ||
 
-###  4.5. <a name='GiteaConfiguration'></a>Gitea Configuration
+###  5.5. <a name='GiteaConfiguration'></a>Gitea Configuration
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
@@ -123,7 +226,7 @@ Dependencies:
 |gitea.config.adminPassword | Password for admin user   | gitea123456                         |
 |gitea.config.adminEmail | Email for admin user   | example@gitea.com                   |
 
-###  4.6. <a name='Gitearepository'></a>Gitea repository
+###  5.6. <a name='Gitearepository'></a>Gitea repository
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
@@ -137,7 +240,7 @@ Dependencies:
 |gitea.repository.disableHttpGit|Disable the ability to interact with repositories over the HTTP protocol.| false|
 |gitea.repository.useCompatSSHUri|Force ssh:// clone url instead of scp-style uri when default SSH port is used.|false|
 
-###  4.7. <a name='GiteaLdap'></a>Gitea Ldap
+###  5.7. <a name='GiteaLdap'></a>Gitea Ldap
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
@@ -154,17 +257,17 @@ Dependencies:
 |gitea.ldap.bindPassword | The password for the Bind DN specified above, if any. Note: The password is stored in plaintext at the server. As such, ensure that the Bind DN has as few privileges as possible. | "" |
 |gitea.ldap.usernameAttribute | The attribute of the user’s LDAP record containing the user name. Given attribute value will be used for new Gitea account user name after first successful sign-in. Leave empty to use login name given on sign-in form. | "" |
 
-###  4.8. <a name='GiteaServer'></a>Gitea Server
+###  5.8. <a name='GiteaServer'></a>Gitea Server
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
 |gitea.server.http.externalDomain | Http clone setting for which address gitea will be available on clone | git.example.com|
-|gitea.server.http.externalDomain | Http clone setting for which port gitea will be available on clone | |
+|gitea.server.http.externalPort | Http clone setting for which port gitea will be available on clone | |
 |gitea.server.ssh.externalDomain | SSH clone setting for which address gitea will be available on clone | git.example.com|
-|gitea.server.http.externalPort | SSH clone setting for which port gitea will be available on clone | |
+|gitea.server.ssh.externalPort | SSH clone setting for which port gitea will be available on clone | |
 |gitea.server.offlineMode | Disables use of CDN for static files and Gravatar for profile pictures. | false|
 
-###  4.9. <a name='GiteaRepository'></a>Gitea Repository
+###  5.9. <a name='GiteaRepository'></a>Gitea Repository
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
@@ -200,7 +303,7 @@ Dependencies:
 |gitea.repository.signing.wiki| [never, pubkey, twofa, always, parentsigned]: Sign commits to wiki. | never |
 |gitea.repository.signing.merges|  [never, pubkey, twofa, approved, basesigned, commitssigned, always]: Sign merges.  | pubkey, twofa, basesigned, commitssigned |gitea.ui.explorePagingNum|Number of repositories that are shown in one explore page.|20|
 
-###  4.10. <a name='GiteaUI'></a>Gitea UI
+###  5.10. <a name='GiteaUI'></a>Gitea UI
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
@@ -217,7 +320,7 @@ Dependencies:
 |gitea.ui.searchRepoDescription|Whether to search within description at repository search on explore page.|true|
 |gitea.ui.useServiceWorker|Whether to enable a Service Worker to cache frontend assets|true|
 
-###  4.11. <a name='GiteaDatabase'></a>Gitea Database
+###  5.11. <a name='GiteaDatabase'></a>Gitea Database
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
@@ -242,14 +345,14 @@ Dependencies:
 |gitea.database.connMaxLifetime|Database connection max life time|3s|
 |gitea.database.maxOpenConns|Database maximum number of open connections|0|
 
-###  4.12. <a name='GiteaAdmin'></a>Gitea Admin
+###  5.12. <a name='GiteaAdmin'></a>Gitea Admin
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
 |gitea.admin.disableRegularOrgCreation|Disallow regular (non-admin) users from creating organizations.|false|
 |gitea.admin.defaultEmailNotifications|Default configuration for email notifications for users (user configurable). Options: enabled, onmention, disabled|enabled|
 
-###  4.13. <a name='GiteaSecurity'></a>Gitea Security
+###  5.13. <a name='GiteaSecurity'></a>Gitea Security
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
@@ -268,7 +371,7 @@ Dependencies:
 |gitea.security.passwordHashAlgo|Password Hash algorithm, either "pbkdf2", "argon2", "scrypt" or "bcrypt"|pbkdf2|
 |gitea.security.crsfCookieHttpOnly|Set false to allow JavaScript to read CSRF cookie|true|
 
-###  4.14. <a name='GiteaOpenID'></a>Gitea OpenID
+###  5.14. <a name='GiteaOpenID'></a>Gitea OpenID
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
@@ -277,7 +380,7 @@ Dependencies:
 |gitea.openid.whitelistedUris|Allowed URI patterns (POSIX regexp). Space seperated||
 |gitea.openid.blacklistedUris|Forbidden URI patterns (POSIX regexp). Space seperated||
 
-###  4.15. <a name='GiteaService'></a>Gitea Service
+###  5.15. <a name='GiteaService'></a>Gitea Service
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
@@ -314,7 +417,7 @@ Dependencies:
 |gitea.service.autoWatchNewRepos|Default value for AutoWatchNewRepos|true|
 |gitea.service.autoWatchOnChanges|Default value for AutoWatchOnChanges|false|
 
-###  4.16. <a name='GiteaWebhook'></a>Gitea Webhook
+###  5.16. <a name='GiteaWebhook'></a>Gitea Webhook
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
@@ -323,7 +426,7 @@ Dependencies:
 |gitea.webhook.skipTlsVerify|Allow insecure certification|false|
 |gitea.webhook.pagingNum|Number of history information in each page|10|
 
-###  4.17. <a name='GiteaMailer'></a>Gitea Mailer
+###  5.17. <a name='GiteaMailer'></a>Gitea Mailer
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
@@ -347,7 +450,7 @@ Dependencies:
 |gitea.mailer.sendMailArgs|Specify any extra sendmail arguments||
 |gitea.mailer.sendMailTimeout|Timeout for Sendmail|5m|
 
-###  4.18. <a name='GiteaCache'></a>Gitea Cache
+###  5.18. <a name='GiteaCache'></a>Gitea Cache
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
@@ -361,7 +464,7 @@ Dependencies:
 |gitea.cache.lastCommit.itemTTL| Time to keep items in cache if not used, Setting it to 0 disables caching. | 8760h |
 |gitea.cache.lastCommit.commitCount| Only enable the cache when repository’s commits count great than. | 1000 |
 
-###  4.19. <a name='GiteaAttachment'></a>Gitea Attachment
+###  5.19. <a name='GiteaAttachment'></a>Gitea Attachment
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
@@ -371,7 +474,7 @@ Dependencies:
 |gitea.attachment.maxSize|Maximum size (MB).|4|
 |gitea.attachment.maxFiles|Maximum number of attachments that can be uploaded at once.|5|
 
-###  4.20. <a name='GiteaLog'></a>Gitea Log
+###  5.20. <a name='GiteaLog'></a>Gitea Log
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
@@ -413,7 +516,7 @@ Dependencies:
 |gitea.log.smtp.password|Mailer password||
 |gitea.log.smtp.receivers|Receivers, can be one or more, e.g. 1@example.com,2@example.com|false|
 
-###  4.21. <a name='GiteaGit'></a>Gitea Git
+###  5.21. <a name='GiteaGit'></a>Gitea Git
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
@@ -434,13 +537,13 @@ Dependencies:
 |gitea.git.metrics.enabled| Enables /metrics endpoint for prometheus.|false|
 |gitea.git.metrics.token|You need to specify the token, if you want to include in the authorization the metrics . The same token need to be used in prometheus parameters bearer_token or bearer_token_file.||
 
-###  4.22. <a name='GiteaExtraConfig'></a>Gitea Extra Config
+###  5.22. <a name='GiteaExtraConfig'></a>Gitea Extra Config
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
 |gitea.extraConfig|If you want anymore configuration you need to do it here as a multiline string. For example look at https://docs.gitea.io/en-us/config-cheat-sheet/||
 
-###  4.23. <a name='MemcachedBuiltIn'></a>Memcached BuiltIn
+###  5.23. <a name='MemcachedBuiltIn'></a>Memcached BuiltIn
 
 Memcached is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if enabled in the values. Complete Configuration can be taken from their website.
 
@@ -450,7 +553,7 @@ The following parameters are the defaults set by this chart
 |---------------------|-----------------------------------|------------------------------|
 |memcached.service.port|Memcached Port| 11211|
 
-###  4.24. <a name='MysqlBuiltIn'></a>Mysql BuiltIn
+###  5.24. <a name='MysqlBuiltIn'></a>Mysql BuiltIn
 
 Mysql is loaded as a dependency from stable. Configuration can be found from this [website](https://github.com/helm/charts/tree/master/stable/mysql)
 
@@ -465,7 +568,7 @@ The following parameters are the defaults set by this chart
 |mysql.service.port|Port to connect to mysql service|3306|
 |mysql.persistence|Persistence size for mysql |10Gi|
 
-###  4.25. <a name='PostgresqlBuiltIn'></a>Postgresql BuiltIn
+###  5.25. <a name='PostgresqlBuiltIn'></a>Postgresql BuiltIn
 
 Postgresql is loaded as a dependency from bitnami. Configuration can be found from this [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/postgresql)
 
