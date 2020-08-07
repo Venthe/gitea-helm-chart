@@ -28,7 +28,7 @@ spec:
                 mkdir -p /data/gitea/conf
                 cp /etc/gitea/conf/app.ini /data/gitea/conf/app.ini
                 chmod a+rwx /data/gitea/conf/app.ini
-                nc -v -w2 -z {{ include "postgresql.servicename" . }} {{ .Values.postgresql.global.postgresql.servicePort }} && \
+                nc -v -w2 -z {{ include "db.servicename" . }} {{ include "db.port" . }} && \
                 su git -c ' \
                 gitea migrate; \
                 {{- if and .Values.gitea.config.adminUser .Values.gitea.config.adminPassword }}
@@ -75,6 +75,7 @@ spec:
               mountPath: /etc/gitea/conf
             - name: data
               mountPath: /data
+      terminationGracePeriodSeconds: {{ .Values.statefulset.terminationGracePeriodSeconds }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.version }}"

@@ -30,8 +30,8 @@ dependencies:
   version: 8.6.4
   condition: gitea.database.builtIn.postgresql.enabled
 - name: mysql
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 1.6.6
+  repository: https://charts.bitnami.com/bitnami
+  version: 6.14.8
   condition: gitea.database.builtIn.mysql.enabled
 - name: memcached
   repository: https://charts.bitnami.com/bitnami
