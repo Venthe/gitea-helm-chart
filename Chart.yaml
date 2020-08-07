@@ -17,23 +17,23 @@ sources:
   - https://github.com/go-gitea/gitea
   - https://hub.docker.com/r/gitea/gitea/
 maintainers:
-  - name: Lucas Hahn
-    email: lucas.hahn@novum-rgi.de
   - name: Charlie Drage
     email: charlie@charliedrage.com
   - name: Gitea Authors
     email: maintainers@gitea.io
+  - name: Lucas Hahn
+    email: lucas.hahn@novum-rgi.de
 
 dependencies:
-- name: postgresql
-  repository: https://charts.bitnami.com/bitnami
-  version: 8.6.4
-  condition: gitea.database.builtIn.postgresql.enabled
-- name: mysql
-  repository: https://charts.bitnami.com/bitnami
-  version: 6.14.8
-  condition: gitea.database.builtIn.mysql.enabled
 - name: memcached
   repository: https://charts.bitnami.com/bitnami
   version: 4.2.20
   condition: gitea.cache.enabled
+- name: mysql
+  repository: https://charts.bitnami.com/bitnami
+  version: 6.14.8
+  condition: gitea.database.builtIn.mysql.enabled
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 8.6.4
+  condition: gitea.database.builtIn.postgresql.enabled
