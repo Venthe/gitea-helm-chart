@@ -32,11 +32,7 @@ data:
     {{- $_ := set .Values.gitea.config.server "HTTP_PORT" .Values.service.http.port -}}
     {{- end -}}
     {{- if not .Values.gitea.config.server.PROTOCOL -}}
-    {{- if gt (len .Values.ingress.tls) 0 -}}
-    {{- $_ := set .Values.gitea.config.server "PROTOCOL" "https" -}}
-    {{- else -}}
     {{- $_ := set .Values.gitea.config.server "PROTOCOL" "http" -}}
-    {{- end -}}
     {{- end -}}
     {{- if not (.Values.gitea.config.server.DOMAIN) -}}
     {{- if gt (len .Values.ingress.hosts) 0 -}}
