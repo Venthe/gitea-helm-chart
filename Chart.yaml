@@ -21,6 +21,8 @@ maintainers:
     email: charlie@charliedrage.com
   - name: Gitea Authors
     email: maintainers@gitea.io
+  - name: Konrad Lother
+    email: konrad.lother@novum-rgi.de
   - name: Lucas Hahn
     email: lucas.hahn@novum-rgi.de
 
