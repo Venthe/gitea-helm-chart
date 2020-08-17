@@ -31,10 +31,10 @@ spec:
                 nc -v -w2 -z {{ include "db.servicename" . }} {{ include "db.port" . }} && \
                 su git -c ' \
                 gitea migrate; \
-                {{- if and .Values.gitea.config.adminUser .Values.gitea.config.adminPassword }}
-                gitea admin create-user --username {{ .Values.gitea.config.adminUser }} --password '{{ .Values.gitea.config.adminPassword }}' --email {{ .Values.gitea.config.adminEmail }} --admin \
+                {{- if .Values.gitea.admin.password }}
+                gitea admin create-user --username  {{ .Values.gitea.admin.username }} --password '{{ .Values.gitea.admin.password }}' --email {{ .Values.gitea.admin.email }} --admin \
                 || \
-                gitea admin change-password --username {{ .Values.gitea.config.adminUser }} --password '{{ .Values.gitea.config.adminPassword }}'; \
+                gitea admin change-password --username {{ .Values.gitea.admin.username }} --password '{{ .Values.gitea.admin.password }}'; \
                 {{- end }}
                 {{- if .Values.gitea.ldap.enabled }}
                 gitea admin auth add-ldap \
@@ -87,9 +87,9 @@ spec:
                 gitea migrate
           ports:
             - name: ssh
-              containerPort: 22
+              containerPort: {{ .Values.gitea.config.server.SSH_LISTEN_PORT }}
             - name: http
-              containerPort: {{ .Values.service.http.port }}
+              containerPort: {{ .Values.gitea.config.server.HTTP_PORT }}
           livenessProbe:
             tcpSocket:
               port: http

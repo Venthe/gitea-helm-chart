@@ -17,7 +17,7 @@ spec:
   ports:
   - name: ssh
     port: {{ .Values.service.ssh.port }}
-    targetPort: ssh
+    targetPort: {{ .Values.gitea.config.server.SSH_LISTEN_PORT }}
     protocol: TCP
     {{- if  .Values.service.ssh.nodePort }}
     nodePort: {{ .Values.service.ssh.nodePort }}

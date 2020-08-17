@@ -83,3 +83,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- printf "%s-memcached.%s.svc.cluster.local:%g" .Release.Name .Release.Namespace .Values.memcached.service.port | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{- define "gitea.default_domain" -}}
+{{- printf "%s-gitea.%s.svc.cluster.local" (include "gitea.fullname" .) .Release.Namespace  | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
