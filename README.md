@@ -5,7 +5,7 @@
 Readme will be updated with examples in the next few days
 
 ## Introduction
-
+dfasfas
 This helm chart has taken some inspiration from https://github.com/jfelten/gitea-helm-chart
 But takes a completly different approach in providing database and cache with dependencies.
 Also this chart provides ldap and admin user configuration with values as well as it is deployed as statefulset to retain stored repositories.
