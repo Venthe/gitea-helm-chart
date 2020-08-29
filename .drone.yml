@@ -1,6 +1,6 @@
 ---
 kind: pipeline
-name: default
+name: lint
 
 platform:
   os: linux
@@ -13,9 +13,6 @@ steps:
   settings:
     helm_command: lint
     chart: ./
-  when:
-    event:
-    - pull_request
 
 - name: discord
   pull: always
@@ -26,10 +23,43 @@ steps:
     DISCORD_WEBHOOK_TOKEN:
       from_secret: discord_webhook_token
   when:
-    event:
-    - push
-    - tag
-    - pull_request
     status:
     - changed
     - failure
+
+---
+kind: pipeline
+name: release-version
+
+platform:
+  os: linux
+  arch: amd64
+
+trigger:
+  event:
+    - tag
+
+steps:
+  - name: generate-chart
+    pull: default
+    image: alpine/helm:3.3.0
+    commands:
+      - apk add --no-cache curl
+      - helm dependency update
+      - helm package ./
+      - mkdir gitea
+      - mv gitea*.tgz gitea/
+      - curl -o gitea/index.yaml https://dl.gitea.io/charts/index.yaml
+      - helm repo index gitea/ --url https://dl.gitea.io/charts --merge gitea/index.yaml
+  - name: upload-chart
+    pull: default
+    image: plugins/s3:latest
+    settings:
+      bucket: releases
+      access_key:
+        from_secret: aws_access_key_id
+      secret_key:
+        from_secret: aws_secret_access_key
+      source: gitea/*
+      target: /charts
+      strip_prefix: gitea/
