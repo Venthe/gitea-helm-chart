@@ -24,8 +24,8 @@ Dependencies:
 ## Installing
 
 ```
-  helm repo add novum-rgi-helm https://novumrgi.github.io/helm/
-  helm install gitea novum-rgi-helm/gitea
+  helm repo add gitea-charts https://dl.gitea.io/charts/
+  helm install gitea gitea-charts/gitea
 ```
 
 ## Prerequisites
