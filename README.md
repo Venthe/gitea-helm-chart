@@ -201,6 +201,8 @@ Like the admin user the ldap settings can be updated but also disabled or delete
 |service.http.port| Port for web traffic | 3000 |
 |service.ssh.type| Kubernetes service type for ssh traffic | ClusterIP |
 |service.ssh.port| Port for ssh traffic | 22 |
+|service.ssh.externalTrafficPolicy| If `service.ssh.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation | Cluster |
+|service.ssh.externalIPs| SSH service external IP addresses |[]|
 |service.ssh.annotations| Additional ssh annotations for the ssh service ||
 
 ### Gitea Configuration
