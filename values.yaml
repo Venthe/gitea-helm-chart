@@ -20,6 +20,8 @@ service:
     port: 22
     #loadBalancerIP:
     #nodePort:
+    #externalTrafficPolicy:
+    #externalIPs:
     annotations:
 
 ingress:
