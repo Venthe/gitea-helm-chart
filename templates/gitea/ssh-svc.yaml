@@ -14,12 +14,19 @@ spec:
   {{- if ne .Values.service.ssh.type "LoadBalancer" }}
   clusterIP: None
   {{- end }}
+  {{- if .Values.service.ssh.externalIPs }}
+  externalIPs:
+  {{ toYaml .Values.service.ssh.externalIPs | indent 4 }}
+  {{- end }}
+  {{- if .Values.service.ssh.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.service.ssh.externalTrafficPolicy }}
+  {{- end }}
   ports:
   - name: ssh
     port: {{ .Values.service.ssh.port }}
     targetPort: {{ .Values.gitea.config.server.SSH_LISTEN_PORT }}
     protocol: TCP
-    {{- if  .Values.service.ssh.nodePort }}
+    {{- if .Values.service.ssh.nodePort }}
     nodePort: {{ .Values.service.ssh.nodePort }}
     {{- end }}
   selector:
