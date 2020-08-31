@@ -70,6 +70,7 @@ spec:
                 ) \
                 {{- end }}
                 '
+            {{- toYaml .Values.env | trim | nindent 12 }}
           command: ["/bin/sh",'-c', *script]
           volumeMounts:
             - name: config
@@ -87,6 +88,7 @@ spec:
               value: {{ .Values.gitea.config.server.SSH_LISTEN_PORT | quote }}
             - name: SSH_PORT
               value: {{ .Values.gitea.config.server.SSH_PORT | quote }}
+            {{- toYaml .Values.env | trim | nindent 12 }}
           ports:
             - name: ssh
               containerPort: {{ .Values.gitea.config.server.SSH_LISTEN_PORT }}
