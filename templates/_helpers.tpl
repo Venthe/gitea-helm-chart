@@ -61,7 +61,8 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- else if .Values.gitea.database.builtIn.mysql.enabled -}}
 {{- printf "%s-mysql" .Release.Name -}}
 {{- else -}}
-{{ .Values.gitea.database.external.host }}
+{{- $parts := split ":" .Values.gitea.config.database.HOST -}}
+{{- printf "%s %s" $parts._0 $parts._1 -}}
 {{- end -}}
 {{- end -}}
 
@@ -71,7 +72,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- else if .Values.gitea.database.builtIn.mysql.enabled -}}
 {{ .Values.mysql.service.port }}
 {{- else -}}
-{{ .Values.gitea.database.external.port }}
 {{- end -}}
 {{- end -}}
 
