@@ -2,8 +2,6 @@
 
 [Gitea](https://gitea.io/en-us/) is a community managed lightweight code hosting solution written in Go. It is published under the MIT license.
 
-Readme will be updated with examples in the next few days
-
 ## Introduction
 
 This helm chart has taken some inspiration from https://github.com/jfelten/gitea-helm-chart
@@ -48,6 +46,26 @@ Gitea offers lots of configuration. This is fully described in the [Gitea Cheat 
         ROOT: "~/gitea-repositories"
       repository.pull-request:
         WORK_IN_PROGRESS_PREFIXES: "WIP:,[WIP]:"
+```
+### External Database
+
+An external Database can be used instead of builtIn postgresql or mysql.
+
+```yaml
+  gitea:
+    database:
+      builtIn:
+        postgresql:
+          enabled: false
+
+    config:
+      database:
+        DB_TYPE: mysql
+        HOST: 127.0.0.1:3306
+        NAME: gitea
+        USER: root
+        PASSWD: gitea
+      SCHEMA: gitea
 ```
 
 ### Ports and external url
