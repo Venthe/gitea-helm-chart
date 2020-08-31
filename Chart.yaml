@@ -30,7 +30,7 @@ dependencies:
 - name: memcached
   repository: https://charts.bitnami.com/bitnami
   version: 4.2.20
-  condition: gitea.cache.enabled
+  condition: gitea.cache.builtIn.enabled
 - name: mysql
   repository: https://charts.bitnami.com/bitnami
   version: 6.14.8
