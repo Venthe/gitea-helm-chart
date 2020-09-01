@@ -89,7 +89,7 @@ spec:
               value: {{ .Values.gitea.config.server.SSH_PORT | quote }}
             {{- range .Values.statefulset.env }}
             - name: {{ .name | quote | trim }}
-              value: {{ .value | quote | trim }}
+              value: {{ .value | quote }}
             {{- end }}
           ports:
             - name: ssh
