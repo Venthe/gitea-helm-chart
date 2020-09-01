@@ -54,11 +54,11 @@ tolerations: []
 
 affinity: {}
 
-env: []
-  # - name: VARIABLE
-  #   value: my-value
 
 statefulset:
+  env: []
+    # - name: VARIABLE
+    #   value: my-value
   terminationGracePeriodSeconds: 60
 
 persistence:

@@ -182,7 +182,7 @@ Like the admin user the ldap settings can be updated but also disabled or delete
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
 |statefulset.terminationGracePeriodSeconds| Image to start for this pod | gitea/gitea |
-|env                  | Additional environment variables to pass to containers | [] |
+|statefulset.env           | Additional environment variables to pass to containers | [] |
 
 
 ### Image
