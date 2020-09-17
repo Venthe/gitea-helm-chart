@@ -102,8 +102,10 @@ gitea:
     builtIn:
       postgresql:
         enabled: true
+        useDefaultHost: true
       mysql:
         enabled: false
+        useDefaultHost: true
 
   cache:
     builtIn:
