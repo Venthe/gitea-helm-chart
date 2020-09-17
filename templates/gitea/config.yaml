@@ -65,7 +65,7 @@ data:
     {{- /* database default settings */ -}}
     {{- if .Values.gitea.database.builtIn.postgresql.enabled -}}
     {{- $_ := set .Values.gitea.config.database "DB_TYPE"   "postgres" -}} 
-    {{- if .Values.gitea.database.builtIn.postgresql.useDefaultHost -}}
+    {{- if not (.Values.gitea.config.database.HOST) -}}
     {{- $_ := set .Values.gitea.config.database "HOST"      (include "postgresql.dns" .) -}}
     {{- end -}}
     {{- $_ := set .Values.gitea.config.database "NAME"      .Values.postgresql.global.postgresql.postgresqlDatabase -}}
@@ -73,7 +73,7 @@ data:
     {{- $_ := set .Values.gitea.config.database "PASSWD"    .Values.postgresql.global.postgresql.postgresqlPassword -}}
     {{ else if .Values.gitea.database.builtIn.mysql.enabled -}}
     {{- $_ := set .Values.gitea.config.database "DB_TYPE"   "mysql" -}} 
-    {{- if .Values.gitea.database.builtIn.postgresql.useDefaultHost -}}
+    {{- if not (.Values.gitea.config.database.HOST) -}}
     {{- $_ := set .Values.gitea.config.database "HOST"      (include "mysql.dns" .) -}}
     {{- end -}}
     {{- $_ := set .Values.gitea.config.database "NAME"      .Values.mysql.db.name -}}
