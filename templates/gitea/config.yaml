@@ -85,7 +85,9 @@ data:
     {{- if .Values.gitea.cache.builtIn.enabled -}}
     {{- $_ := set .Values.gitea.config.cache "ENABLED" "true" -}}
     {{- $_ := set .Values.gitea.config.cache "ADAPTER" "memcache" -}}
+    {{- if not (.Values.gitea.config.cache.HOST) -}}
     {{- $_ := set .Values.gitea.config.cache "HOST" (include "memcached.dns" .) -}}
+    {{- end -}}
     {{- end -}}
     
     {{- /* autogenerate app.ini */ -}}
