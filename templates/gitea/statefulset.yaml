@@ -26,7 +26,7 @@ spec:
             - name: SCRIPT
               value: &script |-
                 mkdir -p /data/git/.ssh
-                chmod 700 /data/git/.ssh
+                chmod -R 700 /data/git/.ssh
                 mkdir -p /data/gitea/conf
                 cp /etc/gitea/conf/app.ini /data/gitea/conf/app.ini
                 chmod a+rwx /data/gitea/conf/app.ini
