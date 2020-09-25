@@ -65,7 +65,7 @@ An external Database can be used instead of builtIn postgresql or mysql.
         NAME: gitea
         USER: root
         PASSWD: gitea
-      SCHEMA: gitea
+        SCHEMA: gitea
 ```
 
 ### Ports and external url
