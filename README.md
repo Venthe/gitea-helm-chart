@@ -175,6 +175,15 @@ Like the admin user the ldap settings can be updated but also disabled or delete
       usernameAttribute: CN
 ```
 
+### Pod Annotations
+
+Annotations can be added to the Gitea pod.
+
+```yaml
+  gitea:
+    podAnnotations: {}
+```
+
 ## Configuration
 
 ### Others

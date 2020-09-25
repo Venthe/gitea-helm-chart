@@ -98,6 +98,8 @@ gitea:
   #  security:
   #    PASSWORD_COMPLEXITY: spec
 
+  podAnnotations: {}
+
   database:
     builtIn:
       postgresql:
