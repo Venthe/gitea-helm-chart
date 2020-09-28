@@ -106,6 +106,8 @@ gitea:
         enabled: true
       mysql:
         enabled: false
+      mariadb:
+        enabled: false
 
   cache:
     builtIn:
@@ -136,3 +138,14 @@ mysql:
     port: 3306
   persistence:
     size: 10Gi
+
+mariadb:
+  db:
+    name: gitea
+    user: gitea
+    password: gitea
+  service:
+    port: 3306
+  master:
+    persistence:
+      size: 10Gi

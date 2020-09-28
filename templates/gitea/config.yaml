@@ -80,6 +80,14 @@ stringData:
     {{- $_ := set .Values.gitea.config.database "NAME"      .Values.mysql.db.name -}}
     {{- $_ := set .Values.gitea.config.database "USER"      .Values.mysql.db.user -}}
     {{- $_ := set .Values.gitea.config.database "PASSWD"    .Values.mysql.db.password -}}
+    {{ else if .Values.gitea.database.builtIn.mariadb.enabled -}}
+    {{- $_ := set .Values.gitea.config.database "DB_TYPE"   "mysql" -}}
+    {{- if not (.Values.gitea.config.database.HOST) -}}
+    {{- $_ := set .Values.gitea.config.database "HOST"      (include "mariadb.dns" .) -}}
+    {{- end -}}
+    {{- $_ := set .Values.gitea.config.database "NAME"      .Values.mariadb.db.name -}}
+    {{- $_ := set .Values.gitea.config.database "USER"      .Values.mariadb.db.user -}}
+    {{- $_ := set .Values.gitea.config.database "PASSWD"    .Values.mariadb.db.password -}}
     {{- end -}}
 
     {{- /* cache default settings */ -}}
