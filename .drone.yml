@@ -4,19 +4,19 @@ name: lint
 
 platform:
   os: linux
-  arch: amd64
+  arch: arm64
 
 steps:
 - name: lint
   pull: always
-  image: pelotech/drone-helm3
-  settings:
-    helm_command: lint
-    chart: ./
+  image: alpine:3.12
+  commands:
+    - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing helm
+    - helm lint
 
 - name: discord
   pull: always
-  image: appleboy/drone-discord:1.0.0
+  image: appleboy/drone-discord:1.2.4
   environment:
     DISCORD_WEBHOOK_ID:
       from_secret: discord_webhook_id
@@ -44,8 +44,7 @@ steps:
     pull: default
     image: alpine:3.12
     commands:
-      - wget -q https://get.helm.sh/helm-v3.3.1-linux-arm64.tar.gz -O - | tar -xzO linux-arm64/helm > /usr/local/bin/helm
-      - chmod +x /usr/local/bin/helm
+      - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing helm
       - helm dependency update
       - helm package ./
       - mkdir gitea
