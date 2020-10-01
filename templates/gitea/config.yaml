@@ -62,6 +62,9 @@ stringData:
     {{- if not (hasKey .Values.gitea.config.server "SSH_LISTEN_PORT") -}}
     {{- $_ := set .Values.gitea.config.server "SSH_LISTEN_PORT" .Values.gitea.config.server.SSH_PORT -}}
     {{- end -}}
+    {{- if not (hasKey .Values.gitea.config.server "APP_DATA_PATH") -}}
+    {{- $_ := set .Values.gitea.config.server "APP_DATA_PATH" "/data" -}}
+    {{- end -}}
 
     {{- /* database default settings */ -}}
     {{- if .Values.gitea.database.builtIn.postgresql.enabled -}}
