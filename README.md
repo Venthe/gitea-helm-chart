@@ -47,6 +47,56 @@ Gitea offers lots of configuration. This is fully described in the [Gitea Cheat 
       repository.pull-request:
         WORK_IN_PROGRESS_PREFIXES: "WIP:,[WIP]:"
 ```
+
+### Default Configuration
+
+This chart will set a few defaults in the gitea configuration based on the service and ingress settings. All defaults can be overwritten in gitea.config.
+
+INSTALL_LOCK is always set to true, since we want to configure gitea with this helm chart and everything is taken care of.
+
+*All default settings are made directly in the generated app.ini, not in the Values.*
+
+#### Database defaults
+
+If a builtIn database is enabled the database configuration is set automatically. For example postgresql builtIn which will appear in the app.ini as:
+
+```
+[database]
+DB_TYPE = postgres
+HOST = RELEASE-NAME-postgresql.default.svc.cluster.local:5432
+NAME = gitea
+PASSWD = gitea
+USER = gitea
+```
+
+#### Memcached defaults
+
+Memcached is handled the exakt same way as database builtIn. Once memcached builtIn is enabled, this chart will generate the following part in the app.ini:
+
+```
+[cache]
+ADAPTER = memcache
+ENABLED = true
+HOST = RELEASE-NAME-memcached.default.svc.cluster.local:11211
+```
+
+#### Server defaults
+
+The server defaults are a bit more complex.
+If ingress is enabled, the ROOT_URL, DOMAIN and SSH_DOMAIN will be set accordingly. HTTP_PORT always defaults to 3000 as well as SSH_PORT to 22.
+
+```
+[server]
+APP_DATA_PATH = /data
+DOMAIN = git.example.com
+HTTP_PORT = 3000
+PROTOCOL = http
+ROOT_URL = http://git.example.com
+SSH_DOMAIN = git.example.com
+SSH_LISTEN_PORT = 22
+SSH_PORT = 22
+```
+
 ### External Database
 
 An external Database can be used instead of builtIn postgresql or mysql.
@@ -104,6 +154,7 @@ If the built in cache should not be used simply configure the cache in gitea.con
         INTERVAL: 60
         HOST: 127.0.0.1:9090
 ```
+
 ### Persistence
 
 Gitea will be deployed as a statefulset. By simply enabling the persistence and setting the storage class according to your cluster
@@ -193,7 +244,6 @@ Annotations can be added to the Gitea pod.
 |statefulset.terminationGracePeriodSeconds| Image to start for this pod | gitea/gitea |
 |statefulset.env           | Additional environment variables to pass to containers | [] |
 
-
 ### Image
 
 | Parameter           | Description                       | Default                      |
@@ -262,7 +312,7 @@ The following parameters are the defaults set by this chart
 |mysql.mysqlPassword|Password for the new user. Ignored if existing secret is provided|gitea|
 |mysql.mysqlDatabase|Name for new database to create.|gitea|
 |mysql.service.port|Port to connect to mysql service|3306|
-|mysql.persistence|Persistence size for mysql |10Gi|
+|mysql.persistence.size|Persistence size for mysql |10Gi|
 
 ### Postgresql BuiltIn
 
@@ -277,3 +327,17 @@ The following parameters are the defaults set by this chart
 |postgresql.global.postgresql.postgresqlPassword| PostgreSQL admin password (overrides postgresqlPassword)|gitea|
 |postgresql.global.postgresql.servicePort|PostgreSQL port (overrides service.port)|5432|
 |postgresql.persistence.size| PVC Storage Request for PostgreSQL volume |10Gi|
+
+### MariaDB BuiltIn
+
+MariaDB is loaded as a dependency from bitnami. Configuration can be found from this [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/mariadb)
+
+The following parameters are the defaults set by this chart
+
+| Parameter           | Description                       | Default                      |
+|---------------------|-----------------------------------|------------------------------|
+|mariadb.db.user |Username of new user to create.|gitea|
+|mariadb.db.password|Password for the new user. Ignored if existing secret is provided|gitea|
+|mariadb.db.name|Name for new database to create.|gitea|
+|mariadb.service.port|Port to connect to mariadb service|3306|
+|mariadb.master.persistence.size|Persistence size for mysql |10Gi|
