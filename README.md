@@ -260,7 +260,7 @@ Annotations can be added to the Gitea pod.
 |persistence.existingClaim| Use an existing claim to store repository information | |
 |persistence.size| Size for persistence to store repo information | 10Gi |
 |persistence.accessModes|AccessMode for persistence||
-|persistence.storageClass|Storage class for repository persistence|standard|
+|persistence.storageClass|Storage class for repository persistence||
 
 ### Ingress
 
