@@ -336,8 +336,9 @@ The following parameters are the defaults set by this chart
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
-|mariadb.db.user |Username of new user to create.|gitea|
-|mariadb.db.password|Password for the new user. Ignored if existing secret is provided|gitea|
-|mariadb.db.name|Name for new database to create.|gitea|
-|mariadb.service.port|Port to connect to mariadb service|3306|
-|mariadb.master.persistence.size|Persistence size for mysql |10Gi|
+|mariadb.auth.username|Username of new user to create.|gitea|
+|mariadb.auth.password|Password for the new user. Ignored if existing secret is provided|gitea|
+|mariadb.auth.database|Name for new database to create.|gitea|
+|mariadb.auth.rootPassword|Password for the root user.|gitea|
+|mariadb.primary.service.port|Port to connect to mariadb service|3306|
+|mariadb.primary.persistence.size|Persistence size for mariadb |10Gi|

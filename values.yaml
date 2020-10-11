@@ -140,12 +140,13 @@ mysql:
     size: 10Gi
 
 mariadb:
-  db:
-    name: gitea
-    user: gitea
+  auth:
+    database: gitea
+    username: gitea
     password: gitea
-  service:
-    port: 3306
-  master:
+    rootPassword: gitea
+  primary:
+    service:
+      port: 3306
     persistence:
       size: 10Gi

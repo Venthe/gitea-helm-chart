@@ -70,7 +70,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- else if .Values.gitea.database.builtIn.mysql.enabled -}}
 {{ .Values.mysql.service.port }}
 {{- else if .Values.gitea.database.builtIn.mariadb.enabled -}}
-{{ .Values.mariadb.service.port }}
+{{ .Values.mariadb.primary.service.port }}
 {{- else -}}
 {{- end -}}
 {{- end -}}
@@ -84,7 +84,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "mariadb.dns" -}}
-{{- printf "%s-mariadb.%s.svc.cluster.local:%g" .Release.Name .Release.Namespace .Values.mysql.service.port | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-mariadb.%s.svc.cluster.local:%g" .Release.Name .Release.Namespace .Values.mariadb.primary.service.port | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{- define "memcached.dns" -}}
