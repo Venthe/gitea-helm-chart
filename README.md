@@ -291,10 +291,12 @@ Annotations can be added to the Gitea pod.
 
 ### Others
 
-| Parameter           | Description                       | Default                      |
-|---------------------|-----------------------------------|------------------------------|
-|statefulset.terminationGracePeriodSeconds| Image to start for this pod | gitea/gitea |
-|statefulset.env           | Additional environment variables to pass to containers | [] |
+| Parameter                                 | Description                                            | Default     |
+|-------------------------------------------|--------------------------------------------------------|-------------|
+| statefulset.terminationGracePeriodSeconds | Image to start for this pod                            | gitea/gitea |
+| statefulset.env                           | Additional environment variables to pass to containers | []          |
+| extraVolumes                              | Additional volumes to mount to the Gitea statefulset   | {}          |
+| extraVolumeMounts                         | Additional volumes mounts for the Gitea containers     | {}          |
 
 ### Image
 

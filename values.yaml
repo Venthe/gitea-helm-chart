@@ -69,10 +69,26 @@ statefulset:
 
 persistence:
   enabled: true
-  # existingClaim: 
+  # existingClaim:
   size: 10Gi
   accessModes:
     - ReadWriteOnce
+
+# additional volumes to add to the Gitea statefulset.
+extraVolumes:
+# - name: postgres-ssl-vol
+#   secret:
+#     secretName: gitea-postgres-ssl
+
+
+# additional volumes to mount, both to the init container and to the main
+# container. As an example, can be used to mount a client cert when connecting
+# to an external Postgres server.
+extraVolumeMounts:
+# - name: postgres-ssl-vol
+#   readOnly: true
+#   mountPath: "/pg-ssl"
+
 
 gitea:
   admin:
@@ -96,8 +112,8 @@ gitea:
 
   config: {}
   #  APP_NAME: "Gitea: Git with a cup of tea"
-  #  RUN_MODE: dev   
-  #   
+  #  RUN_MODE: dev
+  #
   #  server:
   #    SSH_PORT: 22
   #
