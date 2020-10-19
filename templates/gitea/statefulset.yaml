@@ -31,6 +31,11 @@ spec:
         - name: init
           image: "{{ .Values.image.repository }}:{{ ternary .Values.image.version .Values.image.tag (hasKey .Values.image "version") }}"
           command: ["/usr/sbin/init_gitea.sh"]
+          env:
+          {{- range .Values.statefulset.env }}
+          - name: {{ .name | quote | nospace }}
+            value: {{ .value | quote }}
+          {{- end }}
           volumeMounts:
             - name: init
               mountPath: /usr/sbin
