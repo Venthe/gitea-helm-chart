@@ -89,6 +89,15 @@ extraVolumeMounts:
 #   readOnly: true
 #   mountPath: "/pg-ssl"
 
+# bash shell script copied verbatim to the start of the init-container.
+initPreScript: ""
+#
+# initPreScript: |
+#   mkdir -p /data/git/.postgresql
+#   cp /pg-ssl/* /data/git/.postgresql/
+#   chown -R git:git /data/git/.postgresql/
+#   chmod 400 /data/git/.postgresql/postgresql.key
+
 
 gitea:
   admin:

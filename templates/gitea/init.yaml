@@ -8,6 +8,14 @@ type: Opaque
 stringData:
   init_gitea.sh: |-
     #!/bin/bash
+    {{- if .Values.initPreScript }}
+    # BEGIN: initPreScript
+    {{- with .Values.initPreScript -}}
+    {{ . | nindent 4}}
+    {{- end -}}
+    # END: initPreScript
+    {{- end }}
+
     mkdir -p /data/git/.ssh
     chmod -R 700 /data/git/.ssh
     mkdir -p /data/gitea/conf

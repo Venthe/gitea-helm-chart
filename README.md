@@ -297,6 +297,7 @@ Annotations can be added to the Gitea pod.
 | statefulset.env                           | Additional environment variables to pass to containers | []          |
 | extraVolumes                              | Additional volumes to mount to the Gitea statefulset   | {}          |
 | extraVolumeMounts                         | Additional volumes mounts for the Gitea containers     | {}          |
+| initPreScript                             | Bash script copied verbatim to start of init container |             |
 
 ### Image
 
