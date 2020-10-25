@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "gitea.labels" . | nindent 4 }}
   annotations:
-{{ toYaml .Values.service.ssh.annotations | indent 4 }}
+    {{- toYaml .Values.service.ssh.annotations | nindent 4 }}
 spec:
   type: {{ .Values.service.ssh.type }}
   {{- if and .Values.service.ssh.loadBalancerIP (eq .Values.service.ssh.type "LoadBalancer") }}
@@ -16,7 +16,7 @@ spec:
   {{- end }}
   {{- if .Values.service.ssh.externalIPs }}
   externalIPs:
-  {{ toYaml .Values.service.ssh.externalIPs | indent 4 }}
+    {{- toYaml .Values.service.ssh.externalIPs | nindent 4 }}
   {{- end }}
   {{- if .Values.service.ssh.externalTrafficPolicy }}
   externalTrafficPolicy: {{ .Values.service.ssh.externalTrafficPolicy }}
