@@ -4,6 +4,8 @@
 
 replicaCount: 1
 
+clusterDomain: cluster.local
+
 image:
   repository: gitea/gitea
   version: 1.12.5
