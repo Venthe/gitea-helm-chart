@@ -249,7 +249,7 @@ Annotations can be added to the Gitea pod.
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
 |image.repository| Image to start for this pod | gitea/gitea |
-|image.version| Image Version | 1.12.4 |
+|image.version| Image Version | 1.12.6 |
 |image.pullPolicy| Image pull policy | Always |
 
 ### Persistence
