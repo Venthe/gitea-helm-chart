@@ -17,6 +17,7 @@ service:
   http:
     type: ClusterIP
     port: 3000
+    annotations:
   ssh:
     type: ClusterIP
     port: 22
