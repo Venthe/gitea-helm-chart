@@ -35,7 +35,14 @@ spec:
         paths:
           - path: /
             backend:
+            {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
+              service:
+                name: {{ $fullName }}-http
+                port:
+                  number: {{ $httpPort }}
+            {{- else -}}
               serviceName: {{ $fullName }}-http
               servicePort: {{ $httpPort }}
+            {{- end }}
   {{- end }}
 {{- end }}
