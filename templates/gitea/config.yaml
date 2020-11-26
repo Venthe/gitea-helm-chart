@@ -23,12 +23,21 @@ stringData:
     {{- $_ := set .Values.gitea.config "security" dict -}}
     {{- end -}}
 
-    {{- /* security default settings */ -}}   
+    {{- if not (hasKey .Values.gitea.config "metrics") -}}
+    {{- $_ := set .Values.gitea.config "metrics" dict -}}
+    {{- end -}}
+
+    {{- /* metrics default settings */ -}}
+    {{- if not .Values.gitea.config.security.ENABLED -}}
+    {{- $_ := set .Values.gitea.config.security "ENABLED" "false" -}}
+    {{- end -}}
+
+    {{- /* security default settings */ -}}
     {{- if not .Values.gitea.config.security.INSTALL_LOCK -}}
     {{- $_ := set .Values.gitea.config.security "INSTALL_LOCK" "true" -}}
     {{- end -}}
 
-    {{- /* server default settings */ -}}   
+    {{- /* server default settings */ -}}
     {{- if not (hasKey .Values.gitea.config.server "HTTP_PORT") -}}
     {{- $_ := set .Values.gitea.config.server "HTTP_PORT" .Values.service.http.port -}}
     {{- end -}}
@@ -68,7 +77,7 @@ stringData:
 
     {{- /* database default settings */ -}}
     {{- if .Values.gitea.database.builtIn.postgresql.enabled -}}
-    {{- $_ := set .Values.gitea.config.database "DB_TYPE"   "postgres" -}} 
+    {{- $_ := set .Values.gitea.config.database "DB_TYPE"   "postgres" -}}
     {{- if not (.Values.gitea.config.database.HOST) -}}
     {{- $_ := set .Values.gitea.config.database "HOST"      (include "postgresql.dns" .) -}}
     {{- end -}}
@@ -76,7 +85,7 @@ stringData:
     {{- $_ := set .Values.gitea.config.database "USER"      .Values.postgresql.global.postgresql.postgresqlUsername -}}
     {{- $_ := set .Values.gitea.config.database "PASSWD"    .Values.postgresql.global.postgresql.postgresqlPassword -}}
     {{ else if .Values.gitea.database.builtIn.mysql.enabled -}}
-    {{- $_ := set .Values.gitea.config.database "DB_TYPE"   "mysql" -}} 
+    {{- $_ := set .Values.gitea.config.database "DB_TYPE"   "mysql" -}}
     {{- if not (.Values.gitea.config.database.HOST) -}}
     {{- $_ := set .Values.gitea.config.database "HOST"      (include "mysql.dns" .) -}}
     {{- end -}}
@@ -101,7 +110,7 @@ stringData:
     {{- $_ := set .Values.gitea.config.cache "HOST" (include "memcached.dns" .) -}}
     {{- end -}}
     {{- end -}}
-    
+
     {{- /* autogenerate app.ini */ -}}
     {{- range $key, $value := .Values.gitea.config  }}
     {{- if kindIs "map" $value }}

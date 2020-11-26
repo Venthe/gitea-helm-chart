@@ -99,6 +99,8 @@ gitea:
   #
   #  security:
   #    PASSWORD_COMPLEXITY: spec
+  #  metrics:
+  #    enabled: true
 
   podAnnotations: {}
 
