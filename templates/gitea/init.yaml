@@ -52,6 +52,7 @@ stringData:
       --bind-password {{ .Values.gitea.ldap.bindPassword | quote }} \
       --synchronize-users \
       --username-attribute {{ .Values.gitea.ldap.usernameAttribute | quote }} \
+      --public-ssh-key-attribute {{ .Values.gitea.ldap.sshPublicKeyAttribute | quote }} \
     ) \
     {{- end }}
     '

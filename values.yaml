@@ -69,6 +69,8 @@ persistence:
   size: 10Gi
   accessModes:
     - ReadWriteOnce
+  labels: {}
+  annotations: {}
 
 gitea:
   admin:
@@ -89,6 +91,7 @@ gitea:
     bindDn: ""
     bindPassword: ""
     usernameAttribute: ""
+    sshPublicKeyAttribute: ""
 
   config: {}
   #  APP_NAME: "Gitea: Git with a cup of tea"

@@ -104,6 +104,18 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: data
+      {{- with .Values.persistence.annotations }}
+        annotations:
+        {{- range $key, $value := . }}
+          {{ $key }}: {{ $value }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.persistence.labels }}
+        labels:
+        {{- range $key, $value := . }}
+          {{ $key }}: {{ $value }}
+        {{- end }}
+      {{- end }}
       spec:
         accessModes:
           {{- range .Values.persistence.accessModes }}
