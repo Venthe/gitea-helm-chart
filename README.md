@@ -132,6 +132,18 @@ By default port 3000 is used for web traffic and 22 for ssh. Those can be change
 
 This helmchart automatically configures the clone urls to use the correct ports. You can change these ports by hand using the gitea.config dict. However you should know what you're doing.
 
+### SSH and Ingress
+
+If you're using ingress and wan't to use SSH, keep in mind, that ingress is not able to forward SSH Ports.
+You will need a LoadBalancer like metallb and a setting in your ssh service annotations.
+
+```yaml
+service:
+  ssh:
+    annotations:
+      metallb.universe.tf/allow-shared-ip: test
+```
+
 ### Cache
 
 This helm chart can use a built in cache. The default is memcached from bitnami.
