@@ -132,6 +132,22 @@ By default port 3000 is used for web traffic and 22 for ssh. Those can be change
 
 This helmchart automatically configures the clone urls to use the correct ports. You can change these ports by hand using the gitea.config dict. However you should know what you're doing.
 
+### ClusterIP
+
+By default the clusterIP will be set to None, which is the default for headless services. However if you want to omit the clusterIP field in the service, use the following values:
+
+```yaml
+service:
+  http:
+    type: ClusterIP
+    port: 3000
+    clusterIP:
+  ssh:
+    type: ClusterIP
+    port: 22
+    clusterIP:
+```
+
 ### SSH and Ingress
 
 If you're using ingress and wan't to use SSH, keep in mind, that ingress is not able to forward SSH Ports.
@@ -220,6 +236,10 @@ It is not possible to delete an admin user after it has been created. This has t
 ### LDAP Settings
 
 Like the admin user the ldap settings can be updated but also disabled or deleted.
+All ldap values from https://docs.gitea.io/en-us/command-line/#admin are available.
+You can either use them in camel case or kebab case.
+
+camelCase:
 
 ```yaml
   gitea:
@@ -236,6 +256,25 @@ Like the admin user the ldap settings can be updated but also disabled or delete
       bindDn: CN=ldap read,OU=Spezial,DC=example,DC=com
       bindPassword: JustAnotherBindPw
       usernameAttribute: CN
+```
+
+kebab-case:
+
+```yaml
+  gitea:
+    ldap:
+      enabled: true
+      name: 'MyAwesomeGiteaLdap'
+      security-protocol: unencrypted
+      host: "127.0.0.1"
+      port: "389"
+      user-search-base: ou=Users,dc=example,dc=com
+      user-filter: sAMAccountName=%s
+      admin-filter: CN=Admin,CN=Group,DC=example,DC=com
+      email-attribute: mail
+      bind-dn: CN=ldap read,OU=Spezial,DC=example,DC=com
+      bind-password: JustAnotherBindPw
+      username-attribute: CN
 ```
 
 ### Pod Annotations
