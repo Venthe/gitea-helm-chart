@@ -82,17 +82,17 @@ gitea:
 
   ldap:
     enabled: false
-    name: ""
-    securityProtocol: ""
-    host: ""
-    port: ""
-    userSearchBase: ""
-    userFilter: ""
-    adminFilter: ""
-    emailAttribute: ""
-    bindDn: ""
-    bindPassword: ""
-    usernameAttribute: ""
+    #name: 
+    #securityProtocol: 
+    #host: 
+    #port: 
+    #userSearchBase: 
+    #userFilter: 
+    #adminFilter: 
+    #emailAttribute: 
+    #bindDn: 
+    #bindPassword: 
+    #usernameAttribute: 
 
   config: {}
   #  APP_NAME: "Gitea: Git with a cup of tea"
