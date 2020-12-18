@@ -300,7 +300,7 @@ Annotations can be added to the Gitea pod.
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
 |image.repository| Image to start for this pod | gitea/gitea |
-|image.version| Image Version | 1.13.0 |
+|image.tag| Image Version | 1.13.0 |
 |image.pullPolicy| Image pull policy | Always |
 
 ### Persistence
