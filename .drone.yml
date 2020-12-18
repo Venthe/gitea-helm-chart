@@ -41,19 +41,19 @@ trigger:
 
 steps:
   - name: generate-chart
-    pull: default
+    pull: always
     image: alpine:3.12
     commands:
       - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing helm
       - helm dependency update
-      - helm package ./
+      - helm package --version "${DRONE_TAG##v}" ./
       - mkdir gitea
       - mv gitea*.tgz gitea/
       - wget -O gitea/index.yaml https://dl.gitea.io/charts/index.yaml
       - helm repo index gitea/ --url https://dl.gitea.io/charts --merge gitea/index.yaml
 
   - name: upload-chart
-    pull: default
+    pull: always
     image: plugins/s3:latest
     settings:
       bucket: releases
