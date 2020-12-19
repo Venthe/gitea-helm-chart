@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This helm chart has taken some inspiration from https://github.com/jfelten/gitea-helm-chart
+This helm chart has taken some inspiration from <https://github.com/jfelten/gitea-helm-chart>
 But takes a completly different approach in providing database and cache with dependencies.
 Also this chart provides ldap and admin user configuration with values as well as it is deployed as statefulset to retain stored repositories.
 
@@ -188,9 +188,9 @@ If the built in cache should not be used simply configure the cache in gitea.con
 Gitea will be deployed as a statefulset. By simply enabling the persistence and setting the storage class according to your cluster
 everything else will be taken care of. The following example will create a PVC as a part of the statefulset. This PVC will not be deleted
 even if you uninstall the chart.
-When using Postgresql as dependency, this will also be deployed as a statefulset by default. 
+When using Postgresql as dependency, this will also be deployed as a statefulset by default.
 
-If you want to manage your own PVC you can simply pass the PVC name to the chart. 
+If you want to manage your own PVC you can simply pass the PVC name to the chart.
 
 ```yaml
   persistence:
@@ -200,7 +200,7 @@ If you want to manage your own PVC you can simply pass the PVC name to the chart
 
 In case that peristence has been disabled it will simply use an empty dir volume.
 
-Postgresql handles the persistence in the exact same way. 
+Postgresql handles the persistence in the exact same way.
 You can interact with the postgres settings as displayed in the following example:
 
 ```yaml
@@ -236,7 +236,7 @@ It is not possible to delete an admin user after it has been created. This has t
 ### LDAP Settings
 
 Like the admin user the ldap settings can be updated but also disabled or deleted.
-All ldap values from https://docs.gitea.io/en-us/command-line/#admin are available.
+All ldap values from <https://docs.gitea.io/en-us/command-line/#admin> are available.
 You can either use them in camel case or kebab case.
 
 camelCase:
@@ -300,7 +300,7 @@ Annotations can be added to the Gitea pod.
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
 |image.repository| Image to start for this pod | gitea/gitea |
-|image.tag| Image Version | 1.13.0 |
+|image.tag| [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated) | 1.13.0 |
 |image.pullPolicy| Image pull policy | Always |
 
 ### Persistence
