@@ -4,9 +4,9 @@
 
 ## Introduction
 
-This helm chart has taken some inspiration from https://github.com/jfelten/gitea-helm-chart
+This helm chart has taken some inspiration from <https://github.com/jfelten/gitea-helm-chart>
 But takes a completly different approach in providing database and cache with dependencies.
-Also this chart provides ldap and admin user configuration with values as well as it is deployed as statefulset to retain stored repositories.
+Also this chart provides LDAP and admin user configuration with values as well as it is deployed as statefulset to retain stored repositories.
 
 ## Dependencies
 
@@ -21,7 +21,7 @@ Dependencies:
 
 ## Installing
 
-```
+```sh
   helm repo add gitea-charts https://dl.gitea.io/charts/
   helm install gitea gitea-charts/gitea
 ```
@@ -60,7 +60,7 @@ INSTALL_LOCK is always set to true, since we want to configure gitea with this h
 
 If a builtIn database is enabled the database configuration is set automatically. For example postgresql builtIn which will appear in the app.ini as:
 
-```
+```ini
 [database]
 DB_TYPE = postgres
 HOST = RELEASE-NAME-postgresql.default.svc.cluster.local:5432
@@ -73,7 +73,7 @@ USER = gitea
 
 Memcached is handled the exakt same way as database builtIn. Once memcached builtIn is enabled, this chart will generate the following part in the app.ini:
 
-```
+```ini
 [cache]
 ADAPTER = memcache
 ENABLED = true
@@ -85,7 +85,7 @@ HOST = RELEASE-NAME-memcached.default.svc.cluster.local:11211
 The server defaults are a bit more complex.
 If ingress is enabled, the ROOT_URL, DOMAIN and SSH_DOMAIN will be set accordingly. HTTP_PORT always defaults to 3000 as well as SSH_PORT to 22.
 
-```
+```ini
 [server]
 APP_DATA_PATH = /data
 DOMAIN = git.example.com
@@ -188,9 +188,9 @@ If the built in cache should not be used simply configure the cache in gitea.con
 Gitea will be deployed as a statefulset. By simply enabling the persistence and setting the storage class according to your cluster
 everything else will be taken care of. The following example will create a PVC as a part of the statefulset. This PVC will not be deleted
 even if you uninstall the chart.
-When using Postgresql as dependency, this will also be deployed as a statefulset by default. 
+When using Postgresql as dependency, this will also be deployed as a statefulset by default.
 
-If you want to manage your own PVC you can simply pass the PVC name to the chart. 
+If you want to manage your own PVC you can simply pass the PVC name to the chart.
 
 ```yaml
   persistence:
@@ -200,7 +200,7 @@ If you want to manage your own PVC you can simply pass the PVC name to the chart
 
 In case that peristence has been disabled it will simply use an empty dir volume.
 
-Postgresql handles the persistence in the exact same way. 
+Postgresql handles the persistence in the exact same way.
 You can interact with the postgres settings as displayed in the following example:
 
 ```yaml
@@ -235,8 +235,8 @@ It is not possible to delete an admin user after it has been created. This has t
 
 ### LDAP Settings
 
-Like the admin user the ldap settings can be updated but also disabled or deleted.
-All ldap values from https://docs.gitea.io/en-us/command-line/#admin are available.
+Like the admin user the LDAP settings can be updated but also disabled or deleted.
+All LDAP values from <https://docs.gitea.io/en-us/command-line/#admin> are available.
 You can either use them in camel case or kebab case.
 
 camelCase:
@@ -300,7 +300,7 @@ Annotations can be added to the Gitea pod.
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
 |image.repository| Image to start for this pod | gitea/gitea |
-|image.version| Image Version | 1.13.0 |
+|image.tag| [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated) | 1.13.0 |
 |image.pullPolicy| Image pull policy | Always |
 
 ### Persistence
