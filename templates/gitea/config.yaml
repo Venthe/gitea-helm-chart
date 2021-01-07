@@ -15,6 +15,10 @@ stringData:
     {{- $_ := set .Values.gitea.config "server" dict -}}
     {{- end -}}
 
+    {{- if not (hasKey .Values.gitea.config "metrics") -}}
+    {{- $_ := set .Values.gitea.config "metrics" dict -}}
+    {{- end -}}
+
     {{- if not (hasKey .Values.gitea.config "database") -}}
     {{- $_ := set .Values.gitea.config "database" dict -}}
     {{- end -}}
@@ -64,6 +68,14 @@ stringData:
     {{- end -}}
     {{- if not (hasKey .Values.gitea.config.server "APP_DATA_PATH") -}}
     {{- $_ := set .Values.gitea.config.server "APP_DATA_PATH" "/data" -}}
+    {{- end -}}
+    {{- if not (hasKey .Values.gitea.config.server "PPROF_ENABLED") -}}
+    {{- $_ := set .Values.gitea.config.server "PPROF_ENABLED" .Values.gitea.pprofEnabled -}}
+    {{- end -}}
+
+    {{- /* metrics default settings */ -}}
+    {{- if not (hasKey .Values.gitea.config.metrics "ENABLED") -}}
+    {{- $_ := set .Values.gitea.config.metrics "ENABLED" .Values.gitea.metrics.enabled -}}
     {{- end -}}
 
     {{- /* database default settings */ -}}

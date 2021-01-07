@@ -66,6 +66,10 @@ spec:
               containerPort: {{ .Values.gitea.config.server.SSH_LISTEN_PORT }}
             - name: http
               containerPort: {{ .Values.gitea.config.server.HTTP_PORT }}
+            {{- if .Values.gitea.pprofEnabled }}
+            - name: profiler
+              containerPort: 6060
+            {{- end }}
           livenessProbe:
             tcpSocket:
               port: http

@@ -95,6 +95,16 @@ ROOT_URL = http://git.example.com
 SSH_DOMAIN = git.example.com
 SSH_LISTEN_PORT = 22
 SSH_PORT = 22
+ENABLE_PPROF = false
+```
+
+#### Metrics defaults
+
+The Prometheus `/metrics` endpoint is disabled by default.
+
+```ini
+[metrics]
+ENABLED = false
 ```
 
 ### External Database
@@ -276,6 +286,22 @@ kebab-case:
       bind-dn: CN=ldap read,OU=Spezial,DC=example,DC=com
       bind-password: JustAnotherBindPw
       username-attribute: CN
+```
+
+### Metrics and profiling
+
+A Prometheus `/metrics` endpoint on the `HTTP_PORT` and `pprof` profiling endpoints on port 6060 can be enabled under `gitea`. Beware that the metrics endpoint is exposed via the ingress, manage access using ingress annotations for example.
+
+To deploy the `ServiceMonitor`, you first need to ensure that you have deployed `prometheus-operator` and its CRDs: https://github.com/prometheus-operator/prometheus-operator#customresourcedefinitions.
+
+```yaml
+gitea:
+  pprofEnabled: true
+
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
 ```
 
 ### Pod Annotations
