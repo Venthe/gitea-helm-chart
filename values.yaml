@@ -105,8 +105,6 @@ gitea:
     password: r8sA8CPHD9!bt6d
     email: "gitea@local.domain"
 
-  pprofEnabled: false
-
   metrics:
     enabled: false
     serviceMonitor:

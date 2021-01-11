@@ -70,7 +70,7 @@ stringData:
     {{- $_ := set .Values.gitea.config.server "APP_DATA_PATH" "/data" -}}
     {{- end -}}
     {{- if not (hasKey .Values.gitea.config.server "PPROF_ENABLED") -}}
-    {{- $_ := set .Values.gitea.config.server "PPROF_ENABLED" .Values.gitea.pprofEnabled -}}
+    {{- $_ := set .Values.gitea.config.server "PPROF_ENABLED" false -}}
     {{- end -}}
 
     {{- /* metrics default settings */ -}}

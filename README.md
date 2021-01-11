@@ -296,12 +296,14 @@ To deploy the `ServiceMonitor`, you first need to ensure that you have deployed 
 
 ```yaml
 gitea:
-  pprofEnabled: true
-
   metrics:
     enabled: true
     serviceMonitor:
       enabled: true
+
+  config:
+    server:
+      PPROF_ENABLED: true
 ```
 
 ### Pod Annotations
