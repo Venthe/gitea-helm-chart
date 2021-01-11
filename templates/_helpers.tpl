@@ -99,7 +99,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- range $key, $val := .Values.gitea.ldap -}}
 {{- if ne $key "enabled" -}}
 {{- if eq $key "port" -}}
-{{- printf "--%s %s " ($key | kebabcase) $val -}}
+{{- printf "--%s %d " ($key | kebabcase) ($val | int) -}}
 {{- else -}}
 {{- printf "--%s %s " ($key | kebabcase) ($val | quote) -}}
 {{- end -}}
