@@ -224,6 +224,7 @@ You can interact with the postgres settings as displayed in the following exampl
 
 This chart enables you to create a default admin user. It is also possible to update the password for this user by upgrading or redeloying the chart.
 It is not possible to delete an admin user after it has been created. This has to be done in the ui.
+You cannot use `admin` as username.
 
 ```yaml
   gitea:
