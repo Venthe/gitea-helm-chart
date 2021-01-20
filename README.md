@@ -4,9 +4,9 @@
 
 ## Introduction
 
-This helm chart has taken some inspiration from https://github.com/jfelten/gitea-helm-chart
+This helm chart has taken some inspiration from <https://github.com/jfelten/gitea-helm-chart>
 But takes a completly different approach in providing database and cache with dependencies.
-Also this chart provides ldap and admin user configuration with values as well as it is deployed as statefulset to retain stored repositories.
+Also this chart provides LDAP and admin user configuration with values as well as it is deployed as statefulset to retain stored repositories.
 
 ## Dependencies
 
@@ -21,7 +21,7 @@ Dependencies:
 
 ## Installing
 
-```
+```sh
   helm repo add gitea-charts https://dl.gitea.io/charts/
   helm install gitea gitea-charts/gitea
 ```
@@ -60,7 +60,7 @@ INSTALL_LOCK is always set to true, since we want to configure gitea with this h
 
 If a builtIn database is enabled the database configuration is set automatically. For example postgresql builtIn which will appear in the app.ini as:
 
-```
+```ini
 [database]
 DB_TYPE = postgres
 HOST = RELEASE-NAME-postgresql.default.svc.cluster.local:5432
@@ -73,7 +73,7 @@ USER = gitea
 
 Memcached is handled the exakt same way as database builtIn. Once memcached builtIn is enabled, this chart will generate the following part in the app.ini:
 
-```
+```ini
 [cache]
 ADAPTER = memcache
 ENABLED = true
@@ -85,7 +85,7 @@ HOST = RELEASE-NAME-memcached.default.svc.cluster.local:11211
 The server defaults are a bit more complex.
 If ingress is enabled, the ROOT_URL, DOMAIN and SSH_DOMAIN will be set accordingly. HTTP_PORT always defaults to 3000 as well as SSH_PORT to 22.
 
-```
+```ini
 [server]
 APP_DATA_PATH = /data
 DOMAIN = git.example.com
@@ -132,6 +132,34 @@ By default port 3000 is used for web traffic and 22 for ssh. Those can be change
 
 This helmchart automatically configures the clone urls to use the correct ports. You can change these ports by hand using the gitea.config dict. However you should know what you're doing.
 
+### ClusterIP
+
+By default the clusterIP will be set to None, which is the default for headless services. However if you want to omit the clusterIP field in the service, use the following values:
+
+```yaml
+service:
+  http:
+    type: ClusterIP
+    port: 3000
+    clusterIP:
+  ssh:
+    type: ClusterIP
+    port: 22
+    clusterIP:
+```
+
+### SSH and Ingress
+
+If you're using ingress and wan't to use SSH, keep in mind, that ingress is not able to forward SSH Ports.
+You will need a LoadBalancer like metallb and a setting in your ssh service annotations.
+
+```yaml
+service:
+  ssh:
+    annotations:
+      metallb.universe.tf/allow-shared-ip: test
+```
+
 ### Cache
 
 This helm chart can use a built in cache. The default is memcached from bitnami.
@@ -160,9 +188,9 @@ If the built in cache should not be used simply configure the cache in gitea.con
 Gitea will be deployed as a statefulset. By simply enabling the persistence and setting the storage class according to your cluster
 everything else will be taken care of. The following example will create a PVC as a part of the statefulset. This PVC will not be deleted
 even if you uninstall the chart.
-When using Postgresql as dependency, this will also be deployed as a statefulset by default. 
+When using Postgresql as dependency, this will also be deployed as a statefulset by default.
 
-If you want to manage your own PVC you can simply pass the PVC name to the chart. 
+If you want to manage your own PVC you can simply pass the PVC name to the chart.
 
 ```yaml
   persistence:
@@ -172,7 +200,7 @@ If you want to manage your own PVC you can simply pass the PVC name to the chart
 
 In case that peristence has been disabled it will simply use an empty dir volume.
 
-Postgresql handles the persistence in the exact same way. 
+Postgresql handles the persistence in the exact same way.
 You can interact with the postgres settings as displayed in the following example:
 
 ```yaml
@@ -196,6 +224,7 @@ You can interact with the postgres settings as displayed in the following exampl
 
 This chart enables you to create a default admin user. It is also possible to update the password for this user by upgrading or redeloying the chart.
 It is not possible to delete an admin user after it has been created. This has to be done in the ui.
+You cannot use `admin` as username.
 
 ```yaml
   gitea:
@@ -207,7 +236,11 @@ It is not possible to delete an admin user after it has been created. This has t
 
 ### LDAP Settings
 
-Like the admin user the ldap settings can be updated but also disabled or deleted.
+Like the admin user the LDAP settings can be updated but also disabled or deleted.
+All LDAP values from <https://docs.gitea.io/en-us/command-line/#admin> are available.
+You can either use them in camel case or kebab case.
+
+camelCase:
 
 ```yaml
   gitea:
@@ -225,6 +258,25 @@ Like the admin user the ldap settings can be updated but also disabled or delete
       bindPassword: JustAnotherBindPw
       usernameAttribute: CN
       sshPublicKeyAttribute: sshPublicKey
+```
+
+kebab-case:
+
+```yaml
+  gitea:
+    ldap:
+      enabled: true
+      name: 'MyAwesomeGiteaLdap'
+      security-protocol: unencrypted
+      host: "127.0.0.1"
+      port: "389"
+      user-search-base: ou=Users,dc=example,dc=com
+      user-filter: sAMAccountName=%s
+      admin-filter: CN=Admin,CN=Group,DC=example,DC=com
+      email-attribute: mail
+      bind-dn: CN=ldap read,OU=Spezial,DC=example,DC=com
+      bind-password: JustAnotherBindPw
+      username-attribute: CN
 ```
 
 ### Pod Annotations
@@ -250,7 +302,7 @@ Annotations can be added to the Gitea pod.
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
 |image.repository| Image to start for this pod | gitea/gitea |
-|image.version| Image Version | 1.12.6 |
+|image.tag| [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated) | 1.13.1 |
 |image.pullPolicy| Image pull policy | Always |
 
 ### Persistence

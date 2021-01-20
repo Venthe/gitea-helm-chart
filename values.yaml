@@ -8,7 +8,7 @@ clusterDomain: cluster.local
 
 image:
   repository: gitea/gitea
-  version: 1.12.6
+  tag: 1.13.1
   pullPolicy: Always
 
 imagePullSecrets: []
@@ -17,10 +17,14 @@ service:
   http:
     type: ClusterIP
     port: 3000
+    clusterIP: None
+    #loadBalancerIP:
+    #nodePort:
     annotations:
   ssh:
     type: ClusterIP
     port: 22
+    clusterIP: None
     #loadBalancerIP:
     #nodePort:
     #externalTrafficPolicy:
@@ -80,18 +84,18 @@ gitea:
 
   ldap:
     enabled: false
-    name: ""
-    securityProtocol: ""
-    host: ""
-    port: ""
-    userSearchBase: ""
-    userFilter: ""
-    adminFilter: ""
-    emailAttribute: ""
-    bindDn: ""
-    bindPassword: ""
-    usernameAttribute: ""
-    sshPublicKeyAttribute: ""
+    #name: 
+    #securityProtocol: 
+    #host: 
+    #port: 
+    #userSearchBase: 
+    #userFilter: 
+    #adminFilter: 
+    #emailAttribute: 
+    #bindDn: 
+    #bindPassword: 
+    #usernameAttribute: 
+    #sshPublicKeyAttribute:
 
   config: {}
   #  APP_NAME: "Gitea: Git with a cup of tea"
