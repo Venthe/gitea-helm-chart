@@ -31,6 +31,11 @@ spec:
         - name: init
           image: "{{ .Values.image.repository }}:{{ ternary .Values.image.version .Values.image.tag (hasKey .Values.image "version") }}"
           command: ["/usr/sbin/init_gitea.sh"]
+          env:
+          {{- range .Values.statefulset.env }}
+          - name: {{ .name | quote | nospace }}
+            value: {{ .value | quote }}
+          {{- end }}
           volumeMounts:
             - name: init
               mountPath: /usr/sbin
@@ -38,6 +43,9 @@ spec:
               mountPath: /etc/gitea/conf
             - name: data
               mountPath: /data
+            {{- if .Values.extraVolumeMounts }}
+            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
+            {{- end }}
       terminationGracePeriodSeconds: {{ .Values.statefulset.terminationGracePeriodSeconds }}
       containers:
         - name: {{ .Chart.Name }}
@@ -78,6 +86,9 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /data
+            {{- if .Values.extraVolumeMounts }}
+            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
+            {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -98,6 +109,9 @@ spec:
         - name: config
           secret:
             secretName: {{ include "gitea.fullname" . }}
+        {{- if .Values.extraVolumes }}
+        {{- toYaml .Values.extraVolumes | nindent 8 }}
+        {{- end }}
   {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
         - name: data
           persistentVolumeClaim:
