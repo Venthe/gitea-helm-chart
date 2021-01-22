@@ -8,6 +8,10 @@ metadata:
     {{- toYaml .Values.service.ssh.annotations | nindent 4 }}
 spec:
   type: {{ .Values.service.ssh.type }}
+    loadBalancerSourceRanges:
+  {{- range .Values.service.ssh.loadBalancerSourceRanges }}
+    - {{ . }}
+  {{- end }}
   {{- if and .Values.service.ssh.loadBalancerIP (eq .Values.service.ssh.type "LoadBalancer") }}
   loadBalancerIP: {{ .Values.service.ssh.loadBalancerIP }}
   {{- end }}
