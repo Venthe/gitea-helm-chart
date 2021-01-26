@@ -8,14 +8,14 @@ metadata:
     {{- toYaml .Values.service.ssh.annotations | nindent 4 }}
 spec:
   type: {{ .Values.service.ssh.type }}
-  {{- if and .Values.service.ssh.loadBalancerSourceRanges }}
+  {{- if and .Values.service.ssh.loadBalancerIP (eq .Values.service.ssh.type "LoadBalancer") }}
+  loadBalancerIP: {{ .Values.service.ssh.loadBalancerIP }}
+  {{- if .Values.service.ssh.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
   {{- range .Values.service.ssh.loadBalancerSourceRanges }}
     - {{ . }}
   {{- end }}
   {{- end }}
-  {{- if and .Values.service.ssh.loadBalancerIP (eq .Values.service.ssh.type "LoadBalancer") }}
-  loadBalancerIP: {{ .Values.service.ssh.loadBalancerIP }}
   {{- end }}
   {{- if and .Values.service.ssh.clusterIP (eq .Values.service.ssh.type "ClusterIP") }}
   clusterIP: {{ .Values.service.ssh.clusterIP }}
