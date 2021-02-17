@@ -304,7 +304,7 @@ gitea:
 
   config:
     server:
-      PPROF_ENABLED: true
+      ENABLE_PPROF: true
 ```
 
 ### Pod Annotations
