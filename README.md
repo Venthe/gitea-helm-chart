@@ -417,6 +417,34 @@ Annotations can be added to the Gitea pod.
 |---------------------|-----------------------------------|------------------------------|
 |gitea.config | Everything in app.ini can be configured with this dict. See Examples for more details | {} |
 
+### Gitea Probes
+
+Configure Liveness, Readiness and Startup [Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
+
+| Parameter           | Description                       | Default                      |
+|---------------------|-----------------------------------|------------------------------|
+|gitea.livenessProbe.enabled | Enable liveness probe | true |
+|gitea.livenessProbe.initialDelaySeconds | Delay before probe start| 200 |
+|gitea.livenessProbe.timeoutSeconds | probe timeout | 1 |
+|gitea.livenessProbe.periodSeconds | period between probes | 10 |
+|gitea.livenessProbe.successThreshold | Minimum consecutive success probes | 1 |
+|gitea.livenessProbe.failureThreshold | Minimum consecutive error probes | 10 |
+|gitea.readinessProbe.enabled | Enable readiness probe | true |
+|gitea.readinessProbe.initialDelaySeconds | Delay before probe start| 200 |
+|gitea.readinessProbe.timeoutSeconds | probe timeout | 1 |
+|gitea.readinessProbe.periodSeconds | period between probes | 10 |
+|gitea.readinessProbe.successThreshold | Minimum consecutive success probes | 1 |
+|gitea.readinessProbe.failureThreshold | Minimum consecutive error probes | 10 |
+|gitea.startupProbe.enabled | Enable startup probe | false |
+|gitea.startupProbe.initialDelaySeconds | Delay before probe start| 200 |
+|gitea.startupProbe.timeoutSeconds | probe timeout | 1 |
+|gitea.startupProbe.periodSeconds | period between probes | 10 |
+|gitea.startupProbe.successThreshold | Minimum consecutive success probes | 1 |
+|gitea.startupProbe.failureThreshold | Minimum consecutive error probes | 10 |
+|gitea.customLivenessProbe | Custom liveness probe (needs `gitea.livenessProbe.enabled: false`) |  |
+|gitea.customReadinessProbe | Custom readiness probe (needs `gitea.readinessProbe.enabled: false`) |  |
+|gitea.customStartupProbe | Custom startup probe (needs `gitea.startupProbe.enabled: false`) |  |
+
 ### Memcached BuiltIn
 
 Memcached is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if enabled in the values. Complete Configuration can be taken from their website.
