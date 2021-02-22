@@ -192,7 +192,7 @@ gitea:
 
   # customLivenessProbe:
   #   httpGet:
-  #     path: /users/login
+  #     path: /user/login
   #     port: http
   #   initialDelaySeconds: 60
   #   periodSeconds: 10
@@ -200,7 +200,7 @@ gitea:
   #   failureThreshold: 10
   # customReadinessProbe:
   #   httpGet:
-  #     path: /users/login
+  #     path: /user/login
   #     port: http
   #   initialDelaySeconds: 5
   #   periodSeconds: 10
@@ -208,7 +208,7 @@ gitea:
   #   failureThreshold: 3
   # customStartupProbe:
   #   httpGet:
-  #     path: /users/login
+  #     path: /user/login
   #     port: http
   #   initialDelaySeconds: 60
   #   periodSeconds: 10
