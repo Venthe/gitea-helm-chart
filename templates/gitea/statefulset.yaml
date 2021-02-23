@@ -36,8 +36,6 @@ spec:
           - name: {{ .name | quote | nospace }}
             value: {{ .value | quote }}
           {{- end }}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
           volumeMounts:
             - name: init
               mountPath: /usr/sbin
