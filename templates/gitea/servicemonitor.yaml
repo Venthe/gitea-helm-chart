@@ -5,8 +5,8 @@ metadata:
   name: {{ include "gitea.fullname" . }}
   labels:
     {{- include "gitea.labels" . | nindent 4 }}
-    {{- if .Values.monitoring.serviceMonitor.prometheusSelector }}
-    prometheus: {{ .Values.monitoring.serviceMonitor.prometheusSelector }}
+    {{- if .Values.metrics.serviceMonitor.prometheusSelector }}
+    prometheus: {{ .Values.metrics.serviceMonitor.prometheusSelector }}
     {{- end }}
 spec:
   selector:
