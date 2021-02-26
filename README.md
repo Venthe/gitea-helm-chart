@@ -288,6 +288,47 @@ kebab-case:
       bind-password: JustAnotherBindPw
       username-attribute: CN
 ```
+### OAuth2 Settings
+
+Like the admin user the OAuth2 settings can be updated but also disabled or deleted.
+All OAuth2 values from <https://docs.gitea.io/en-us/command-line/#admin> are available.
+You can either use them in camel case or kebab case.
+
+camelCase:
+
+```yaml
+  gitea:
+    oauth:
+      enabled: true
+      name: 'MyAwesomeGiteaOAuth'
+      provider: 'openidConnect'
+      key: 'hello'
+      secret: 'world'
+      autoDiscoverUrl: 'https://gitea.example.com/.well-known/openid-configuration'
+      #useCustomUrls:
+      #customAuthUrl:
+      #customTokenUrl:
+      #customProfileUrl:
+      #customEmailUrl:
+```
+
+kebab-case:
+
+```yaml
+  gitea:
+    oauth:
+      enabled: true
+      name: 'MyAwesomeGiteaOAuth'
+      provider: 'openidConnect'
+      key: 'hello'
+      secret: 'world'
+      auto-discover-url: 'https://gitea.example.com/.well-known/openid-configuration'
+      #use-custom-urls:
+      #custom-auth-url:
+      #custom-token-url:
+      #custom-profile-url:
+      #custom-email-url:
+```
 
 ### Metrics and profiling
 
