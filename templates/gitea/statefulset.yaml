@@ -15,6 +15,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/gitea/config.yaml") . | sha256sum }}
         checksum/ldap: {{ include "gitea.ldap_settings" . | sha256sum }}
+        checksum/oauth: {{ include "gitea.oauth_settings" . | sha256sum }}
         {{- with .Values.gitea.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
