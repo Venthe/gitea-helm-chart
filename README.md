@@ -368,6 +368,7 @@ Annotations can be added to the Gitea pod.
 | extraVolumes                              | Additional volumes to mount to the Gitea statefulset   | {}          |
 | extraVolumeMounts                         | Additional volumes mounts for the Gitea containers     | {}          |
 | initPreScript                             | Bash script copied verbatim to start of init container |             |
+| securityContext                           | Run as a specific securityContext                      | {}          |
 
 ### Image
 
