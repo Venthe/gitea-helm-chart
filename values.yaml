@@ -13,6 +13,8 @@ image:
 
 imagePullSecrets: []
 
+securityContext: {}
+
 service:
   http:
     type: ClusterIP
