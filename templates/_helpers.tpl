@@ -60,7 +60,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- printf "%s-mysql" .Release.Name -}}
 {{- else if .Values.gitea.database.builtIn.mariadb.enabled -}}
 {{- printf "%s-mariadb" .Release.Name -}}
-{{- else -}}
+{{- else if ne .Values.gitea.config.database.DB_TYPE "sqlite3" -}}
 {{- $parts := split ":" .Values.gitea.config.database.HOST -}}
 {{- printf "%s %s" $parts._0 $parts._1 -}}
 {{- end -}}
