@@ -73,6 +73,8 @@ statefulset:
 persistence:
   enabled: true
   # existingClaim:
+  # change the storageClass value to match your desired one
+  storageClass: "default"
   size: 10Gi
   accessModes:
     - ReadWriteOnce
@@ -227,6 +229,7 @@ postgresql:
       postgresqlPassword: gitea
       servicePort: 5432
   persistence:
+    storageClass: "default"
     size: 10Gi
 
 mysql:
