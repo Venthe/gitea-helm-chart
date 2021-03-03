@@ -26,7 +26,7 @@ stringData:
     set -x; \
     gitea migrate; \
     {{- if and .Values.gitea.admin.username .Values.gitea.admin.password }}
-    gitea admi user create --username  {{ .Values.gitea.admin.username }} --password {{ .Values.gitea.admin.password | quote }} --email {{ .Values.gitea.admin.email }} --admin --must-change-password=false \
+    gitea admin user create --username  {{ .Values.gitea.admin.username }} --password {{ .Values.gitea.admin.password | quote }} --email {{ .Values.gitea.admin.email }} --admin --must-change-password=false \
     || \
     gitea admin user change-password --username {{ .Values.gitea.admin.username }} --password {{ .Values.gitea.admin.password | quote }}; \
     {{- end }}
