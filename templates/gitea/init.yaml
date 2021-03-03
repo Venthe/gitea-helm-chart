@@ -19,12 +19,17 @@ stringData:
     mkdir -p /data/git/.ssh
     chmod -R 700 /data/git/.ssh
     mkdir -p /data/gitea/conf
+
+    # Copy config file to writable volume
     cp /etc/gitea/conf/app.ini /data/gitea/conf/app.ini
     chmod a+rwx /data/gitea/conf/app.ini
     {{- if include "db.servicename" . }}
+    # Wait for database to become avialble
     nc -v -w2 -z {{ include "db.servicename" . }} {{ include "db.port" . }} && \
     {{- end }}
+    {{- if not .Values.image.rootless }}
     su git -c ' \
+    {{- end }}
     set -x; \
     gitea migrate; \
     {{- if and .Values.gitea.admin.username .Values.gitea.admin.password }}
@@ -52,4 +57,6 @@ stringData:
       {{- include "gitea.oauth_settings" . | nindent 6 }} \
     ) \
     {{- end }}
+    {{- if not .Values.image.rootless }}
     '
+    {{- end }}

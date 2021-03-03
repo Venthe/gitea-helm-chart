@@ -10,6 +10,7 @@ image:
   repository: gitea/gitea
   tag: 1.13.5
   pullPolicy: Always
+  rootless: false # only possible when running the latest tag
 
 imagePullSecrets: []
 
@@ -119,25 +120,25 @@ gitea:
 
   ldap:
     enabled: false
-    #name: 
-    #securityProtocol: 
-    #host: 
-    #port: 
-    #userSearchBase: 
-    #userFilter: 
-    #adminFilter: 
-    #emailAttribute: 
-    #bindDn: 
-    #bindPassword: 
-    #usernameAttribute: 
+    #name:
+    #securityProtocol:
+    #host:
+    #port:
+    #userSearchBase:
+    #userFilter:
+    #adminFilter:
+    #emailAttribute:
+    #bindDn:
+    #bindPassword:
+    #usernameAttribute:
     #sshPublicKeyAttribute:
 
   oauth:
     enabled: false
     #name:
     #provider:
-    #key: 
-    #secret: 
+    #key:
+    #secret:
     #autoDiscoverUrl:
     #useCustomUrls:
     #customAuthUrl:

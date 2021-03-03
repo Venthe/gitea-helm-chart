@@ -36,13 +36,19 @@ spec:
         fsGroup: 1000
       initContainers:
         - name: init
-          image: "{{ .Values.image.repository }}:{{ ternary .Values.image.version .Values.image.tag (hasKey .Values.image "version") }}"
+          image: "{{ include "gitea.image" . }}"
           command: ["/usr/sbin/init_gitea.sh"]
           env:
-          {{- range .Values.statefulset.env }}
-          - name: {{ .name | quote | nospace }}
-            value: {{ .value | quote }}
-          {{- end }}
+            - name: GITEA_APP_INI
+              value: /data/gitea/conf/app.ini
+            - name: GITEA_CUSTOM
+              value: /data/gitea
+            - name: GITEA_WORK_DIR
+              value: /data
+            {{- range .Values.statefulset.env }}
+            - name: {{ .name | quote | nospace }}
+              value: {{ .value | quote }}
+            {{- end }}
           volumeMounts:
             - name: init
               mountPath: /usr/sbin
@@ -56,7 +62,7 @@ spec:
       terminationGracePeriodSeconds: {{ .Values.statefulset.terminationGracePeriodSeconds }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ ternary .Values.image.version .Values.image.tag (hasKey .Values.image "version") }}"
+          image: "{{ include "gitea.image" . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             # SSH Port values have to be set here as well for openssh configuration
@@ -64,6 +70,12 @@ spec:
               value: {{ .Values.gitea.config.server.SSH_LISTEN_PORT | quote }}
             - name: SSH_PORT
               value: {{ .Values.gitea.config.server.SSH_PORT | quote }}
+            - name: GITEA_APP_INI
+              value: /data/gitea/conf/app.ini
+            - name: GITEA_CUSTOM
+              value: /data/gitea
+            - name: GITEA_WORK_DIR
+              value: /data
             {{- range .Values.statefulset.env }}
             - name: {{ .name | quote | nospace }}
               value: {{ .value | quote }}

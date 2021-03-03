@@ -32,6 +32,16 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
+Create image name and tag used by the deployment.
+*/}}
+{{- define "gitea.image" -}}
+{{- $name := .Values.image.repository -}}
+{{- $tag := ternary .Values.image.version .Values.image.tag (hasKey .Values.image "version") -}}
+{{- $rootless := ternary "-rootless" "" (.Values.image.rootless) -}}
+{{- printf "%s:%s%s" $name $tag $rootless -}}
+{{- end -}}
+
+{{/*
 Common labels
 */}}
 {{- define "gitea.labels" -}}
