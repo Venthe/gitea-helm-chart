@@ -76,6 +76,8 @@ spec:
               value: /data/gitea
             - name: GITEA_WORK_DIR
               value: /data
+            - name: GITEA_TEMP
+              value: /tmp/gitea
             {{- range .Values.statefulset.env }}
             - name: {{ .name | quote | nospace }}
               value: {{ .value | quote }}
@@ -133,6 +135,8 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           volumeMounts:
+            - name: temp
+              mountPath: /tmp/gitea
             - name: data
               mountPath: /data
             {{- if .Values.extraVolumeMounts }}
@@ -161,6 +165,8 @@ spec:
         {{- if .Values.extraVolumes }}
         {{- toYaml .Values.extraVolumes | nindent 8 }}
         {{- end }}
+        - name: temp
+          emptyDir: {}
   {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
         - name: data
           persistentVolumeClaim:
