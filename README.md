@@ -5,12 +5,12 @@
 ## Introduction
 
 This helm chart has taken some inspiration from <https://github.com/jfelten/gitea-helm-chart>
-But takes a completly different approach in providing database and cache with dependencies.
-Also this chart provides LDAP and admin user configuration with values as well as it is deployed as statefulset to retain stored repositories.
+But takes a completely different approach in providing a database and cache with dependencies.
+Additionally, this chart provides LDAP and admin user configuration with values, as well as being deployed as a statefulset to retain stored repositories.
 
 ## Dependencies
 
-Gitea can be run with external database and cache. This chart provides those dependencies, which can be
+Gitea can be run with an external database and cache. This chart provides those dependencies, which can be
 enabled, or disabled via [configuration](#configuration).
 
 Dependencies:
@@ -36,7 +36,7 @@ Dependencies:
 
 ### Gitea Configuration
 
-Gitea offers lots of configuration. This is fully described in the [Gitea Cheat Sheet](https://docs.gitea.io/en-us/config-cheat-sheet/).
+Gitea offers lots of configuration options. This is fully described in the [Gitea Cheat Sheet](https://docs.gitea.io/en-us/config-cheat-sheet/).
 
 ```yaml
   gitea:
@@ -58,7 +58,7 @@ INSTALL_LOCK is always set to true, since we want to configure gitea with this h
 
 #### Database defaults
 
-If a builtIn database is enabled the database configuration is set automatically. For example postgresql builtIn which will appear in the app.ini as:
+If a builtIn database is enabled the database configuration is set automatically. For example, postgresql builtIn will appear in the app.ini as:
 
 ```ini
 [database]
@@ -71,7 +71,7 @@ USER = gitea
 
 #### Memcached defaults
 
-Memcached is handled the exakt same way as database builtIn. Once memcached builtIn is enabled, this chart will generate the following part in the app.ini:
+Memcached is handled the exact same way as database builtIn. Once memcached builtIn is enabled, this chart will generate the following part in the app.ini:
 
 ```ini
 [cache]
@@ -140,7 +140,7 @@ By default port 3000 is used for web traffic and 22 for ssh. Those can be change
       port: 22
 ```
 
-This helmchart automatically configures the clone urls to use the correct ports. You can change these ports by hand using the gitea.config dict. However you should know what you're doing.
+This helm chart automatically configures the clone urls to use the correct ports. You can change these ports by hand using the gitea.config dict. However you should know what you're doing.
 
 ### ClusterIP
 
@@ -196,8 +196,8 @@ If the built in cache should not be used simply configure the cache in gitea.con
 ### Persistence
 
 Gitea will be deployed as a statefulset. By simply enabling the persistence and setting the storage class according to your cluster
-everything else will be taken care of. The following example will create a PVC as a part of the statefulset. This PVC will not be deleted
-even if you uninstall the chart.
+everything else will be taken care of. The following example will create a PVC as a part of the statefulset. This PVC will not be deleted even if you uninstall the chart.
+
 When using Postgresql as dependency, this will also be deployed as a statefulset by default.
 
 If you want to manage your own PVC you can simply pass the PVC name to the chart.
@@ -246,7 +246,7 @@ You cannot use `admin` as username.
 
 ### LDAP Settings
 
-Like the admin user the LDAP settings can be updated but also disabled or deleted.
+Like the admin user the LDAP settings can be updated, but also disabled or deleted.
 All LDAP values from <https://docs.gitea.io/en-us/command-line/#admin> are available.
 You can either use them in camel case or kebab case.
 
@@ -472,7 +472,7 @@ The following parameters are the defaults set by this chart
 
 ### Postgresql BuiltIn
 
-Postgresql is loaded as a dependency from bitnami. Configuration can be found from this [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/postgresql)
+Postgresql is loaded as a dependency from Bitnami. The chart configuration can be found from this [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/postgresql) repository.
 
 The following parameters are the defaults set by this chart
 
