@@ -9,6 +9,9 @@ spec:
   selector:
     matchLabels:
       {{- include "gitea.selectorLabels" . | nindent 6 }}
+      {{- if .Values.statefulset.labels }}
+      {{- toYaml .Values.statefulset.labels | nindent 6 }}
+      {{- end }}
   serviceName: {{ include "gitea.fullname" . }}
   template:
     metadata:
@@ -21,6 +24,9 @@ spec:
         {{- end }}
       labels:
         {{- include "gitea.labels" . | nindent 8 }}
+        {{- if .Values.statefulset.labels }}
+        {{- toYaml .Values.statefulset.labels | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:

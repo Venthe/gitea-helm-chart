@@ -69,6 +69,7 @@ statefulset:
     # - name: VARIABLE
     #   value: my-value
   terminationGracePeriodSeconds: 60
+  labels: {}
 
 persistence:
   enabled: true
