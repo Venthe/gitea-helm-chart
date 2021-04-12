@@ -30,7 +30,7 @@ maintainers:
 dependencies:
 - name: memcached
   repository: https://charts.bitnami.com/bitnami
-  version: 4.2.20
+  version: 5.9.0
   condition: gitea.cache.builtIn.enabled
 - name: mysql
   repository: https://charts.bitnami.com/bitnami
@@ -38,9 +38,9 @@ dependencies:
   condition: gitea.database.builtIn.mysql.enabled
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
-  version: 9.7.2
+  version: 10.3.17
   condition: gitea.database.builtIn.postgresql.enabled
 - name: mariadb
   repository: https://charts.bitnami.com/bitnami
-  version: 8.0.0
+  version: 9.3.6
   condition: gitea.database.builtIn.mariadb.enabled
