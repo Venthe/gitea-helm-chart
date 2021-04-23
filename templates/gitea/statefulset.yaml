@@ -45,9 +45,8 @@ spec:
               value: /data/gitea
             - name: GITEA_WORK_DIR
               value: /data
-            {{- range .Values.statefulset.env }}
-            - name: {{ .name | quote | nospace }}
-              value: {{ .value | quote }}
+            {{- if .Values.statefulset.env }}
+            {{- toYaml .Values.statefulset.env | nindent 12 }}
             {{- end }}
           volumeMounts:
             - name: init
