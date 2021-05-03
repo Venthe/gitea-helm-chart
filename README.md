@@ -366,7 +366,9 @@ Annotations can be added to the Gitea pod.
 
 ### Backups
 
-Scheduled backups can be enabled in the Gitea pod.  The backups run by executing the built-in `dump` command from the Gitea CLI.  Backups are placed in the `/etc/periodic` directory based on the `schedule` defined in the chart.
+Scheduled backups can be enabled in the Gitea pod.  The backups run by executing the built-in `dump` command from the Gitea CLI.  
+
+Backups are placed in the `/etc/periodic` directory based on the `schedule` defined in the chart.
 
 ```yaml
 backups:
