@@ -364,6 +364,16 @@ Annotations can be added to the Gitea pod.
     podAnnotations: {}
 ```
 
+### Backups
+
+Scheduled backups can be enabled in the Gitea pod.  The backups run by executing the built-in `dump` command from the Gitea CLI.  Backups are placed in the `/etc/periodic` directory based on the `schedule` defined in the chart.
+
+```yaml
+backups:
+  enabled: true
+  schedule: daily
+```
+
 ## Configuration
 
 ### Others
@@ -506,3 +516,20 @@ The following parameters are the defaults set by this chart
 |mariadb.auth.rootPassword|Password for the root user.|gitea|
 |mariadb.primary.service.port|Port to connect to mariadb service|3306|
 |mariadb.primary.persistence.size|Persistence size for mariadb |10Gi|
+
+### Backups
+
+The following parameters are the defaults set by this chart
+
+| Parameter           | Description                       | Default                      |
+|---------------------|-----------------------------------|------------------------------|
+|backups.enabled|Enable scheduled backups|false|
+|backups.schedule|Backup frequency, set to `hourly`, `daily`, `weekly`, or `monthly` |daily|
+|backups.skipRepository|Skip the repository dumping|false|
+|backups.skipLog|Skip the log dumping|false|
+|backups.fileName|Name of the dump file which will be created. Supply '-' for stdout. See type for available types. (default: "gitea-dump-1620052371.zip")||
+|backups.exportDirectory|directory where to save the file, overwritten if fileName is an absolute path|/tmp|
+|backups.workPath|Set the gitea working path|/app/gitea|
+|backups.customPath|Custom path file path|/data/gitea|
+|backups.config|Custom configuration file path|/data/gitea/conf/app.ini|
+|backups.database|Specify the database SQL syntax||

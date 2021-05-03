@@ -136,7 +136,20 @@ spec:
             - name: temp
               mountPath: /tmp/gitea
             - name: data
-              mountPath: /data
+              mountPath: /data              
+            {{- if .Values.backups.enabled }}
+            {{ if eq .Values.backups.schedule "hourly" }}
+            - mountPath: /etc/periodic/hourly/backup
+            {{ else if eq .Values.backups.schedule "daily" }}
+            - mountPath: /etc/periodic/daily/backup
+            {{ else if eq .Values.backups.schedule "weekly" }}
+            - mountPath: /etc/periodic/weekly/backup
+            {{ else }}
+            - mountPath: /etc/periodic/monthly/backup
+            {{ end }}
+              subPath: backup
+              name: {{ include "gitea.fullname" . }}-backup
+            {{- end }}
             {{- if .Values.extraVolumeMounts }}
             {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
             {{- end }}
@@ -173,6 +186,12 @@ spec:
         - name: data
           emptyDir: {}
   {{- else if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+  {{- if .Values.backups.enabled }}  
+        - name: {{ include "gitea.fullname" . }}-backup
+          configMap:
+            name: {{ include "gitea.fullname" . }}-backup-script
+            defaultMode: 0755
+  {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: data

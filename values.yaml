@@ -263,3 +263,16 @@ mariadb:
       port: 3306
     persistence:
       size: 10Gi
+
+backups:
+  enabled: false  
+  schedule: daily         # schedule options: hourly, daily, weekly, monthly  
+  type: zip               # type options: zip, tar, tar.gz, tar.xz, tar.bz2 (default: zip)
+  skipRepository: false   # Skip the repository dumping
+  skipLog: false          # Skip the log dumping
+  fileName:               # Name of the dump file which will be created. Supply '-' for stdout. See type for available types. (default: "gitea-dump-1620052371.zip")
+  exportDirectory:        # directory where to save the file, overwritten if fileName is an absolute path
+  workPath:               # Set the gitea working path (default: "/app/gitea")
+  customPath:             # Custom path file path (default: "/data/gitea")
+  config:                 # Custom configuration file path (default: "/data/gitea/conf/app.ini")
+  database:               # Specify the database SQL syntax
