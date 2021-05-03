@@ -368,12 +368,15 @@ Annotations can be added to the Gitea pod.
 
 Scheduled backups can be enabled in the Gitea pod.  The backups run by executing the built-in `dump` command from the Gitea CLI.  
 
-Backups are placed in the `/etc/periodic` directory based on the `schedule` defined in the chart.
+The `backupDirectory` should get set to a location that has persistence, and preferably is different than the main persistent volume to give redundancy.
+
+The backups are scheduled by placing a generated script that calls `dump` in the `/etc/periodic` directory based on the `schedule` defined in the chart.
 
 ```yaml
 backups:
   enabled: true
   schedule: daily
+  backupDirectory: /backup
 ```
 
 ## Configuration
@@ -530,7 +533,7 @@ The following parameters are the defaults set by this chart
 |backups.skipRepository|Skip the repository dumping|false|
 |backups.skipLog|Skip the log dumping|false|
 |backups.fileName|Name of the dump file which will be created. Supply '-' for stdout. See type for available types. (default: "gitea-dump-1620052371.zip")||
-|backups.exportDirectory|directory where to save the file, overwritten if fileName is an absolute path|/tmp|
+|backups.backupDirectory|directory where to save the file, overwritten if fileName is an absolute path|/tmp|
 |backups.workPath|Set the gitea working path|/app/gitea|
 |backups.customPath|Custom path file path|/data/gitea|
 |backups.config|Custom configuration file path|/data/gitea/conf/app.ini|
