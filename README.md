@@ -532,7 +532,7 @@ The following parameters are the defaults set by this chart
 |backups.schedule|Backup frequency, set to `hourly`, `daily`, `weekly`, or `monthly` |daily|
 |backups.skipRepository|Skip the repository dumping|false|
 |backups.skipLog|Skip the log dumping|false|
-|backups.fileName|Name of the dump file which will be created. Supply '-' for stdout. See type for available types. (default: "gitea-dump-1620052371.zip")||
+|backups.fileName|Name of the dump file which will be created. Supply '-' for stdout. See type for available types.|gitea-dump-TIMESTAMP.zip|
 |backups.backupDirectory|directory where to save the file, overwritten if fileName is an absolute path|/tmp|
 |backups.workPath|Set the gitea working path|/app/gitea|
 |backups.customPath|Custom path file path|/data/gitea|
