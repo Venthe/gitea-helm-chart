@@ -529,7 +529,8 @@ The following parameters are the defaults set by this chart
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
 |backups.enabled|Enable scheduled backups|false|
-|backups.schedule|Backup frequency, set to `hourly`, `daily`, `weekly`, or `monthly` |daily|
+|backups.schedule|Backup frequency, supported values are `hourly`, `daily`, `weekly`, or `monthly` |daily|
+|backups.type|Backup file format, supported values are `zip`, `tar`, `tar.gz`, `tar.xz`, `tar.bz2` |zip|
 |backups.skipRepository|Skip the repository dumping|false|
 |backups.skipLog|Skip the log dumping|false|
 |backups.fileName|Name of the dump file which will be created. Supply '-' for stdout. See type for available types.|gitea-dump-TIMESTAMP.zip|
