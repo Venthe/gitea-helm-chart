@@ -140,12 +140,13 @@ spec:
             {{- if .Values.backups.enabled }}
             {{ if eq .Values.backups.schedule "hourly" }}
             - mountPath: /etc/periodic/hourly/backup
-            {{ else if eq .Values.backups.schedule "daily" }}
-            - mountPath: /etc/periodic/daily/backup
             {{ else if eq .Values.backups.schedule "weekly" }}
             - mountPath: /etc/periodic/weekly/backup
-            {{ else }}
+            {{ else if eq .Values.backups.schedule "monthly" }}
             - mountPath: /etc/periodic/monthly/backup
+            {{ else }}
+            # use daily as the default
+            - mountPath: /etc/periodic/daily/backup
             {{ end }}
               subPath: backup
               name: {{ include "gitea.fullname" . }}-backup
