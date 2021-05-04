@@ -6,5 +6,6 @@ metadata:
   name: {{ include "gitea.fullname" . }}-backup-script
 data:
   backup: |-
-    {{ if .Values.backups.backupDirectory }}cd {{ .Values.backups.backupDirectory }} {{ else }} /tmp {{ end }} && /app/gitea/gitea dump {{ if .Values.backups.type }}--type {{ .Values.backups.type }} {{ end }}{{ if .Values.backups.workPath }}-w {{ .Values.backups.workPath }} {{ end }}{{ if .Values.backups.skipRepository }}-R {{ end }}{{ if .Values.backups.skipLog }}-L {{ end }}{{ if .Values.backups.file }}-f {{ .Values.backups.file }} {{ end }}{{ if .Values.backups.customPath }}-C {{ .Values.backups.customPath }} {{ end }}{{ if .Values.backups.config }}-c {{ .Values.backups.config }} {{ end }}{{ if .Values.backups.database }}-d {{ .Values.backups.database }}{{ end }}
+    #!/bin/sh
+    cd {{ if .Values.backups.backupDirectory }}{{ .Values.backups.backupDirectory }} {{ else }} /tmp {{ end }} && /app/gitea/gitea dump {{ if .Values.backups.type }}--type {{ .Values.backups.type }} {{ end }}{{ if .Values.backups.workPath }}-w {{ .Values.backups.workPath }} {{ end }}{{ if .Values.backups.skipRepository }}-R {{ end }}{{ if .Values.backups.skipLog }}-L {{ end }}{{ if .Values.backups.file }}-f {{ .Values.backups.file }} {{ end }}{{ if .Values.backups.customPath }}-C {{ .Values.backups.customPath }} {{ end }}{{ if .Values.backups.config }}-c {{ .Values.backups.config }} {{ end }}{{ if .Values.backups.database }}-d {{ .Values.backups.database }}{{ end }}
 {{- end }}

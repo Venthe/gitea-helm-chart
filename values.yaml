@@ -271,7 +271,7 @@ backups:
   skipRepository: false   # Skip the repository dumping
   skipLog: false          # Skip the log dumping
   fileName:               # Name of the dump file which will be created. Supply '-' for stdout. See type for available types. (default: "gitea-dump-1620052371.zip")
-  backupDirectory:       # directory where to save the file, overwritten if fileName is an absolute path
+  backupDirectory:        # directory where to save the file, overwritten if fileName is an absolute path
   workPath:               # Set the gitea working path (default: "/app/gitea")
   customPath:             # Custom path file path (default: "/data/gitea")
   config:                 # Custom configuration file path (default: "/data/gitea/conf/app.ini")
