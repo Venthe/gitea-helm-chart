@@ -32,6 +32,13 @@ Dependencies:
 * Helm 3.0+
 * PV provisioner for persistent data support
 
+## Gitea Version 1.14.X repository ROOT
+
+Previously the ROOT folder for the gitea repositories was located at /data/git/gitea-repositories
+1.14 changed this to /data/gitea-repositories.
+
+This chart will set the gitea.config.repository.ROOT value default to /data/git/gitea-repositories
+
 ## Examples
 
 ### Gitea Configuration
@@ -375,8 +382,9 @@ Annotations can be added to the Gitea pod.
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
 |image.repository| Image to start for this pod | gitea/gitea |
-|image.tag| [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated) | 1.13.7 |
+|image.tag| [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated) | 1.14.1 |
 |image.pullPolicy| Image pull policy | Always |
+|image.rootless | Wether or not to pull the rootless version of gitea, only works on gitea 1.14.x or higher | false |
 
 ### Persistence
 

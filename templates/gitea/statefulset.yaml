@@ -36,13 +36,18 @@ spec:
         fsGroup: 1000
       initContainers:
         - name: init
-          image: "{{ .Values.image.repository }}:{{ ternary .Values.image.version .Values.image.tag (hasKey .Values.image "version") }}"
+          image: "{{ include "gitea.image" . }}"
           command: ["/usr/sbin/init_gitea.sh"]
           env:
-          {{- range .Values.statefulset.env }}
-          - name: {{ .name | quote | nospace }}
-            value: {{ .value | quote }}
-          {{- end }}
+            - name: GITEA_APP_INI
+              value: /data/gitea/conf/app.ini
+            - name: GITEA_CUSTOM
+              value: /data/gitea
+            - name: GITEA_WORK_DIR
+              value: /data
+            {{- if .Values.statefulset.env }}
+            {{- toYaml .Values.statefulset.env | nindent 12 }}
+            {{- end }}
           volumeMounts:
             - name: init
               mountPath: /usr/sbin
@@ -56,7 +61,7 @@ spec:
       terminationGracePeriodSeconds: {{ .Values.statefulset.terminationGracePeriodSeconds }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ ternary .Values.image.version .Values.image.tag (hasKey .Values.image "version") }}"
+          image: "{{ include "gitea.image" . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             # SSH Port values have to be set here as well for openssh configuration
@@ -64,9 +69,16 @@ spec:
               value: {{ .Values.gitea.config.server.SSH_LISTEN_PORT | quote }}
             - name: SSH_PORT
               value: {{ .Values.gitea.config.server.SSH_PORT | quote }}
-            {{- range .Values.statefulset.env }}
-            - name: {{ .name | quote | nospace }}
-              value: {{ .value | quote }}
+            - name: GITEA_APP_INI
+              value: /data/gitea/conf/app.ini
+            - name: GITEA_CUSTOM
+              value: /data/gitea
+            - name: GITEA_WORK_DIR
+              value: /data
+            - name: GITEA_TEMP
+              value: /tmp/gitea
+            {{- if .Values.statefulset.env }}
+            {{- toYaml .Values.statefulset.env | nindent 12 }}
             {{- end }}
           ports:
             - name: ssh
@@ -121,6 +133,8 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           volumeMounts:
+            - name: temp
+              mountPath: /tmp/gitea
             - name: data
               mountPath: /data
             {{- if .Values.extraVolumeMounts }}
@@ -149,6 +163,8 @@ spec:
         {{- if .Values.extraVolumes }}
         {{- toYaml .Values.extraVolumes | nindent 8 }}
         {{- end }}
+        - name: temp
+          emptyDir: {}
   {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
         - name: data
           persistentVolumeClaim:

@@ -8,12 +8,22 @@ clusterDomain: cluster.local
 
 image:
   repository: gitea/gitea
-  tag: 1.13.7
+  tag: 1.14.1
   pullPolicy: Always
+  rootless: false # only possible when running 1.14 or later
 
 imagePullSecrets: []
 
 securityContext: {}
+#  allowPrivilegeEscalation: false
+#  capabilities:
+#    drop:
+#      - ALL
+#  privileged: false
+#  readOnlyRootFilesystem: true
+#  runAsGroup: 1000
+#  runAsNonRoot: true
+#  runAsUser: 1000
 
 service:
   http:
@@ -119,25 +129,25 @@ gitea:
 
   ldap:
     enabled: false
-    #name: 
-    #securityProtocol: 
-    #host: 
-    #port: 
-    #userSearchBase: 
-    #userFilter: 
-    #adminFilter: 
-    #emailAttribute: 
-    #bindDn: 
-    #bindPassword: 
-    #usernameAttribute: 
+    #name:
+    #securityProtocol:
+    #host:
+    #port:
+    #userSearchBase:
+    #userFilter:
+    #adminFilter:
+    #emailAttribute:
+    #bindDn:
+    #bindPassword:
+    #usernameAttribute:
     #sshPublicKeyAttribute:
 
   oauth:
     enabled: false
     #name:
     #provider:
-    #key: 
-    #secret: 
+    #key:
+    #secret:
     #autoDiscoverUrl:
     #useCustomUrls:
     #customAuthUrl:
