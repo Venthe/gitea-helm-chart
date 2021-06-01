@@ -125,7 +125,8 @@ gitea:
     enabled: false
     serviceMonitor:
       enabled: false
-      # prometheusSelector: default
+      #  additionalLabels:
+      #    prometheus-release: prom1
 
   ldap:
     enabled: false
