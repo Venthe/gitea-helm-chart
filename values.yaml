@@ -8,12 +8,13 @@ clusterDomain: cluster.local
 
 image:
   repository: gitea/gitea
-  tag: 1.14.1
+  tag: 1.14.2
   pullPolicy: Always
   rootless: false # only possible when running 1.14 or later
 
 imagePullSecrets: []
 
+# only usable with rootless image due to image design
 securityContext: {}
 #  allowPrivilegeEscalation: false
 #  capabilities:
@@ -67,6 +68,11 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
 
 nodeSelector: {}
 
