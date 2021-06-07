@@ -16,7 +16,9 @@ stringData:
     # END: initPreScript
     {{- end }}
 
+    {{- if not .Values.image.rootless }}
     chown 1000:1000 /data
+    {{- end }}
     mkdir -p /data/git/.ssh
     chmod -R 700 /data/git/.ssh
     mkdir -p /data/gitea/conf
