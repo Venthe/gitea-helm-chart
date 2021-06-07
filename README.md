@@ -387,6 +387,7 @@ Annotations can be added to the Gitea pod.
 | extraVolumeMounts                         | Additional volumes mounts for the Gitea containers     | {}          |
 | initPreScript                             | Bash script copied verbatim to start of init container |             |
 | securityContext                           | Run as a specific securityContext                      | {}          |
+| schedulerName                             | Use an alternate scheduler, e.g. "stork"               |             |
 
 ### Image
 
