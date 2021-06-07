@@ -8,12 +8,13 @@ clusterDomain: cluster.local
 
 image:
   repository: gitea/gitea
-  tag: 1.14.1
+  tag: 1.14.2
   pullPolicy: Always
   rootless: false # only possible when running 1.14 or later
 
 imagePullSecrets: []
 
+# only usable with rootless image due to image design
 securityContext: {}
 #  allowPrivilegeEscalation: false
 #  capabilities:
@@ -130,7 +131,8 @@ gitea:
     enabled: false
     serviceMonitor:
       enabled: false
-      # prometheusSelector: default
+      #  additionalLabels:
+      #    prometheus-release: prom1
 
   ldap:
     enabled: false
