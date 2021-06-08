@@ -33,6 +33,9 @@ service:
     clusterIP: None
     #loadBalancerIP:
     #nodePort:
+    #externalTrafficPolicy:
+    #externalIPs:
+    loadBalancerSourceRanges: []
     annotations:
   ssh:
     type: ClusterIP
@@ -95,6 +98,7 @@ persistence:
     - ReadWriteOnce
   labels: {}
   annotations: {}
+  # storageClass:
 
 # additional volumes to add to the Gitea statefulset.
 extraVolumes:
