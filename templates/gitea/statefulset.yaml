@@ -50,6 +50,23 @@ spec:
               value: /data
             - name: GITEA_TEMP
               value: /tmp/gitea
+            {{- if .Values.gitea.ldap.existingSecret }}
+            - name: GITEA_LDAP_BIND_DN
+              valueFrom:
+                secretKeyRef:
+                  key:  bindDn
+                  name: {{ .Values.gitea.ldap.existingSecret }}
+            - name: GITEA_LDAP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key:  bindPassword
+                  name: {{ .Values.gitea.ldap.existingSecret }}
+            {{- else }}
+            - name: GITEA_LDAP_BIND_DN
+              value: {{ .Values.gitea.ldap.bindDn | quote }}
+            - name: GITEA_ADMIN_PASSWORD
+              value: {{ .Values.gitea.ldap.bindPassword | quote }}
+            {{- end }}
             {{- if .Values.gitea.admin.existingSecret }}
             - name: GITEA_ADMIN_USERNAME
               valueFrom:

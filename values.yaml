@@ -141,6 +141,7 @@ gitea:
 
   ldap:
     enabled: false
+    existingSecret: gitea-ldap-secret
     #name:
     #securityProtocol:
     #host:
