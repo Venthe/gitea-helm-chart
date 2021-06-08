@@ -262,6 +262,25 @@ You cannot use `admin` as username.
       email: "gi@tea.com"
 ```
 
+You can also use an existing Secret to configure the admin user:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gitea-admin-secret
+type: Opaque
+stringData:
+  username: MyAwesomeGiteaAdmin
+  password: AReallyAwesomeGiteaPassword
+```
+
+```yaml
+gitea:
+    admin:
+      existingSecret: gitea-admin-secret
+```
+
 ### LDAP Settings
 
 Like the admin user the LDAP settings can be updated, but also disabled or deleted.
@@ -306,6 +325,26 @@ kebab-case:
       bind-password: JustAnotherBindPw
       username-attribute: CN
 ```
+
+You can also use an existing secret to set the bindDn and bindPassword:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gitea-ldap-secret
+type: Opaque
+stringData:
+  bindDn: CN=ldap read,OU=Spezial,DC=example,DC=com
+  bindPassword: JustAnotherBindPw
+```
+
+```yaml
+gitea:
+    ldap:
+      existingSecret: gitea-ldap-secret
+```
+
 ### OAuth2 Settings
 
 Like the admin user the OAuth2 settings can be updated but also disabled or deleted.
