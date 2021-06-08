@@ -205,6 +205,17 @@ If the built in cache should not be used simply configure the cache in gitea.con
 Gitea will be deployed as a statefulset. By simply enabling the persistence and setting the storage class according to your cluster
 everything else will be taken care of. The following example will create a PVC as a part of the statefulset. This PVC will not be deleted even if you uninstall the chart.
 
+Please note, that an empty storageClass in the persistence will result in kubernetes using your default storage class.
+
+If you want to use your own storageClass define it as followed:
+
+```yaml
+persistence:
+  enabled: true
+  storageClass: myOwnStorageClass
+
+```
+
 When using Postgresql as dependency, this will also be deployed as a statefulset by default.
 
 If you want to manage your own PVC you can simply pass the PVC name to the chart.
@@ -376,13 +387,14 @@ Annotations can be added to the Gitea pod.
 | extraVolumeMounts                         | Additional volumes mounts for the Gitea containers     | {}          |
 | initPreScript                             | Bash script copied verbatim to start of init container |             |
 | securityContext                           | Run as a specific securityContext                      | {}          |
+| schedulerName                             | Use an alternate scheduler, e.g. "stork"               |             |
 
 ### Image
 
 | Parameter           | Description                       | Default                      |
 |---------------------|-----------------------------------|------------------------------|
 |image.repository| Image to start for this pod | gitea/gitea |
-|image.tag| [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated) | 1.14.1 |
+|image.tag| [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated) | 1.14.2 |
 |image.pullPolicy| Image pull policy | Always |
 |image.rootless | Wether or not to pull the rootless version of gitea, only works on gitea 1.14.x or higher | false |
 
@@ -413,11 +425,22 @@ Annotations can be added to the Gitea pod.
 |---------------------|-----------------------------------|------------------------------|
 |service.http.type| Kubernetes service type for web traffic | ClusterIP |
 |service.http.port| Port for web traffic | 3000 |
+|service.http.clusterIP| ClusterIP setting for http autosetup for statefulset is None | None |
+|service.http.loadBalancerIP| LoadBalancer Ip setting | |
+|service.http.nodePort| NodePort for http service | |
+|service.http.externalTrafficPolicy| If `service.http.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation | |
+|service.http.externalIPs| http service external IP addresses | 3000 |
+|service.http.loadBalancerSourceRanges| Source range filter for http loadbalancer | [] |
+|service.http.annotations| http service annotations | |
+
 |service.ssh.type| Kubernetes service type for ssh traffic | ClusterIP |
 |service.ssh.port| Port for ssh traffic | 22 |
+|service.ssh.loadBalancerIP| LoadBalancer Ip setting | |
+|service.ssh.nodePort| NodePort for ssh service | |
 |service.ssh.externalTrafficPolicy| If `service.ssh.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation | |
-|service.ssh.externalIPs| SSH service external IP addresses |[]|
-|service.ssh.annotations| Additional ssh annotations for the ssh service ||
+|service.ssh.externalIPs| ssh service external IP addresses | 3000 |
+|service.ssh.loadBalancerSourceRanges| Source range filter for ssh loadbalancer | [] |
+|service.ssh.annotations| ssh service annotations | |
 
 ### Gitea Configuration
 

@@ -28,6 +28,9 @@ spec:
         {{- toYaml .Values.statefulset.labels | nindent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -76,6 +79,8 @@ spec:
             - name: GITEA_WORK_DIR
               value: /data
             - name: GITEA_TEMP
+              value: /tmp/gitea
+            - name: TMPDIR
               value: /tmp/gitea
             {{- if .Values.statefulset.env }}
             {{- toYaml .Values.statefulset.env | nindent 12 }}
@@ -134,7 +139,7 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           volumeMounts:
             - name: temp
-              mountPath: /tmp/gitea
+              mountPath: /tmp
             - name: data
               mountPath: /data
             {{- if .Values.extraVolumeMounts }}
