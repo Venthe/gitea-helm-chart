@@ -50,6 +50,23 @@ spec:
               value: /data
             - name: GITEA_TEMP
               value: /tmp/gitea
+            {{- if .Values.gitea.admin.existingSecret }}
+            - name: GITEA_ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key:  username
+                  name: {{ .Values.gitea.admin.existingSecret }}
+            - name: GITEA_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key:  password
+                  name: {{ .Values.gitea.admin.existingSecret }}
+            {{- else }}
+            - name: GITEA_ADMIN_USERNAME
+              value: {{ .Values.gitea.admin.username | quote }}
+            - name: GITEA_ADMIN_PASSWORD
+              value: {{ .Values.gitea.admin.password | quote }}
+            {{- end }}
             {{- if .Values.statefulset.env }}
             {{- toYaml .Values.statefulset.env | nindent 12 }}
             {{- end }}
