@@ -48,12 +48,16 @@ spec:
               value: /data/gitea
             - name: GITEA_WORK_DIR
               value: /data
+            - name: GITEA_TEMP
+              value: /tmp/gitea
             {{- if .Values.statefulset.env }}
             {{- toYaml .Values.statefulset.env | nindent 12 }}
             {{- end }}
           volumeMounts:
             - name: init
               mountPath: /usr/sbin
+            - name: temp
+              mountPath: /tmp
             - name: config
               mountPath: /etc/gitea/conf
             - name: data
