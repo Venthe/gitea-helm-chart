@@ -127,6 +127,7 @@ initPreScript: ""
 
 gitea:
   admin:
+    #existingSecret: gitea-admin-secret
     username: gitea_admin
     password: r8sA8CPHD9!bt6d
     email: "gitea@local.domain"
@@ -140,6 +141,7 @@ gitea:
 
   ldap:
     enabled: false
+    #existingSecret: gitea-ldap-secret
     #name:
     #securityProtocol:
     #host:

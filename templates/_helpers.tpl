@@ -108,9 +108,21 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "gitea.ldap_settings" -}}
+{{- if or (not (hasKey .Values.gitea.ldap "bindDn")) (not (hasKey .Values.gitea.ldap "bind-dn")) -}}
+{{- $_ := set .Values.gitea.ldap "bindDn" "" -}}
+{{- end -}}
+
+{{- if or (not (hasKey .Values.gitea.ldap "bindPassword")) (not (hasKey .Values.gitea.ldap "bind-password")) -}}
+{{- $_ := set .Values.gitea.ldap "bindPassword" "" -}}
+{{- end -}}
+
 {{- range $key, $val := .Values.gitea.ldap -}}
-{{- if ne $key "enabled" -}}
-{{- if eq $key "port" -}}
+{{- if and (ne $key "enabled") (ne $key "existingSecret") -}}
+{{- if eq  ($key | kebabcase) "bind-dn" -}}
+{{- printf "--%s %s " ($key | kebabcase) ("${GITEA_LDAP_BIND_DN}" | quote ) -}}
+{{- else if eq ($key | kebabcase) "bind-password" -}}
+{{- printf "--%s %s " ($key | kebabcase) ("${GITEA_LDAP_PASSWORD}" | quote ) -}}
+{{- else if eq $key "port" -}}
 {{- printf "--%s %d " ($key | kebabcase) ($val | int) -}}
 {{- else -}}
 {{- printf "--%s %s " ($key | kebabcase) ($val | quote) -}}
