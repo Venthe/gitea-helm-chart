@@ -51,7 +51,8 @@ stringData:
     }
     {{- end }}
 
-    set -x
+    echo '==== BEGIN GITEA CONFIGURATION ===='
+
     gitea migrate
 
     {{- if or .Values.gitea.admin.existingSecret (and .Values.gitea.admin.username .Values.gitea.admin.password) }}
@@ -108,3 +109,5 @@ stringData:
 
     configure_oauth
     {{- end }}
+
+    echo '==== END GITEA CONFIGURATION ===='
