@@ -9,8 +9,7 @@ stringData:
   init_directory_structure.sh: |-
     #!/usr/bin/env bash
 
-    set -eux
-    set -o pipefail
+    set -euo pipefail
 
     {{- if .Values.initPreScript }}
     # BEGIN: initPreScript
@@ -19,6 +18,8 @@ stringData:
     {{- end -}}
     # END: initPreScript
     {{- end }}
+
+    set -x
 
     {{- if not .Values.image.rootless }}
     chown 1000:1000 /data
@@ -38,10 +39,18 @@ stringData:
   configure_gitea.sh: |-
     #!/usr/bin/env bash
 
+    set -euo pipefail
+
     {{- if include "db.servicename" . }}
-    # Wait for database to become avialble
-    nc -v -w2 -z {{ include "db.servicename" . }} {{ include "db.port" . }} && \
+    echo 'Wait for database to become avialable...'
+    {
+      nc -vz -w2 {{ include "db.servicename" . }} {{ include "db.port" . }}
+    } || {
+      echo '...not ready within 2 seconds.'
+      exit 1
+    }
     {{- end }}
+
     {{- if not .Values.image.rootless }}
     bash -c ' \
     {{- end }}
