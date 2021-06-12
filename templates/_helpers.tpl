@@ -125,7 +125,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- else if eq $key "port" -}}
 {{- printf "--%s %d " ($key | kebabcase) ($val | int) -}}
 {{- else -}}
-{{- printf "--%s %s " ($key | kebabcase) ($val | quote) -}}
+{{- printf "--%s %s " ($key | kebabcase) ($val | squote) -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
