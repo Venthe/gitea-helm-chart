@@ -91,12 +91,20 @@ stringData:
     {{- end }}
 
     {{- if .Values.gitea.oauth.enabled }}
-    gitea admin auth add-oauth \
-    {{- include "gitea.oauth_settings" . | nindent 6 }} \
-    || \
-    ( \
-      export GITEA_AUTH_ID=$(gitea admin auth list | grep {{ .Values.gitea.oauth.name | quote }} | awk -F " "  "{print \$1}"); \
-      gitea admin auth update-oauth --id ${GITEA_AUTH_ID} \
-      {{- include "gitea.oauth_settings" . | nindent 6 }} \
-    ) \
+    function configure_oauth() {
+      local OAUTH_NAME={{ (printf "%s" .Values.gitea.oauth.name) | squote }}
+      local AUTH_ID=$(gitea admin auth list | grep -e "\s\+${OAUTH_NAME}\s\+" | awk -F " "  "{print \$1}")
+
+      if [[ -z "${AUTH_ID}" ]]; then
+        echo "No oauth configuration found with name '${OAUTH_NAME}'. Installing it now..."
+        gitea admin auth add-oauth {{- include "gitea.oauth_settings" . | indent 1 }}
+        echo '...installed.'
+      else
+        echo "Existing oauth configuration with name '${OAUTH_NAME}': '${AUTH_ID}'. Running update to sync settings..."
+        gitea admin auth update-oauth --id "${AUTH_ID}" {{- include "gitea.oauth_settings" . | indent 1 }}
+        echo '...sync settings done.'
+      fi
+    }
+
+    configure_oauth
     {{- end }}
