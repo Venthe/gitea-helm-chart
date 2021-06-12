@@ -38,9 +38,33 @@ spec:
       securityContext:
         fsGroup: 1000
       initContainers:
-        - name: init
+        - name: init-directories
           image: "{{ include "gitea.image" . }}"
-          command: ["/usr/sbin/init_gitea.sh"]
+          command: ["/usr/sbin/init_directory_structure.sh"]
+          env:
+            - name: GITEA_APP_INI
+              value: /data/gitea/conf/app.ini
+            - name: GITEA_CUSTOM
+              value: /data/gitea
+            - name: GITEA_WORK_DIR
+              value: /data
+            - name: GITEA_TEMP
+              value: /tmp/gitea
+          volumeMounts:
+            - name: init
+              mountPath: /usr/sbin
+            - name: temp
+              mountPath: /tmp
+            - name: config
+              mountPath: /etc/gitea/conf
+            - name: data
+              mountPath: /data
+            {{- if .Values.extraVolumeMounts }}
+            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
+            {{- end }}
+        - name: configure-gitea
+          image: "{{ include "gitea.image" . }}"
+          command: ["/usr/sbin/configure_gitea.sh"]
           env:
             - name: GITEA_APP_INI
               value: /data/gitea/conf/app.ini
@@ -92,8 +116,6 @@ spec:
               mountPath: /usr/sbin
             - name: temp
               mountPath: /tmp
-            - name: config
-              mountPath: /etc/gitea/conf
             - name: data
               mountPath: /data
             {{- if .Values.extraVolumeMounts }}

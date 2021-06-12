@@ -6,10 +6,10 @@ metadata:
     {{- include "gitea.labels" . | nindent 4 }}
 type: Opaque
 stringData:
-  init_gitea.sh: |-
+  init_directory_structure.sh: |-
     #!/usr/bin/env bash
 
-    set -eu
+    set -eux
     set -o pipefail
 
     {{- if .Values.initPreScript }}
@@ -35,6 +35,9 @@ stringData:
     # Copy config file to writable volume
     cp /etc/gitea/conf/app.ini /data/gitea/conf/app.ini
     chmod a+rwx /data/gitea/conf/app.ini
+  configure_gitea.sh: |-
+    #!/usr/bin/env bash
+
     {{- if include "db.servicename" . }}
     # Wait for database to become avialble
     nc -v -w2 -z {{ include "db.servicename" . }} {{ include "db.port" . }} && \
