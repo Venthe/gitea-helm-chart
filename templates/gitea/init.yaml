@@ -51,20 +51,16 @@ stringData:
     }
     {{- end }}
 
-    {{- if not .Values.image.rootless }}
-    bash -c ' \
-    {{- end }}
-    set -x; \
-    gitea migrate; \
+    set -x
+    gitea migrate
+
     {{- if or .Values.gitea.admin.existingSecret (and .Values.gitea.admin.username .Values.gitea.admin.password) }}
     gitea admin create-user --username  "${GITEA_ADMIN_USERNAME}" --password "${GITEA_ADMIN_PASSWORD}" --email {{ .Values.gitea.admin.email }} --admin --must-change-password=false \
-    || \
-    gitea admin change-password --username "${GITEA_ADMIN_USERNAME}" --password "${GITEA_ADMIN_PASSWORD}" \
-    || \
-    gitea admin user create --username  "${GITEA_ADMIN_USERNAME}" --password "${GITEA_ADMIN_PASSWORD}" --email {{ .Values.gitea.admin.email }} --admin --must-change-password=false \
-    || \
-    gitea admin user change-password --username "${GITEA_ADMIN_USERNAME}" --password "${GITEA_ADMIN_PASSWORD}"; \
+    || gitea admin change-password --username "${GITEA_ADMIN_USERNAME}" --password "${GITEA_ADMIN_PASSWORD}" \
+    || gitea admin user create --username  "${GITEA_ADMIN_USERNAME}" --password "${GITEA_ADMIN_PASSWORD}" --email {{ .Values.gitea.admin.email }} --admin --must-change-password=false \
+    || gitea admin user change-password --username "${GITEA_ADMIN_USERNAME}" --password "${GITEA_ADMIN_PASSWORD}"
     {{- end }}
+
     {{- if .Values.gitea.ldap.enabled }}
     gitea admin auth add-ldap \
     {{- include "gitea.ldap_settings" . | nindent 6 }} \
@@ -75,6 +71,7 @@ stringData:
       {{- include "gitea.ldap_settings" . | nindent 6 }} \
     ) \
     {{- end }}
+
     {{- if .Values.gitea.oauth.enabled }}
     gitea admin auth add-oauth \
     {{- include "gitea.oauth_settings" . | nindent 6 }} \
@@ -84,7 +81,4 @@ stringData:
       gitea admin auth update-oauth --id ${GITEA_AUTH_ID} \
       {{- include "gitea.oauth_settings" . | nindent 6 }} \
     ) \
-    {{- end }}
-    {{- if not .Values.image.rootless }}
-    '
     {{- end }}
