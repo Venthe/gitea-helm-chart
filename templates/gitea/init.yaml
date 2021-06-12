@@ -55,10 +55,20 @@ stringData:
     gitea migrate
 
     {{- if or .Values.gitea.admin.existingSecret (and .Values.gitea.admin.username .Values.gitea.admin.password) }}
-    gitea admin create-user --username  "${GITEA_ADMIN_USERNAME}" --password "${GITEA_ADMIN_PASSWORD}" --email {{ .Values.gitea.admin.email }} --admin --must-change-password=false \
-    || gitea admin change-password --username "${GITEA_ADMIN_USERNAME}" --password "${GITEA_ADMIN_PASSWORD}" \
-    || gitea admin user create --username  "${GITEA_ADMIN_USERNAME}" --password "${GITEA_ADMIN_PASSWORD}" --email {{ .Values.gitea.admin.email }} --admin --must-change-password=false \
-    || gitea admin user change-password --username "${GITEA_ADMIN_USERNAME}" --password "${GITEA_ADMIN_PASSWORD}"
+    function configure_admin_user() {
+      local ACCOUNT_ID=$(gitea admin user list --admin | grep -e "\s\+${GITEA_ADMIN_USERNAME}\s\+" | awk -F " " "{printf \$1}")
+      if [[ -z "${ACCOUNT_ID}" ]]; then
+        echo "No admin user '${GITEA_ADMIN_USERNAME}' found. Creating now..."
+        gitea admin user create --admin --username "${GITEA_ADMIN_USERNAME}" --password "${GITEA_ADMIN_PASSWORD}" --email {{ .Values.gitea.admin.email | quote }} --must-change-password=false
+        echo '...created.'
+      else
+        echo "Admin account '${GITEA_ADMIN_USERNAME}' already exist. Running update to sync password..."
+        gitea admin user change-password --username "${GITEA_ADMIN_USERNAME}" --password "${GITEA_ADMIN_PASSWORD}"
+        echo '...password sync done.'
+      fi
+    }
+
+    configure_admin_user
     {{- end }}
 
     {{- if .Values.gitea.ldap.enabled }}
