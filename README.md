@@ -153,7 +153,7 @@ By default port 3000 is used for web traffic and 22 for ssh. Those can be change
 
 ```yaml
   service:
-    http: 
+    http:
       port: 3000
     ssh:
       port: 22
@@ -188,6 +188,24 @@ service:
     annotations:
       metallb.universe.tf/allow-shared-ip: test
 ```
+
+### SSH on crio based kubernetes cluster
+
+If you use crio as container runtime it is not possible to read from a remote
+repository. You should get an error message like this:
+
+```bash
+$ git clone git@k8s-demo.internal:admin/test.git
+Cloning into 'test'...
+Connection reset by 192.168.179.217 port 22
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+```
+
+To solve this problem add the capability `SYS_CHROOT` to the `securityContext`.
+More about this issue [here](https://gitea.com/gitea/helm-chart/issues/161).
 
 ### Cache
 
