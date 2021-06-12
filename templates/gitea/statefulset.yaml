@@ -65,6 +65,8 @@ spec:
         - name: configure-gitea
           image: "{{ include "gitea.image" . }}"
           command: ["/usr/sbin/configure_gitea.sh"]
+          securityContext:
+            runAsUser: 1000
           env:
             - name: GITEA_APP_INI
               value: /data/gitea/conf/app.ini

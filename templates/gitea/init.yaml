@@ -43,7 +43,7 @@ stringData:
     nc -v -w2 -z {{ include "db.servicename" . }} {{ include "db.port" . }} && \
     {{- end }}
     {{- if not .Values.image.rootless }}
-    su git -c ' \
+    bash -c ' \
     {{- end }}
     set -x; \
     gitea migrate; \
