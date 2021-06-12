@@ -74,7 +74,7 @@ stringData:
     {{- if .Values.gitea.ldap.enabled }}
     function configure_ldap() {
       local LDAP_NAME={{ (printf "%s" .Values.gitea.ldap.name) | squote }}
-      local GITEA_AUTH_ID=$(gitea admin auth list | grep -e "\s\+${LDAP_NAME}\s\+" | awk -F " "  "{print \$1}")
+      local GITEA_AUTH_ID=$(gitea admin auth list --vertical-bars | grep -E "\|${LDAP_NAME}\s+\|" | grep -iE '\|LDAP \(via BindDN\)\s+\|' | awk -F " "  "{print \$1}")
 
       if [[ -z "${GITEA_AUTH_ID}" ]]; then
         echo "No ldap configuration found with name '${LDAP_NAME}'. Installing it now..."
@@ -93,7 +93,7 @@ stringData:
     {{- if .Values.gitea.oauth.enabled }}
     function configure_oauth() {
       local OAUTH_NAME={{ (printf "%s" .Values.gitea.oauth.name) | squote }}
-      local AUTH_ID=$(gitea admin auth list | grep -e "\s\+${OAUTH_NAME}\s\+" | awk -F " "  "{print \$1}")
+      local AUTH_ID=$(gitea admin auth list --vertical-bars | grep -E "\|${OAUTH_NAME}\s+\|" | grep -iE '\|OAuth2\s+\|' | awk -F " "  "{print \$1}")
 
       if [[ -z "${AUTH_ID}" ]]; then
         echo "No oauth configuration found with name '${OAUTH_NAME}'. Installing it now..."
