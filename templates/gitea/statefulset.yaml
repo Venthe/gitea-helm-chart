@@ -64,7 +64,7 @@ spec:
             {{- else }}
             - name: GITEA_LDAP_BIND_DN
               value: {{ .Values.gitea.ldap.bindDn | quote }}
-            - name: GITEA_ADMIN_PASSWORD
+            - name: GITEA_LDAP_PASSWORD
               value: {{ .Values.gitea.ldap.bindPassword | quote }}
             {{- end }}
             {{- if .Values.gitea.admin.existingSecret }}
