@@ -40,7 +40,7 @@ stringData:
     {{- end }}
     set -x; \
     gitea migrate; \
-    {{- if and .Values.gitea.admin.username .Values.gitea.admin.password }}
+    {{- if or .Values.gitea.admin.existingSecret (and .Values.gitea.admin.username .Values.gitea.admin.password) }}
     gitea admin create-user --username  "${GITEA_ADMIN_USERNAME}" --password "${GITEA_ADMIN_PASSWORD}" --email {{ .Values.gitea.admin.email }} --admin --must-change-password=false \
     || \
     gitea admin change-password --username "${GITEA_ADMIN_USERNAME}" --password "${GITEA_ADMIN_PASSWORD}" \
