@@ -108,11 +108,11 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "gitea.ldap_settings" -}}
-{{- if or (not (hasKey .Values.gitea.ldap "bindDn")) (not (hasKey .Values.gitea.ldap "bind-dn")) -}}
+{{- if and (not (hasKey .Values.gitea.ldap "bindDn")) (not (hasKey .Values.gitea.ldap "bind-dn")) -}}
 {{- $_ := set .Values.gitea.ldap "bindDn" "" -}}
 {{- end -}}
 
-{{- if or (not (hasKey .Values.gitea.ldap "bindPassword")) (not (hasKey .Values.gitea.ldap "bind-password")) -}}
+{{- if and (not (hasKey .Values.gitea.ldap "bindPassword")) (not (hasKey .Values.gitea.ldap "bind-password")) -}}
 {{- $_ := set .Values.gitea.ldap "bindPassword" "" -}}
 {{- end -}}
 
