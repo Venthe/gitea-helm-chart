@@ -210,6 +210,7 @@ gitea:
   startupProbe:
     enabled: false
     initialDelaySeconds: 60
+    timeoutSeconds: 1
     periodSeconds: 10
     successThreshold: 1
     failureThreshold: 10
