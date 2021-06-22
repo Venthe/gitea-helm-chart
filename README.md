@@ -455,8 +455,9 @@ Annotations can be added to the Gitea pod.
 |---------------------|-----------------------------------|------------------------------|
 |ingress.enabled| enable ingress | false|
 |ingress.annotations| add ingress annotations | |
-|ingress.hosts[0].host | add hosts for ingress as dict list | git.example.com |
-|ingress.hosts[0].paths| add paths for ingress host as string list | [] |
+|ingress.hosts[0].host | add hosts for ingress | git.example.com |
+|ingress.hosts[0].paths[0].path | add path for each ingress host | / |
+|ingress.hosts[0].paths[0].pathType | add ingress path type | Prefix |
 |ingress.tls|add ingress tls settings|[]|
 
 ### Service
