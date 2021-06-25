@@ -50,7 +50,7 @@ stringData:
     {{- end -}}
     {{- if not (.Values.gitea.config.server.DOMAIN) -}}
     {{- if gt (len .Values.ingress.hosts) 0 -}}
-    {{- $_ := set .Values.gitea.config.server "DOMAIN" (index .Values.ingress.hosts 0) -}}
+    {{- $_ := set .Values.gitea.config.server "DOMAIN" (index .Values.ingress.hosts 0).host -}}
     {{- else -}}
     {{- $_ := set .Values.gitea.config.server "DOMAIN" (include "gitea.default_domain" .) -}}
     {{- end -}}
@@ -60,7 +60,7 @@ stringData:
     {{- if gt (len .Values.ingress.tls) 0 -}}
     {{- $_ := set .Values.gitea.config.server "ROOT_URL" (printf "%s://%s" .Values.gitea.config.server.PROTOCOL (index (index .Values.ingress.tls 0).hosts 0)) -}}
     {{- else -}}
-    {{- $_ := set .Values.gitea.config.server "ROOT_URL" (printf "%s://%s" .Values.gitea.config.server.PROTOCOL (index .Values.ingress.hosts 0)) -}}
+    {{- $_ := set .Values.gitea.config.server "ROOT_URL" (printf "%s://%s" .Values.gitea.config.server.PROTOCOL (index .Values.ingress.hosts 0).host) -}}
     {{- end -}}
     {{- else -}}
     {{- $_ := set .Values.gitea.config.server "ROOT_URL" (printf "%s://%s" .Values.gitea.config.server.PROTOCOL .Values.gitea.config.server.DOMAIN) -}}
