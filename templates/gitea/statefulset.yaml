@@ -120,6 +120,8 @@ spec:
               value: /tmp/gitea
             - name: TMPDIR
               value: /tmp/gitea
+            - name: GNUPGHOME
+              value: /data/git/.gnupg
             {{- if .Values.statefulset.env }}
             {{- toYaml .Values.statefulset.env | nindent 12 }}
             {{- end }}
