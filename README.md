@@ -40,6 +40,17 @@ Previously the ROOT folder for the gitea repositories was located at /data/git/g
 
 This chart will set the gitea.config.repository.ROOT value default to /data/git/gitea-repositories
 
+## Configure Commit Signing
+
+When using the rootless image the gpg key folder was is not persistent by default. If you consider using signed commits for internal Gitea activities (e.g. initial commit), you'd need to provide a signing key. Prior to [PR 186](https://gitea.com/gitea/helm-chart/pulls/186), imported keys had to be re-imported once the container got replaced by another.  
+The mentioned PR introduced a new configuration object `signing` allowing you to configure prerequisites for commit signing. By default this section is disabled to maintain backwards compatibility.
+
+```yaml
+  signing:
+    enabled: false
+    gpgHome: /data/git/.gnupg
+```
+
 ## Examples
 
 ### Gitea Configuration
