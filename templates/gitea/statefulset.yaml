@@ -120,6 +120,10 @@ spec:
               value: /tmp/gitea
             - name: TMPDIR
               value: /tmp/gitea
+            {{- if .Values.signing.enabled }}
+            - name: GNUPGHOME
+              value: {{ .Values.signing.gpgHome }}
+            {{- end }}
             {{- if .Values.statefulset.env }}
             {{- toYaml .Values.statefulset.env | nindent 12 }}
             {{- end }}
