@@ -50,6 +50,9 @@ spec:
               value: /data
             - name: GITEA_TEMP
               value: /tmp/gitea
+            {{- if .Values.statefulset.env }}
+            {{- toYaml .Values.statefulset.env | nindent 12 }}
+            {{- end }}
           volumeMounts:
             - name: init
               mountPath: /usr/sbin
