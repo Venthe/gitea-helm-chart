@@ -356,6 +356,14 @@ gitea:
       existingSecret: gitea-ldap-secret
 ```
 
+:warning: Some options are just flags and therefore don't any values. If they are defined in `gitea.ldap` configuration, they will be passed to the gitea cli without any value. Affected options:
+
+- notActive | not-active
+- skipTlsVerify | skip-tls-verify
+- allowDeactivateAll | allow-deactivate-all
+- synchronizeUsers | synchronize-users
+- attributesInBind | attributes-in-bind
+
 ### OAuth2 Settings
 
 Like the admin user, OAuth2 settings can be updated and disabled but not deleted. Deleting OAuth2 settings has to be done in the ui.
