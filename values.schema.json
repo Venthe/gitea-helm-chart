@@ -1,0 +1,2257 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "Gitea Helm Chart validation schema",
+    "description": "See more @ https://www.arthurkoziel.com/validate-helm-chart-values-with-json-schemas/",
+    "default": {},
+    "examples": [
+        {
+            "replicaCount": 1,
+            "clusterDomain": "cluster.local",
+            "image": {
+                "repository": "gitea/gitea",
+                "tag": "1.14.2",
+                "pullPolicy": "Always",
+                "rootless": false
+            },
+            "imagePullSecrets": [],
+            "securityContext": {},
+            "service": {
+                "http": {
+                    "type": "ClusterIP",
+                    "port": 3000,
+                    "clusterIP": "None",
+                    "loadBalancerSourceRanges": [],
+                    "annotations": null
+                },
+                "ssh": {
+                    "type": "ClusterIP",
+                    "port": 22,
+                    "clusterIP": "None",
+                    "loadBalancerSourceRanges": [],
+                    "annotations": null
+                }
+            },
+            "ingress": {
+                "enabled": false,
+                "annotations": {},
+                "hosts": [
+                    {
+                        "host": "git.example.com",
+                        "paths": [
+                            {
+                                "path": "/",
+                                "pathType": "Prefix"
+                            }
+                        ]
+                    }
+                ],
+                "tls": []
+            },
+            "resources": {},
+            "nodeSelector": {},
+            "tolerations": [],
+            "affinity": {},
+            "statefulset": {
+                "env": [],
+                "terminationGracePeriodSeconds": 60,
+                "labels": {}
+            },
+            "persistence": {
+                "enabled": true,
+                "size": "10Gi",
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "labels": {},
+                "annotations": {}
+            },
+            "extraVolumes": null,
+            "extraVolumeMounts": null,
+            "initPreScript": "",
+            "signing": {
+                "enabled": false,
+                "gpgHome": "/data/git/.gnupg"
+            },
+            "gitea": {
+                "admin": {
+                    "username": "gitea_admin",
+                    "password": "r8sA8CPHD9!bt6d",
+                    "email": "gitea@local.domain"
+                },
+                "metrics": {
+                    "enabled": false,
+                    "serviceMonitor": {
+                        "enabled": false
+                    }
+                },
+                "ldap": {
+                    "enabled": false
+                },
+                "oauth": {
+                    "enabled": false
+                },
+                "config": {},
+                "podAnnotations": {},
+                "database": {
+                    "builtIn": {
+                        "postgresql": {
+                            "enabled": true
+                        },
+                        "mysql": {
+                            "enabled": false
+                        },
+                        "mariadb": {
+                            "enabled": false
+                        }
+                    }
+                },
+                "cache": {
+                    "builtIn": {
+                        "enabled": true
+                    }
+                },
+                "livenessProbe": {
+                    "enabled": true,
+                    "initialDelaySeconds": 200,
+                    "timeoutSeconds": 1,
+                    "periodSeconds": 10,
+                    "successThreshold": 1,
+                    "failureThreshold": 10
+                },
+                "readinessProbe": {
+                    "enabled": true,
+                    "initialDelaySeconds": 5,
+                    "timeoutSeconds": 1,
+                    "periodSeconds": 10,
+                    "successThreshold": 1,
+                    "failureThreshold": 3
+                },
+                "startupProbe": {
+                    "enabled": false,
+                    "initialDelaySeconds": 60,
+                    "timeoutSeconds": 1,
+                    "periodSeconds": 10,
+                    "successThreshold": 1,
+                    "failureThreshold": 10
+                }
+            },
+            "memcached": {
+                "service": {
+                    "port": 11211
+                }
+            },
+            "postgresql": {
+                "global": {
+                    "postgresql": {
+                        "postgresqlDatabase": "gitea",
+                        "postgresqlUsername": "gitea",
+                        "postgresqlPassword": "gitea",
+                        "servicePort": 5432
+                    }
+                },
+                "persistence": {
+                    "size": "10Gi"
+                }
+            },
+            "mysql": {
+                "root": {
+                    "password": "gitea"
+                },
+                "db": {
+                    "user": "gitea",
+                    "password": "gitea",
+                    "name": "gitea"
+                },
+                "service": {
+                    "port": 3306
+                },
+                "persistence": {
+                    "size": "10Gi"
+                }
+            },
+            "mariadb": {
+                "auth": {
+                    "database": "gitea",
+                    "username": "gitea",
+                    "password": "gitea",
+                    "rootPassword": "gitea"
+                },
+                "primary": {
+                    "service": {
+                        "port": 3306
+                    },
+                    "persistence": {
+                        "size": "10Gi"
+                    }
+                }
+            }
+        }
+    ],
+    "required": [
+        "replicaCount",
+        "clusterDomain",
+        "image",
+        "imagePullSecrets",
+        "securityContext",
+        "service",
+        "ingress",
+        "resources",
+        "nodeSelector",
+        "tolerations",
+        "affinity",
+        "statefulset",
+        "persistence",
+        "initPreScript",
+        "signing",
+        "gitea",
+        "memcached",
+        "postgresql",
+        "mysql",
+        "mariadb"
+    ],
+    "properties": {
+        "replicaCount": {
+            "$id": "#/properties/replicaCount",
+            "type": "integer",
+            "title": "The replicaCount schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+                1
+            ]
+        },
+        "clusterDomain": {
+            "$id": "#/properties/clusterDomain",
+            "type": "string",
+            "title": "The clusterDomain schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                "cluster.local"
+            ]
+        },
+        "image": {
+            "$id": "#/properties/image",
+            "type": "object",
+            "title": "The image schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "repository": "gitea/gitea",
+                    "tag": "1.14.2",
+                    "pullPolicy": "Always",
+                    "rootless": false
+                }
+            ],
+            "required": [
+                "repository",
+                "tag",
+                "pullPolicy",
+                "rootless"
+            ],
+            "properties": {
+                "repository": {
+                    "$id": "#/properties/image/properties/repository",
+                    "type": "string",
+                    "title": "The repository schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "gitea/gitea"
+                    ]
+                },
+                "tag": {
+                    "$id": "#/properties/image/properties/tag",
+                    "type": "string",
+                    "title": "The tag schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "1.14.2"
+                    ]
+                },
+                "pullPolicy": {
+                    "$id": "#/properties/image/properties/pullPolicy",
+                    "type": "string",
+                    "title": "The pullPolicy schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "Always"
+                    ]
+                },
+                "rootless": {
+                    "$id": "#/properties/image/properties/rootless",
+                    "type": "boolean",
+                    "title": "The rootless schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": false,
+                    "examples": [
+                        false
+                    ]
+                }
+            },
+            "additionalProperties": true
+        },
+        "imagePullSecrets": {
+            "$id": "#/properties/imagePullSecrets",
+            "type": "array",
+            "title": "The imagePullSecrets schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "examples": [
+                []
+            ],
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/imagePullSecrets/items"
+            }
+        },
+        "securityContext": {
+            "$id": "#/properties/securityContext",
+            "type": "object",
+            "title": "The securityContext schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {}
+            ],
+            "required": [],
+            "additionalProperties": true
+        },
+        "service": {
+            "$id": "#/properties/service",
+            "type": "object",
+            "title": "The service schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "http": {
+                        "type": "ClusterIP",
+                        "port": 3000,
+                        "clusterIP": "None",
+                        "loadBalancerSourceRanges": [],
+                        "annotations": null
+                    },
+                    "ssh": {
+                        "type": "ClusterIP",
+                        "port": 22,
+                        "clusterIP": "None",
+                        "loadBalancerSourceRanges": [],
+                        "annotations": null
+                    }
+                }
+            ],
+            "required": [
+                "http",
+                "ssh"
+            ],
+            "properties": {
+                "http": {
+                    "$id": "#/properties/service/properties/http",
+                    "type": "object",
+                    "title": "The http schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "type": "ClusterIP",
+                            "port": 3000,
+                            "clusterIP": "None",
+                            "loadBalancerSourceRanges": [],
+                            "annotations": null
+                        }
+                    ],
+                    "required": [
+                        "type",
+                        "port",
+                        "clusterIP",
+                        "loadBalancerSourceRanges"
+                    ],
+                    "properties": {
+                        "type": {
+                            "$id": "#/properties/service/properties/http/properties/type",
+                            "type": "string",
+                            "title": "The type schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": "",
+                            "examples": [
+                                "ClusterIP"
+                            ]
+                        },
+                        "port": {
+                            "$id": "#/properties/service/properties/http/properties/port",
+                            "type": "integer",
+                            "title": "The port schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                3000
+                            ]
+                        },
+                        "clusterIP": {
+                            "$id": "#/properties/service/properties/http/properties/clusterIP",
+                            "type": "string",
+                            "title": "The clusterIP schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": "",
+                            "examples": [
+                                "None"
+                            ]
+                        },
+                        "loadBalancerSourceRanges": {
+                            "$id": "#/properties/service/properties/http/properties/loadBalancerSourceRanges",
+                            "type": "array",
+                            "title": "The loadBalancerSourceRanges schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": [],
+                            "examples": [
+                                []
+                            ],
+                            "additionalItems": true,
+                            "items": {
+                                "$id": "#/properties/service/properties/http/properties/loadBalancerSourceRanges/items"
+                            }
+                        },
+                        "annotations": {
+                            "$id": "#/properties/service/properties/http/properties/annotations",
+                            "type": "null",
+                            "title": "The annotations schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": null,
+                            "examples": [
+                                null
+                            ]
+                        }
+                    },
+                    "additionalProperties": true
+                },
+                "ssh": {
+                    "$id": "#/properties/service/properties/ssh",
+                    "type": "object",
+                    "title": "The ssh schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "type": "ClusterIP",
+                            "port": 22,
+                            "clusterIP": "None",
+                            "loadBalancerSourceRanges": [],
+                            "annotations": null
+                        }
+                    ],
+                    "required": [
+                        "type",
+                        "port",
+                        "clusterIP",
+                        "loadBalancerSourceRanges"
+                    ],
+                    "properties": {
+                        "type": {
+                            "$id": "#/properties/service/properties/ssh/properties/type",
+                            "type": "string",
+                            "title": "The type schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": "",
+                            "examples": [
+                                "ClusterIP"
+                            ]
+                        },
+                        "port": {
+                            "$id": "#/properties/service/properties/ssh/properties/port",
+                            "type": "integer",
+                            "title": "The port schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                22
+                            ]
+                        },
+                        "clusterIP": {
+                            "$id": "#/properties/service/properties/ssh/properties/clusterIP",
+                            "type": "string",
+                            "title": "The clusterIP schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": "",
+                            "examples": [
+                                "None"
+                            ]
+                        },
+                        "loadBalancerSourceRanges": {
+                            "$id": "#/properties/service/properties/ssh/properties/loadBalancerSourceRanges",
+                            "type": "array",
+                            "title": "The loadBalancerSourceRanges schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": [],
+                            "examples": [
+                                []
+                            ],
+                            "additionalItems": true,
+                            "items": {
+                                "$id": "#/properties/service/properties/ssh/properties/loadBalancerSourceRanges/items"
+                            }
+                        },
+                        "annotations": {
+                            "$id": "#/properties/service/properties/ssh/properties/annotations",
+                            "type": "null",
+                            "title": "The annotations schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": null,
+                            "examples": [
+                                null
+                            ]
+                        }
+                    },
+                    "additionalProperties": true
+                }
+            },
+            "additionalProperties": true
+        },
+        "ingress": {
+            "$id": "#/properties/ingress",
+            "type": "object",
+            "title": "The ingress schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "enabled": false,
+                    "annotations": {},
+                    "hosts": [
+                        {
+                            "host": "git.example.com",
+                            "paths": [
+                                {
+                                    "path": "/",
+                                    "pathType": "Prefix"
+                                }
+                            ]
+                        }
+                    ],
+                    "tls": []
+                }
+            ],
+            "required": [
+                "enabled",
+                "annotations",
+                "hosts",
+                "tls"
+            ],
+            "properties": {
+                "enabled": {
+                    "$id": "#/properties/ingress/properties/enabled",
+                    "type": "boolean",
+                    "title": "The enabled schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": false,
+                    "examples": [
+                        false
+                    ]
+                },
+                "annotations": {
+                    "$id": "#/properties/ingress/properties/annotations",
+                    "type": "object",
+                    "title": "The annotations schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {}
+                    ],
+                    "required": [],
+                    "additionalProperties": true
+                },
+                "hosts": {
+                    "$id": "#/properties/ingress/properties/hosts",
+                    "type": "array",
+                    "title": "The hosts schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": [],
+                    "examples": [
+                        [
+                            {
+                                "host": "git.example.com",
+                                "paths": [
+                                    {
+                                        "path": "/",
+                                        "pathType": "Prefix"
+                                    }
+                                ]
+                            }
+                        ]
+                    ],
+                    "additionalItems": true,
+                    "items": {
+                        "$id": "#/properties/ingress/properties/hosts/items",
+                        "anyOf": [
+                            {
+                                "$id": "#/properties/ingress/properties/hosts/items/anyOf/0",
+                                "type": "object",
+                                "title": "The first anyOf schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": {},
+                                "examples": [
+                                    {
+                                        "host": "git.example.com",
+                                        "paths": [
+                                            {
+                                                "path": "/",
+                                                "pathType": "Prefix"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                "required": [
+                                    "host",
+                                    "paths"
+                                ],
+                                "properties": {
+                                    "host": {
+                                        "$id": "#/properties/ingress/properties/hosts/items/anyOf/0/properties/host",
+                                        "type": "string",
+                                        "title": "The host schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": "",
+                                        "examples": [
+                                            "git.example.com"
+                                        ]
+                                    },
+                                    "paths": {
+                                        "$id": "#/properties/ingress/properties/hosts/items/anyOf/0/properties/paths",
+                                        "type": "array",
+                                        "title": "The paths schema",
+                                        "description": "An explanation about the purpose of this instance.",
+                                        "default": [],
+                                        "examples": [
+                                            [
+                                                {
+                                                    "path": "/",
+                                                    "pathType": "Prefix"
+                                                }
+                                            ]
+                                        ],
+                                        "additionalItems": true,
+                                        "items": {
+                                            "$id": "#/properties/ingress/properties/hosts/items/anyOf/0/properties/paths/items",
+                                            "anyOf": [
+                                                {
+                                                    "$id": "#/properties/ingress/properties/hosts/items/anyOf/0/properties/paths/items/anyOf/0",
+                                                    "type": "object",
+                                                    "title": "The first anyOf schema",
+                                                    "description": "An explanation about the purpose of this instance.",
+                                                    "default": {},
+                                                    "examples": [
+                                                        {
+                                                            "path": "/",
+                                                            "pathType": "Prefix"
+                                                        }
+                                                    ],
+                                                    "required": [
+                                                        "path",
+                                                        "pathType"
+                                                    ],
+                                                    "properties": {
+                                                        "path": {
+                                                            "$id": "#/properties/ingress/properties/hosts/items/anyOf/0/properties/paths/items/anyOf/0/properties/path",
+                                                            "type": "string",
+                                                            "title": "The path schema",
+                                                            "description": "An explanation about the purpose of this instance.",
+                                                            "default": "",
+                                                            "examples": [
+                                                                "/"
+                                                            ]
+                                                        },
+                                                        "pathType": {
+                                                            "$id": "#/properties/ingress/properties/hosts/items/anyOf/0/properties/paths/items/anyOf/0/properties/pathType",
+                                                            "type": "string",
+                                                            "title": "The pathType schema",
+                                                            "description": "An explanation about the purpose of this instance.",
+                                                            "default": "",
+                                                            "examples": [
+                                                                "Prefix"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "additionalProperties": true
+                                                }
+                                            ]
+                                        }
+                                    }
+                                },
+                                "additionalProperties": true
+                            }
+                        ]
+                    }
+                },
+                "tls": {
+                    "$id": "#/properties/ingress/properties/tls",
+                    "type": "array",
+                    "title": "The tls schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": [],
+                    "examples": [
+                        []
+                    ],
+                    "additionalItems": true,
+                    "items": {
+                        "$id": "#/properties/ingress/properties/tls/items"
+                    }
+                }
+            },
+            "additionalProperties": true
+        },
+        "resources": {
+            "$id": "#/properties/resources",
+            "type": "object",
+            "title": "The resources schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {}
+            ],
+            "required": [],
+            "additionalProperties": true
+        },
+        "nodeSelector": {
+            "$id": "#/properties/nodeSelector",
+            "type": "object",
+            "title": "The nodeSelector schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {}
+            ],
+            "required": [],
+            "additionalProperties": true
+        },
+        "tolerations": {
+            "$id": "#/properties/tolerations",
+            "type": "array",
+            "title": "The tolerations schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": [],
+            "examples": [
+                []
+            ],
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/tolerations/items"
+            }
+        },
+        "affinity": {
+            "$id": "#/properties/affinity",
+            "type": "object",
+            "title": "The affinity schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {}
+            ],
+            "required": [],
+            "additionalProperties": true
+        },
+        "statefulset": {
+            "$id": "#/properties/statefulset",
+            "type": "object",
+            "title": "The statefulset schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "env": [],
+                    "terminationGracePeriodSeconds": 60,
+                    "labels": {}
+                }
+            ],
+            "required": [
+                "env",
+                "terminationGracePeriodSeconds",
+                "labels"
+            ],
+            "properties": {
+                "env": {
+                    "$id": "#/properties/statefulset/properties/env",
+                    "type": "array",
+                    "title": "The env schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": [],
+                    "examples": [
+                        []
+                    ],
+                    "additionalItems": true,
+                    "items": {
+                        "$id": "#/properties/statefulset/properties/env/items"
+                    }
+                },
+                "terminationGracePeriodSeconds": {
+                    "$id": "#/properties/statefulset/properties/terminationGracePeriodSeconds",
+                    "type": "integer",
+                    "title": "The terminationGracePeriodSeconds schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": 0,
+                    "examples": [
+                        60
+                    ]
+                },
+                "labels": {
+                    "$id": "#/properties/statefulset/properties/labels",
+                    "type": "object",
+                    "title": "The labels schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {}
+                    ],
+                    "required": [],
+                    "additionalProperties": true
+                }
+            },
+            "additionalProperties": true
+        },
+        "persistence": {
+            "$id": "#/properties/persistence",
+            "type": "object",
+            "title": "The persistence schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "enabled": true,
+                    "size": "10Gi",
+                    "accessModes": [
+                        "ReadWriteOnce"
+                    ],
+                    "labels": {},
+                    "annotations": {}
+                }
+            ],
+            "required": [
+                "enabled",
+                "size",
+                "accessModes",
+                "labels",
+                "annotations"
+            ],
+            "properties": {
+                "enabled": {
+                    "$id": "#/properties/persistence/properties/enabled",
+                    "type": "boolean",
+                    "title": "The enabled schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": false,
+                    "examples": [
+                        true
+                    ]
+                },
+                "size": {
+                    "$id": "#/properties/persistence/properties/size",
+                    "type": "string",
+                    "title": "The size schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "10Gi"
+                    ]
+                },
+                "accessModes": {
+                    "$id": "#/properties/persistence/properties/accessModes",
+                    "type": "array",
+                    "title": "The accessModes schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": [],
+                    "examples": [
+                        [
+                            "ReadWriteOnce"
+                        ]
+                    ],
+                    "additionalItems": true,
+                    "items": {
+                        "$id": "#/properties/persistence/properties/accessModes/items",
+                        "anyOf": [
+                            {
+                                "$id": "#/properties/persistence/properties/accessModes/items/anyOf/0",
+                                "type": "string",
+                                "title": "The first anyOf schema",
+                                "description": "An explanation about the purpose of this instance.",
+                                "default": "",
+                                "examples": [
+                                    "ReadWriteOnce"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                "labels": {
+                    "$id": "#/properties/persistence/properties/labels",
+                    "type": "object",
+                    "title": "The labels schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {}
+                    ],
+                    "required": [],
+                    "additionalProperties": true
+                },
+                "annotations": {
+                    "$id": "#/properties/persistence/properties/annotations",
+                    "type": "object",
+                    "title": "The annotations schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {}
+                    ],
+                    "required": [],
+                    "additionalProperties": true
+                }
+            },
+            "additionalProperties": true
+        },
+        "extraVolumes": {
+            "$id": "#/properties/extraVolumes",
+            "type": "null",
+            "title": "The extraVolumes schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": null,
+            "examples": [
+                null
+            ]
+        },
+        "extraVolumeMounts": {
+            "$id": "#/properties/extraVolumeMounts",
+            "type": "null",
+            "title": "The extraVolumeMounts schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": null,
+            "examples": [
+                null
+            ]
+        },
+        "initPreScript": {
+            "$id": "#/properties/initPreScript",
+            "type": "string",
+            "title": "The initPreScript schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+                ""
+            ]
+        },
+        "signing": {
+            "$id": "#/properties/signing",
+            "type": "object",
+            "title": "The signing schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "enabled": false,
+                    "gpgHome": "/data/git/.gnupg"
+                }
+            ],
+            "required": [
+                "enabled",
+                "gpgHome"
+            ],
+            "properties": {
+                "enabled": {
+                    "$id": "#/properties/signing/properties/enabled",
+                    "type": "boolean",
+                    "title": "The enabled schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": false,
+                    "examples": [
+                        false
+                    ]
+                },
+                "gpgHome": {
+                    "$id": "#/properties/signing/properties/gpgHome",
+                    "type": "string",
+                    "title": "The gpgHome schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": "",
+                    "examples": [
+                        "/data/git/.gnupg"
+                    ]
+                }
+            },
+            "additionalProperties": true
+        },
+        "gitea": {
+            "$id": "#/properties/gitea",
+            "type": "object",
+            "title": "The gitea schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "admin": {
+                        "username": "gitea_admin",
+                        "password": "r8sA8CPHD9!bt6d",
+                        "email": "gitea@local.domain"
+                    },
+                    "metrics": {
+                        "enabled": false,
+                        "serviceMonitor": {
+                            "enabled": false
+                        }
+                    },
+                    "ldap": {
+                        "enabled": false
+                    },
+                    "oauth": {
+                        "enabled": false
+                    },
+                    "config": {},
+                    "podAnnotations": {},
+                    "database": {
+                        "builtIn": {
+                            "postgresql": {
+                                "enabled": true
+                            },
+                            "mysql": {
+                                "enabled": false
+                            },
+                            "mariadb": {
+                                "enabled": false
+                            }
+                        }
+                    },
+                    "cache": {
+                        "builtIn": {
+                            "enabled": true
+                        }
+                    },
+                    "livenessProbe": {
+                        "enabled": true,
+                        "initialDelaySeconds": 200,
+                        "timeoutSeconds": 1,
+                        "periodSeconds": 10,
+                        "successThreshold": 1,
+                        "failureThreshold": 10
+                    },
+                    "readinessProbe": {
+                        "enabled": true,
+                        "initialDelaySeconds": 5,
+                        "timeoutSeconds": 1,
+                        "periodSeconds": 10,
+                        "successThreshold": 1,
+                        "failureThreshold": 3
+                    },
+                    "startupProbe": {
+                        "enabled": false,
+                        "initialDelaySeconds": 60,
+                        "timeoutSeconds": 1,
+                        "periodSeconds": 10,
+                        "successThreshold": 1,
+                        "failureThreshold": 10
+                    }
+                }
+            ],
+            "required": [
+                "admin",
+                "metrics",
+                "ldap",
+                "oauth",
+                "config",
+                "podAnnotations",
+                "database",
+                "cache",
+                "livenessProbe",
+                "readinessProbe",
+                "startupProbe"
+            ],
+            "properties": {
+                "admin": {
+                    "$id": "#/properties/gitea/properties/admin",
+                    "type": "object",
+                    "title": "The admin schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "username": "gitea_admin",
+                            "password": "r8sA8CPHD9!bt6d",
+                            "email": "gitea@local.domain"
+                        }
+                    ],
+                    "required": [
+                        "username",
+                        "password",
+                        "email"
+                    ],
+                    "properties": {
+                        "username": {
+                            "$id": "#/properties/gitea/properties/admin/properties/username",
+                            "type": "string",
+                            "title": "The username schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": "",
+                            "examples": [
+                                "gitea_admin"
+                            ]
+                        },
+                        "password": {
+                            "$id": "#/properties/gitea/properties/admin/properties/password",
+                            "type": "string",
+                            "title": "The password schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": "",
+                            "examples": [
+                                "r8sA8CPHD9!bt6d"
+                            ]
+                        },
+                        "email": {
+                            "$id": "#/properties/gitea/properties/admin/properties/email",
+                            "type": "string",
+                            "title": "The email schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": "",
+                            "examples": [
+                                "gitea@local.domain"
+                            ]
+                        }
+                    },
+                    "additionalProperties": true
+                },
+                "metrics": {
+                    "$id": "#/properties/gitea/properties/metrics",
+                    "type": "object",
+                    "title": "The metrics schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "enabled": false,
+                            "serviceMonitor": {
+                                "enabled": false
+                            }
+                        }
+                    ],
+                    "required": [
+                        "enabled",
+                        "serviceMonitor"
+                    ],
+                    "properties": {
+                        "enabled": {
+                            "$id": "#/properties/gitea/properties/metrics/properties/enabled",
+                            "type": "boolean",
+                            "title": "The enabled schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": false,
+                            "examples": [
+                                false
+                            ]
+                        },
+                        "serviceMonitor": {
+                            "$id": "#/properties/gitea/properties/metrics/properties/serviceMonitor",
+                            "type": "object",
+                            "title": "The serviceMonitor schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": {},
+                            "examples": [
+                                {
+                                    "enabled": false
+                                }
+                            ],
+                            "required": [
+                                "enabled"
+                            ],
+                            "properties": {
+                                "enabled": {
+                                    "$id": "#/properties/gitea/properties/metrics/properties/serviceMonitor/properties/enabled",
+                                    "type": "boolean",
+                                    "title": "The enabled schema",
+                                    "description": "An explanation about the purpose of this instance.",
+                                    "default": false,
+                                    "examples": [
+                                        false
+                                    ]
+                                }
+                            },
+                            "additionalProperties": true
+                        }
+                    },
+                    "additionalProperties": true
+                },
+                "ldap": {
+                    "$id": "#/properties/gitea/properties/ldap",
+                    "type": "object",
+                    "title": "The ldap schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "enabled": false
+                        }
+                    ],
+                    "required": [
+                        "enabled"
+                    ],
+                    "properties": {
+                        "enabled": {
+                            "$id": "#/properties/gitea/properties/ldap/properties/enabled",
+                            "type": "boolean",
+                            "title": "The enabled schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": false,
+                            "examples": [
+                                false
+                            ]
+                        }
+                    },
+                    "additionalProperties": true
+                },
+                "oauth": {
+                    "$id": "#/properties/gitea/properties/oauth",
+                    "type": "object",
+                    "title": "The oauth schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "enabled": false
+                        }
+                    ],
+                    "required": [
+                        "enabled"
+                    ],
+                    "properties": {
+                        "enabled": {
+                            "$id": "#/properties/gitea/properties/oauth/properties/enabled",
+                            "type": "boolean",
+                            "title": "The enabled schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": false,
+                            "examples": [
+                                false
+                            ]
+                        }
+                    },
+                    "additionalProperties": true
+                },
+                "config": {
+                    "$id": "#/properties/gitea/properties/config",
+                    "type": "object",
+                    "title": "The config schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {}
+                    ],
+                    "required": [],
+                    "additionalProperties": true
+                },
+                "podAnnotations": {
+                    "$id": "#/properties/gitea/properties/podAnnotations",
+                    "type": "object",
+                    "title": "The podAnnotations schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {}
+                    ],
+                    "required": [],
+                    "additionalProperties": true
+                },
+                "database": {
+                    "$id": "#/properties/gitea/properties/database",
+                    "type": "object",
+                    "title": "The database schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "builtIn": {
+                                "postgresql": {
+                                    "enabled": true
+                                },
+                                "mysql": {
+                                    "enabled": false
+                                },
+                                "mariadb": {
+                                    "enabled": false
+                                }
+                            }
+                        }
+                    ],
+                    "required": [
+                        "builtIn"
+                    ],
+                    "properties": {
+                        "builtIn": {
+                            "$id": "#/properties/gitea/properties/database/properties/builtIn",
+                            "type": "object",
+                            "title": "The builtIn schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": {},
+                            "examples": [
+                                {
+                                    "postgresql": {
+                                        "enabled": true
+                                    },
+                                    "mysql": {
+                                        "enabled": false
+                                    },
+                                    "mariadb": {
+                                        "enabled": false
+                                    }
+                                }
+                            ],
+                            "required": [
+                                "postgresql",
+                                "mysql",
+                                "mariadb"
+                            ],
+                            "properties": {
+                                "postgresql": {
+                                    "$id": "#/properties/gitea/properties/database/properties/builtIn/properties/postgresql",
+                                    "type": "object",
+                                    "title": "The postgresql schema",
+                                    "description": "An explanation about the purpose of this instance.",
+                                    "default": {},
+                                    "examples": [
+                                        {
+                                            "enabled": true
+                                        }
+                                    ],
+                                    "required": [
+                                        "enabled"
+                                    ],
+                                    "properties": {
+                                        "enabled": {
+                                            "$id": "#/properties/gitea/properties/database/properties/builtIn/properties/postgresql/properties/enabled",
+                                            "type": "boolean",
+                                            "title": "The enabled schema",
+                                            "description": "An explanation about the purpose of this instance.",
+                                            "default": false,
+                                            "examples": [
+                                                true
+                                            ]
+                                        }
+                                    },
+                                    "additionalProperties": true
+                                },
+                                "mysql": {
+                                    "$id": "#/properties/gitea/properties/database/properties/builtIn/properties/mysql",
+                                    "type": "object",
+                                    "title": "The mysql schema",
+                                    "description": "An explanation about the purpose of this instance.",
+                                    "default": {},
+                                    "examples": [
+                                        {
+                                            "enabled": false
+                                        }
+                                    ],
+                                    "required": [
+                                        "enabled"
+                                    ],
+                                    "properties": {
+                                        "enabled": {
+                                            "$id": "#/properties/gitea/properties/database/properties/builtIn/properties/mysql/properties/enabled",
+                                            "type": "boolean",
+                                            "title": "The enabled schema",
+                                            "description": "An explanation about the purpose of this instance.",
+                                            "default": false,
+                                            "examples": [
+                                                false
+                                            ]
+                                        }
+                                    },
+                                    "additionalProperties": true
+                                },
+                                "mariadb": {
+                                    "$id": "#/properties/gitea/properties/database/properties/builtIn/properties/mariadb",
+                                    "type": "object",
+                                    "title": "The mariadb schema",
+                                    "description": "An explanation about the purpose of this instance.",
+                                    "default": {},
+                                    "examples": [
+                                        {
+                                            "enabled": false
+                                        }
+                                    ],
+                                    "required": [
+                                        "enabled"
+                                    ],
+                                    "properties": {
+                                        "enabled": {
+                                            "$id": "#/properties/gitea/properties/database/properties/builtIn/properties/mariadb/properties/enabled",
+                                            "type": "boolean",
+                                            "title": "The enabled schema",
+                                            "description": "An explanation about the purpose of this instance.",
+                                            "default": false,
+                                            "examples": [
+                                                false
+                                            ]
+                                        }
+                                    },
+                                    "additionalProperties": true
+                                }
+                            },
+                            "additionalProperties": true
+                        }
+                    },
+                    "additionalProperties": true
+                },
+                "cache": {
+                    "$id": "#/properties/gitea/properties/cache",
+                    "type": "object",
+                    "title": "The cache schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "builtIn": {
+                                "enabled": true
+                            }
+                        }
+                    ],
+                    "required": [
+                        "builtIn"
+                    ],
+                    "properties": {
+                        "builtIn": {
+                            "$id": "#/properties/gitea/properties/cache/properties/builtIn",
+                            "type": "object",
+                            "title": "The builtIn schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": {},
+                            "examples": [
+                                {
+                                    "enabled": true
+                                }
+                            ],
+                            "required": [
+                                "enabled"
+                            ],
+                            "properties": {
+                                "enabled": {
+                                    "$id": "#/properties/gitea/properties/cache/properties/builtIn/properties/enabled",
+                                    "type": "boolean",
+                                    "title": "The enabled schema",
+                                    "description": "An explanation about the purpose of this instance.",
+                                    "default": false,
+                                    "examples": [
+                                        true
+                                    ]
+                                }
+                            },
+                            "additionalProperties": true
+                        }
+                    },
+                    "additionalProperties": true
+                },
+                "livenessProbe": {
+                    "$id": "#/properties/gitea/properties/livenessProbe",
+                    "type": "object",
+                    "title": "The livenessProbe schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "enabled": true,
+                            "initialDelaySeconds": 200,
+                            "timeoutSeconds": 1,
+                            "periodSeconds": 10,
+                            "successThreshold": 1,
+                            "failureThreshold": 10
+                        }
+                    ],
+                    "required": [
+                        "enabled",
+                        "initialDelaySeconds",
+                        "timeoutSeconds",
+                        "periodSeconds",
+                        "successThreshold",
+                        "failureThreshold"
+                    ],
+                    "properties": {
+                        "enabled": {
+                            "$id": "#/properties/gitea/properties/livenessProbe/properties/enabled",
+                            "type": "boolean",
+                            "title": "The enabled schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": false,
+                            "examples": [
+                                true
+                            ]
+                        },
+                        "initialDelaySeconds": {
+                            "$id": "#/properties/gitea/properties/livenessProbe/properties/initialDelaySeconds",
+                            "type": "integer",
+                            "title": "The initialDelaySeconds schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                200
+                            ]
+                        },
+                        "timeoutSeconds": {
+                            "$id": "#/properties/gitea/properties/livenessProbe/properties/timeoutSeconds",
+                            "type": "integer",
+                            "title": "The timeoutSeconds schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                1
+                            ]
+                        },
+                        "periodSeconds": {
+                            "$id": "#/properties/gitea/properties/livenessProbe/properties/periodSeconds",
+                            "type": "integer",
+                            "title": "The periodSeconds schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                10
+                            ]
+                        },
+                        "successThreshold": {
+                            "$id": "#/properties/gitea/properties/livenessProbe/properties/successThreshold",
+                            "type": "integer",
+                            "title": "The successThreshold schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                1
+                            ]
+                        },
+                        "failureThreshold": {
+                            "$id": "#/properties/gitea/properties/livenessProbe/properties/failureThreshold",
+                            "type": "integer",
+                            "title": "The failureThreshold schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                10
+                            ]
+                        }
+                    },
+                    "additionalProperties": true
+                },
+                "readinessProbe": {
+                    "$id": "#/properties/gitea/properties/readinessProbe",
+                    "type": "object",
+                    "title": "The readinessProbe schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "enabled": true,
+                            "initialDelaySeconds": 5,
+                            "timeoutSeconds": 1,
+                            "periodSeconds": 10,
+                            "successThreshold": 1,
+                            "failureThreshold": 3
+                        }
+                    ],
+                    "required": [
+                        "enabled",
+                        "initialDelaySeconds",
+                        "timeoutSeconds",
+                        "periodSeconds",
+                        "successThreshold",
+                        "failureThreshold"
+                    ],
+                    "properties": {
+                        "enabled": {
+                            "$id": "#/properties/gitea/properties/readinessProbe/properties/enabled",
+                            "type": "boolean",
+                            "title": "The enabled schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": false,
+                            "examples": [
+                                true
+                            ]
+                        },
+                        "initialDelaySeconds": {
+                            "$id": "#/properties/gitea/properties/readinessProbe/properties/initialDelaySeconds",
+                            "type": "integer",
+                            "title": "The initialDelaySeconds schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                5
+                            ]
+                        },
+                        "timeoutSeconds": {
+                            "$id": "#/properties/gitea/properties/readinessProbe/properties/timeoutSeconds",
+                            "type": "integer",
+                            "title": "The timeoutSeconds schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                1
+                            ]
+                        },
+                        "periodSeconds": {
+                            "$id": "#/properties/gitea/properties/readinessProbe/properties/periodSeconds",
+                            "type": "integer",
+                            "title": "The periodSeconds schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                10
+                            ]
+                        },
+                        "successThreshold": {
+                            "$id": "#/properties/gitea/properties/readinessProbe/properties/successThreshold",
+                            "type": "integer",
+                            "title": "The successThreshold schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                1
+                            ]
+                        },
+                        "failureThreshold": {
+                            "$id": "#/properties/gitea/properties/readinessProbe/properties/failureThreshold",
+                            "type": "integer",
+                            "title": "The failureThreshold schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                3
+                            ]
+                        }
+                    },
+                    "additionalProperties": true
+                },
+                "startupProbe": {
+                    "$id": "#/properties/gitea/properties/startupProbe",
+                    "type": "object",
+                    "title": "The startupProbe schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "enabled": false,
+                            "initialDelaySeconds": 60,
+                            "timeoutSeconds": 1,
+                            "periodSeconds": 10,
+                            "successThreshold": 1,
+                            "failureThreshold": 10
+                        }
+                    ],
+                    "required": [
+                        "enabled",
+                        "initialDelaySeconds",
+                        "timeoutSeconds",
+                        "periodSeconds",
+                        "successThreshold",
+                        "failureThreshold"
+                    ],
+                    "properties": {
+                        "enabled": {
+                            "$id": "#/properties/gitea/properties/startupProbe/properties/enabled",
+                            "type": "boolean",
+                            "title": "The enabled schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": false,
+                            "examples": [
+                                false
+                            ]
+                        },
+                        "initialDelaySeconds": {
+                            "$id": "#/properties/gitea/properties/startupProbe/properties/initialDelaySeconds",
+                            "type": "integer",
+                            "title": "The initialDelaySeconds schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                60
+                            ]
+                        },
+                        "timeoutSeconds": {
+                            "$id": "#/properties/gitea/properties/startupProbe/properties/timeoutSeconds",
+                            "type": "integer",
+                            "title": "The timeoutSeconds schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                1
+                            ]
+                        },
+                        "periodSeconds": {
+                            "$id": "#/properties/gitea/properties/startupProbe/properties/periodSeconds",
+                            "type": "integer",
+                            "title": "The periodSeconds schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                10
+                            ]
+                        },
+                        "successThreshold": {
+                            "$id": "#/properties/gitea/properties/startupProbe/properties/successThreshold",
+                            "type": "integer",
+                            "title": "The successThreshold schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                1
+                            ]
+                        },
+                        "failureThreshold": {
+                            "$id": "#/properties/gitea/properties/startupProbe/properties/failureThreshold",
+                            "type": "integer",
+                            "title": "The failureThreshold schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                10
+                            ]
+                        }
+                    },
+                    "additionalProperties": true
+                }
+            },
+            "additionalProperties": true
+        },
+        "memcached": {
+            "$id": "#/properties/memcached",
+            "type": "object",
+            "title": "The memcached schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "service": {
+                        "port": 11211
+                    }
+                }
+            ],
+            "required": [
+                "service"
+            ],
+            "properties": {
+                "service": {
+                    "$id": "#/properties/memcached/properties/service",
+                    "type": "object",
+                    "title": "The service schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "port": 11211
+                        }
+                    ],
+                    "required": [
+                        "port"
+                    ],
+                    "properties": {
+                        "port": {
+                            "$id": "#/properties/memcached/properties/service/properties/port",
+                            "type": "integer",
+                            "title": "The port schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                11211
+                            ]
+                        }
+                    },
+                    "additionalProperties": true
+                }
+            },
+            "additionalProperties": true
+        },
+        "postgresql": {
+            "$id": "#/properties/postgresql",
+            "type": "object",
+            "title": "The postgresql schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "global": {
+                        "postgresql": {
+                            "postgresqlDatabase": "gitea",
+                            "postgresqlUsername": "gitea",
+                            "postgresqlPassword": "gitea",
+                            "servicePort": 5432
+                        }
+                    },
+                    "persistence": {
+                        "size": "10Gi"
+                    }
+                }
+            ],
+            "required": [
+                "global",
+                "persistence"
+            ],
+            "properties": {
+                "global": {
+                    "$id": "#/properties/postgresql/properties/global",
+                    "type": "object",
+                    "title": "The global schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "postgresql": {
+                                "postgresqlDatabase": "gitea",
+                                "postgresqlUsername": "gitea",
+                                "postgresqlPassword": "gitea",
+                                "servicePort": 5432
+                            }
+                        }
+                    ],
+                    "required": [
+                        "postgresql"
+                    ],
+                    "properties": {
+                        "postgresql": {
+                            "$id": "#/properties/postgresql/properties/global/properties/postgresql",
+                            "type": "object",
+                            "title": "The postgresql schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": {},
+                            "examples": [
+                                {
+                                    "postgresqlDatabase": "gitea",
+                                    "postgresqlUsername": "gitea",
+                                    "postgresqlPassword": "gitea",
+                                    "servicePort": 5432
+                                }
+                            ],
+                            "required": [
+                                "postgresqlDatabase",
+                                "postgresqlUsername",
+                                "postgresqlPassword",
+                                "servicePort"
+                            ],
+                            "properties": {
+                                "postgresqlDatabase": {
+                                    "$id": "#/properties/postgresql/properties/global/properties/postgresql/properties/postgresqlDatabase",
+                                    "type": "string",
+                                    "title": "The postgresqlDatabase schema",
+                                    "description": "An explanation about the purpose of this instance.",
+                                    "default": "",
+                                    "examples": [
+                                        "gitea"
+                                    ]
+                                },
+                                "postgresqlUsername": {
+                                    "$id": "#/properties/postgresql/properties/global/properties/postgresql/properties/postgresqlUsername",
+                                    "type": "string",
+                                    "title": "The postgresqlUsername schema",
+                                    "description": "An explanation about the purpose of this instance.",
+                                    "default": "",
+                                    "examples": [
+                                        "gitea"
+                                    ]
+                                },
+                                "postgresqlPassword": {
+                                    "$id": "#/properties/postgresql/properties/global/properties/postgresql/properties/postgresqlPassword",
+                                    "type": "string",
+                                    "title": "The postgresqlPassword schema",
+                                    "description": "An explanation about the purpose of this instance.",
+                                    "default": "",
+                                    "examples": [
+                                        "gitea"
+                                    ]
+                                },
+                                "servicePort": {
+                                    "$id": "#/properties/postgresql/properties/global/properties/postgresql/properties/servicePort",
+                                    "type": "integer",
+                                    "title": "The servicePort schema",
+                                    "description": "An explanation about the purpose of this instance.",
+                                    "default": 0,
+                                    "examples": [
+                                        5432
+                                    ]
+                                }
+                            },
+                            "additionalProperties": true
+                        }
+                    },
+                    "additionalProperties": true
+                },
+                "persistence": {
+                    "$id": "#/properties/postgresql/properties/persistence",
+                    "type": "object",
+                    "title": "The persistence schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "size": "10Gi"
+                        }
+                    ],
+                    "required": [
+                        "size"
+                    ],
+                    "properties": {
+                        "size": {
+                            "$id": "#/properties/postgresql/properties/persistence/properties/size",
+                            "type": "string",
+                            "title": "The size schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": "",
+                            "examples": [
+                                "10Gi"
+                            ]
+                        }
+                    },
+                    "additionalProperties": true
+                }
+            },
+            "additionalProperties": true
+        },
+        "mysql": {
+            "$id": "#/properties/mysql",
+            "type": "object",
+            "title": "The mysql schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "root": {
+                        "password": "gitea"
+                    },
+                    "db": {
+                        "user": "gitea",
+                        "password": "gitea",
+                        "name": "gitea"
+                    },
+                    "service": {
+                        "port": 3306
+                    },
+                    "persistence": {
+                        "size": "10Gi"
+                    }
+                }
+            ],
+            "required": [
+                "root",
+                "db",
+                "service",
+                "persistence"
+            ],
+            "properties": {
+                "root": {
+                    "$id": "#/properties/mysql/properties/root",
+                    "type": "object",
+                    "title": "The root schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "password": "gitea"
+                        }
+                    ],
+                    "required": [
+                        "password"
+                    ],
+                    "properties": {
+                        "password": {
+                            "$id": "#/properties/mysql/properties/root/properties/password",
+                            "type": "string",
+                            "title": "The password schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": "",
+                            "examples": [
+                                "gitea"
+                            ]
+                        }
+                    },
+                    "additionalProperties": true
+                },
+                "db": {
+                    "$id": "#/properties/mysql/properties/db",
+                    "type": "object",
+                    "title": "The db schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "user": "gitea",
+                            "password": "gitea",
+                            "name": "gitea"
+                        }
+                    ],
+                    "required": [
+                        "user",
+                        "password",
+                        "name"
+                    ],
+                    "properties": {
+                        "user": {
+                            "$id": "#/properties/mysql/properties/db/properties/user",
+                            "type": "string",
+                            "title": "The user schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": "",
+                            "examples": [
+                                "gitea"
+                            ]
+                        },
+                        "password": {
+                            "$id": "#/properties/mysql/properties/db/properties/password",
+                            "type": "string",
+                            "title": "The password schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": "",
+                            "examples": [
+                                "gitea"
+                            ]
+                        },
+                        "name": {
+                            "$id": "#/properties/mysql/properties/db/properties/name",
+                            "type": "string",
+                            "title": "The name schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": "",
+                            "examples": [
+                                "gitea"
+                            ]
+                        }
+                    },
+                    "additionalProperties": true
+                },
+                "service": {
+                    "$id": "#/properties/mysql/properties/service",
+                    "type": "object",
+                    "title": "The service schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "port": 3306
+                        }
+                    ],
+                    "required": [
+                        "port"
+                    ],
+                    "properties": {
+                        "port": {
+                            "$id": "#/properties/mysql/properties/service/properties/port",
+                            "type": "integer",
+                            "title": "The port schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": 0,
+                            "examples": [
+                                3306
+                            ]
+                        }
+                    },
+                    "additionalProperties": true
+                },
+                "persistence": {
+                    "$id": "#/properties/mysql/properties/persistence",
+                    "type": "object",
+                    "title": "The persistence schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "size": "10Gi"
+                        }
+                    ],
+                    "required": [
+                        "size"
+                    ],
+                    "properties": {
+                        "size": {
+                            "$id": "#/properties/mysql/properties/persistence/properties/size",
+                            "type": "string",
+                            "title": "The size schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": "",
+                            "examples": [
+                                "10Gi"
+                            ]
+                        }
+                    },
+                    "additionalProperties": true
+                }
+            },
+            "additionalProperties": true
+        },
+        "mariadb": {
+            "$id": "#/properties/mariadb",
+            "type": "object",
+            "title": "The mariadb schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "auth": {
+                        "database": "gitea",
+                        "username": "gitea",
+                        "password": "gitea",
+                        "rootPassword": "gitea"
+                    },
+                    "primary": {
+                        "service": {
+                            "port": 3306
+                        },
+                        "persistence": {
+                            "size": "10Gi"
+                        }
+                    }
+                }
+            ],
+            "required": [
+                "auth",
+                "primary"
+            ],
+            "properties": {
+                "auth": {
+                    "$id": "#/properties/mariadb/properties/auth",
+                    "type": "object",
+                    "title": "The auth schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "database": "gitea",
+                            "username": "gitea",
+                            "password": "gitea",
+                            "rootPassword": "gitea"
+                        }
+                    ],
+                    "required": [
+                        "database",
+                        "username",
+                        "password",
+                        "rootPassword"
+                    ],
+                    "properties": {
+                        "database": {
+                            "$id": "#/properties/mariadb/properties/auth/properties/database",
+                            "type": "string",
+                            "title": "The database schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": "",
+                            "examples": [
+                                "gitea"
+                            ]
+                        },
+                        "username": {
+                            "$id": "#/properties/mariadb/properties/auth/properties/username",
+                            "type": "string",
+                            "title": "The username schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": "",
+                            "examples": [
+                                "gitea"
+                            ]
+                        },
+                        "password": {
+                            "$id": "#/properties/mariadb/properties/auth/properties/password",
+                            "type": "string",
+                            "title": "The password schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": "",
+                            "examples": [
+                                "gitea"
+                            ]
+                        },
+                        "rootPassword": {
+                            "$id": "#/properties/mariadb/properties/auth/properties/rootPassword",
+                            "type": "string",
+                            "title": "The rootPassword schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": "",
+                            "examples": [
+                                "gitea"
+                            ]
+                        }
+                    },
+                    "additionalProperties": true
+                },
+                "primary": {
+                    "$id": "#/properties/mariadb/properties/primary",
+                    "type": "object",
+                    "title": "The primary schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "service": {
+                                "port": 3306
+                            },
+                            "persistence": {
+                                "size": "10Gi"
+                            }
+                        }
+                    ],
+                    "required": [
+                        "service",
+                        "persistence"
+                    ],
+                    "properties": {
+                        "service": {
+                            "$id": "#/properties/mariadb/properties/primary/properties/service",
+                            "type": "object",
+                            "title": "The service schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": {},
+                            "examples": [
+                                {
+                                    "port": 3306
+                                }
+                            ],
+                            "required": [
+                                "port"
+                            ],
+                            "properties": {
+                                "port": {
+                                    "$id": "#/properties/mariadb/properties/primary/properties/service/properties/port",
+                                    "type": "integer",
+                                    "title": "The port schema",
+                                    "description": "An explanation about the purpose of this instance.",
+                                    "default": 0,
+                                    "examples": [
+                                        3306
+                                    ]
+                                }
+                            },
+                            "additionalProperties": true
+                        },
+                        "persistence": {
+                            "$id": "#/properties/mariadb/properties/primary/properties/persistence",
+                            "type": "object",
+                            "title": "The persistence schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": {},
+                            "examples": [
+                                {
+                                    "size": "10Gi"
+                                }
+                            ],
+                            "required": [
+                                "size"
+                            ],
+                            "properties": {
+                                "size": {
+                                    "$id": "#/properties/mariadb/properties/primary/properties/persistence/properties/size",
+                                    "type": "string",
+                                    "title": "The size schema",
+                                    "description": "An explanation about the purpose of this instance.",
+                                    "default": "",
+                                    "examples": [
+                                        "10Gi"
+                                    ]
+                                }
+                            },
+                            "additionalProperties": true
+                        }
+                    },
+                    "additionalProperties": true
+                }
+            },
+            "additionalProperties": true
+        }
+    },
+    "additionalProperties": true
+}
