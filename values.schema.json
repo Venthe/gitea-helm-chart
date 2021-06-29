@@ -36,6 +36,20 @@
                 }
             },
             "additionalProperties": false
+        },
+        "imagePullSecrets": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "additionalProperties": false
         }
     },
     "additionalProperties": true
