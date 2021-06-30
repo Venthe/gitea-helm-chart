@@ -4,7 +4,8 @@
         "replicaCount",
         "clusterDomain",
         "image",
-        "service"
+        "service",
+        "ingress"
     ],
     "properties": {
         "replicaCount": {
@@ -147,6 +148,71 @@
                     "additionalProperties": false
                 }
             }
+        },
+        "ingress": {
+            "type": "object",
+            "required": ["enabled", "hosts"],
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "annotations": {
+                    "type": "object"
+                },
+                "hosts": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "object",
+                        "required": ["host", "paths"],
+                        "properties": {
+                            "host": {
+                                "type": "string"
+                            },
+                            "paths": {
+                                "type": "array",
+                                "minItems": 1,
+                                "items": {
+                                    "type": "object",
+                                    "required": ["path", "pathType"],
+                                    "properties": {
+                                        "path": {
+                                            "type": "string"
+                                        },
+                                        "pathType": {
+                                            "type": "string",
+                                            "enum": ["ImplementationSpecific", "Prefix", "Exact"]
+                                        }
+                                    },
+                                    "additionalProperties": false
+                                }
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                },
+                "tls": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": ["secretName", "hosts"],
+                        "properties": {
+                            "secretName": {
+                                "type": "string"
+                            },
+                            "hosts": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "minItems": 1
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
         }
     },
     "additionalProperties": true
