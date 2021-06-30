@@ -8,7 +8,7 @@ clusterDomain: cluster.local
 
 image:
   repository: gitea/gitea
-  tag: 1.14.2
+  tag: 1.14.3
   pullPolicy: Always
   rootless: false # only possible when running 1.14 or later
 
