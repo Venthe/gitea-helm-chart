@@ -79,6 +79,7 @@ spec:
               value: /data
             - name: GITEA_TEMP
               value: /tmp/gitea
+            {{- if .Values.gitea.ldap.enabled }}
             {{- if .Values.gitea.ldap.existingSecret }}
             - name: GITEA_LDAP_BIND_DN
               valueFrom:
@@ -92,9 +93,10 @@ spec:
                   name: {{ .Values.gitea.ldap.existingSecret }}
             {{- else }}
             - name: GITEA_LDAP_BIND_DN
-              value: {{ default (index .Values.gitea.ldap "bind-dn") .Values.gitea.ldap.bindDn | quote }}
+              value: {{ .Values.gitea.ldap.bindDn | quote }}
             - name: GITEA_LDAP_PASSWORD
-              value: {{ default (index .Values.gitea.ldap "bind-password") .Values.gitea.ldap.bindPassword | quote }}
+              value: {{ .Values.gitea.ldap.bindPassword | quote }}
+            {{- end }}
             {{- end }}
             {{- if .Values.gitea.admin.existingSecret }}
             - name: GITEA_ADMIN_USERNAME

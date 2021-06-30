@@ -314,9 +314,6 @@ gitea:
 
 Like the admin user the LDAP settings can be updated, but also disabled or deleted.
 All LDAP values from <https://docs.gitea.io/en-us/command-line/#admin> are available.
-You can either use them in camel case or kebab case.
-
-camelCase:
 
 ```yaml
   gitea:
@@ -334,25 +331,6 @@ camelCase:
       bindPassword: JustAnotherBindPw
       usernameAttribute: CN
       sshPublicKeyAttribute: sshPublicKey
-```
-
-kebab-case:
-
-```yaml
-  gitea:
-    ldap:
-      enabled: true
-      name: 'MyAwesomeGiteaLdap'
-      security-protocol: unencrypted
-      host: "127.0.0.1"
-      port: "389"
-      user-search-base: ou=Users,dc=example,dc=com
-      user-filter: sAMAccountName=%s
-      admin-filter: CN=Admin,CN=Group,DC=example,DC=com
-      email-attribute: mail
-      bind-dn: CN=ldap read,OU=Spezial,DC=example,DC=com
-      bind-password: JustAnotherBindPw
-      username-attribute: CN
 ```
 
 You can also use an existing secret to set the bindDn and bindPassword:
@@ -376,19 +354,16 @@ gitea:
 
 :warning: Some options are just flags and therefore don't any values. If they are defined in `gitea.ldap` configuration, they will be passed to the gitea cli without any value. Affected options:
 
-- notActive | not-active
-- skipTlsVerify | skip-tls-verify
-- allowDeactivateAll | allow-deactivate-all
-- synchronizeUsers | synchronize-users
-- attributesInBind | attributes-in-bind
+- notActive
+- skipTlsVerify
+- allowDeactivateAll
+- synchronizeUsers
+- attributesInBind
 
 ### OAuth2 Settings
 
 Like the admin user, OAuth2 settings can be updated and disabled but not deleted. Deleting OAuth2 settings has to be done in the ui.
 All OAuth2 values from <https://docs.gitea.io/en-us/command-line/#admin> are available.
-You can either use them in camel case or kebab case.
-
-camelCase:
 
 ```yaml
   gitea:
@@ -404,24 +379,6 @@ camelCase:
       #customTokenUrl:
       #customProfileUrl:
       #customEmailUrl:
-```
-
-kebab-case:
-
-```yaml
-  gitea:
-    oauth:
-      enabled: true
-      name: 'MyAwesomeGiteaOAuth'
-      provider: 'openidConnect'
-      key: 'hello'
-      secret: 'world'
-      auto-discover-url: 'https://gitea.example.com/.well-known/openid-configuration'
-      #use-custom-urls:
-      #custom-auth-url:
-      #custom-token-url:
-      #custom-profile-url:
-      #custom-email-url:
 ```
 
 ### Metrics and profiling
