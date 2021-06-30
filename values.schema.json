@@ -6,7 +6,8 @@
         "image",
         "service",
         "ingress",
-        "resources"
+        "resources",
+        "statefulset"
     ],
     "properties": {
         "replicaCount": {
@@ -229,6 +230,45 @@
         },
         "affinity": {
             "type": "object"
+        },
+        "statefulset": {
+            "type": "object",
+            "required": ["terminationGracePeriodSeconds"],
+            "properties": {
+                "env": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "value": {
+                                "type": "string"
+                            },
+                            "valueFrom": {
+                                "type": "object"
+                            }
+                        },
+                        "oneOf": [
+                            {
+                                "required": ["name", "value"]
+                            },
+                            {
+                                "required": ["name", "valueFrom"]
+                            }
+                        ],
+                        "additionalProperties": false
+                    }
+                },
+                "terminationGracePeriodSeconds": {
+                    "type": "integer"
+                },
+                "labels": {
+                    "type": "object"
+                }
+            },
+            "additionalProperties": false
         }
     },
     "additionalProperties": true
