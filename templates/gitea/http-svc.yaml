@@ -8,7 +8,7 @@ metadata:
     {{- toYaml .Values.service.http.annotations | nindent 4 }}
 spec:
   type: {{ .Values.service.http.type }}
-  {{- if and .Values.service.http.loadBalancerIP (eq .Values.service.http.type "LoadBalancer") }}
+  {{- if and (eq .Values.service.http.type "LoadBalancer") .Values.service.http.loadBalancerIP }}
   loadBalancerIP: {{ .Values.service.http.loadBalancerIP  }}
   {{- end }}
   {{- if .Values.service.http.loadBalancerSourceRanges }}
@@ -24,7 +24,7 @@ spec:
   {{- if .Values.service.http.externalTrafficPolicy }}
   externalTrafficPolicy: {{ .Values.service.http.externalTrafficPolicy }}
   {{- end }}
-  {{- if and .Values.service.http.clusterIP (eq .Values.service.http.type "ClusterIP") }}
+  {{- if and (eq .Values.service.http.type "ClusterIP") .Values.service.http.clusterIP }}
   clusterIP: {{ .Values.service.http.clusterIP }}
   {{- end }}
   ports:

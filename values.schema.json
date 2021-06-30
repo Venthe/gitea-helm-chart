@@ -3,7 +3,8 @@
     "required": [
         "replicaCount",
         "clusterDomain",
-        "image"
+        "image",
+        "service"
     ],
     "properties": {
         "replicaCount": {
@@ -73,6 +74,77 @@
                 },
                 "runAsUser": {
                     "type": "integer"
+                }
+            }
+        },
+        "service": {
+            "required": ["http", "ssh"],
+            "properties": {
+                "http": {
+                    "$ref": "#/properties/service/definitions/spec"
+                },
+                "ssh": {
+                    "$ref": "#/properties/service/definitions/spec"
+                }
+            },
+            "definitions": {
+                "spec": {
+                    "type": "object",
+                    "required": [
+                        "type",
+                        "port"
+                    ],
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": ["ExternalName", "ClusterIP", "NodePort", "LoadBalancer"]
+                        },
+                        "port": {
+                            "type": "integer"
+                        },
+                        "clusterIP": {
+                            "type": "string"
+                        },
+                        "loadBalancerIP": {
+                            "type": "string"
+                        },
+                        "nodePort": {
+                            "type": "string"
+                        },
+                        "externalTrafficPolicy": {
+                            "type": "string"
+                        },
+                        "externalIPs": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "required": ["name"],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "additionalProperties": false
+                            }
+                        },
+                        "loadBalancerSourceRanges": {
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "required": ["name"],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "additionalProperties": false
+                            }
+                        },
+                        "annotations": {
+                            "type": "object"
+                        }
+                    },
+                    "additionalProperties": false
                 }
             }
         }
