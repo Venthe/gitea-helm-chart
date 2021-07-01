@@ -8,7 +8,8 @@
         "ingress",
         "resources",
         "statefulset",
-        "persistence"
+        "persistence",
+        "signing"
     ],
     "properties": {
         "replicaCount": {
@@ -346,6 +347,25 @@
         },
         "initPreScript": {
             "type": "string"
+        },
+        "signing": {
+            "type": "object",
+            "required": ["enabled"],
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "gpgHome": {
+                    "type": "string"
+                }
+            },
+            "if": {
+                "properties": { "enabled": { "enum": [true] } }
+            },
+            "then": {
+                "properties": { "gpgHome": { "not": {"enum": [""]} } }
+            },
+            "additionalProperties": false
         }
     },
     "additionalProperties": true
