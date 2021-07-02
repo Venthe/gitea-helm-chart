@@ -386,7 +386,23 @@
                 "oauth": {},
                 "config": {},
                 "podAnnotations": {},
-                "database": {},
+                "database": {
+                    "type": "object",
+                    "required": ["builtIn"],
+                    "properties": {
+                        "builtIn": {
+                            "type": "object",
+                            "required": ["postgresql", "mysql", "mariadb"],
+                            "properties": {
+                                "postgresql": { "$ref": "#/properties/gitea/definitions/database-type" },
+                                "mysql": { "$ref": "#/properties/gitea/definitions/database-type" },
+                                "mariadb": { "$ref": "#/properties/gitea/definitions/database-type" }
+                            },
+                            "additionalProperties": false
+                        }
+                    },
+                    "additionalProperties": false
+                },
                 "cache": {
                     "type": "object",
                     "required": ["builtIn"],
@@ -431,6 +447,16 @@
                         }
                     },
                     "additionalProperties": true
+                },
+                "database-type": {
+                    "type": "object",
+                    "required": ["enabled"],
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        }
+                    },
+                    "additionalProperties": false
                 }
             }
         }
