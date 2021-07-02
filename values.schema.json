@@ -9,7 +9,8 @@
         "resources",
         "statefulset",
         "persistence",
-        "signing"
+        "signing",
+        "gitea"
     ],
     "properties": {
         "replicaCount": {
@@ -366,6 +367,56 @@
                 "properties": { "gpgHome": { "not": {"enum": [""]} } }
             },
             "additionalProperties": false
+        },
+        "gitea": {
+            "type": "object",
+            "required": [
+                "admin",
+                "metrics",
+                "ldap",
+                "oauth",
+                "config",
+                "database",
+                "cache"
+            ],
+            "properties": {
+                "admin": {},
+                "metrics": {},
+                "ldap": {},
+                "oauth": {},
+                "config": {},
+                "podAnnotations": {},
+                "database": {},
+                "cache": {},
+                "livenessProbe": { "$ref": "#/properties/gitea/definitions/probe"},
+                "readinessProbe": { "$ref": "#/properties/gitea/definitions/probe"},
+                "startupProbe": { "$ref": "#/properties/gitea/definitions/probe"},
+                "customLivenessProbe": { "$ref": "#/properties/gitea/definitions/probe"},
+                "customReadinessProbe": { "$ref": "#/properties/gitea/definitions/probe"},
+                "customStartupProbe": { "$ref": "#/properties/gitea/definitions/probe"}
+            },
+            "definitions": {
+                "probe": {
+                    "properties": {
+                        "initialDelaySeconds": {
+                            "type": "integer"
+                        },
+                        "timeoutSeconds": {
+                            "type": "integer"
+                        },
+                        "periodSeconds": {
+                            "type": "integer"
+                        },
+                        "successThreshold": {
+                            "type": "integer"
+                        },
+                        "failureThreshold": {
+                            "type": "integer"
+                        }
+                    },
+                    "additionalProperties": true
+                }
+            }
         }
     },
     "additionalProperties": true
