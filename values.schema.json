@@ -381,7 +381,29 @@
             ],
             "properties": {
                 "admin": {},
-                "metrics": {},
+                "metrics": {
+                    "type": "object",
+                    "required": ["enabled", "serviceMonitor"],
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "serviceMonitor": {
+                            "type": "object",
+                            "required": ["enabled"],
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean"
+                                },
+                                "additionalLabels": {
+                                    "type": "object"
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    },
+                    "additionalProperties": false
+                },
                 "ldap": {},
                 "oauth": {},
                 "config": { "type": "object" },
