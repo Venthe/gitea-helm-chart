@@ -384,8 +384,8 @@
                 "metrics": {},
                 "ldap": {},
                 "oauth": {},
-                "config": {},
-                "podAnnotations": {},
+                "config": { "type": "object" },
+                "podAnnotations": { "type": "object" },
                 "database": {
                     "type": "object",
                     "required": ["builtIn"],
