@@ -422,8 +422,75 @@
                     },
                     "additionalProperties": false
                 },
-                "ldap": {},
-                "oauth": {},
+                "ldap": {
+                    "type": "object",
+                    "required": ["enabled"],
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "existingSecret": {"type": "string"},
+                        "bindDn": {"type": "string"},
+                        "bindPassword": {"type": "string"},
+                        "name": {"type": "string"},
+                        "securityProtocol": {"type": "string", "enum": ["Unencrypted", "LDAPS", "StartTLS", "unencrypted", "ldaps", "starttls"]},
+                        "host": {"type": "string"},
+                        "port": {"type": "integer"},
+                        "userSearchBase": {"type": "string"},
+                        "userFilter": {"type": "string"},
+                        "emailAttribute": {"type": "string"},
+                        "adminFilter": {"type": "string"},
+                        "notActive": {"type": "string", "enum": [""]},
+                        "skipTlsVerify": {"type": "string", "enum": [""]},
+                        "allowDeactivateAll": {"type": "string", "enum": [""]},
+                        "synchronizeUsers": {"type": "string", "enum": [""]},
+                        "attributesInBind": {"type": "string", "enum": [""]},
+                        "firstnameAttribute": {"type": "string"},
+                        "surnameAttribute": {"type": "string"},
+                        "usernameAttribute": {"type": "string"}
+                    },
+                    "additionalProperties": false
+                },
+                "oauth": {
+                    "type": "object",
+                    "required": ["enabled"],
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "provider": {
+                            "type": "string"
+                        },
+                        "key": {
+                            "type": "string"
+                        },
+                        "secret": {
+                            "type": "string"
+                        },
+                        "autoDiscoverUrl": {
+                            "type": "string"
+                        },
+                        "useCustomUrls": {
+                            "type": "string"
+                        },
+                        "customAuthUrl": {
+                            "type": "string"
+                        },
+                        "customTokenUrl": {
+                            "type": "string"
+                        },
+                        "customProfileUrl": {
+                            "type": "string"
+                        },
+                        "customEmailUrl": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                },
                 "config": { "type": "object" },
                 "podAnnotations": { "type": "object" },
                 "database": {
