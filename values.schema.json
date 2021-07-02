@@ -380,7 +380,25 @@
                 "cache"
             ],
             "properties": {
-                "admin": {},
+                "admin": {
+                    "type": "object",
+                    "required": ["email"],
+                    "properties": {
+                        "existingSecret": {
+                            "type": "string"
+                        },
+                        "username": {
+                            "type": "string"
+                        },
+                        "password": {
+                            "type": "string"
+                        },
+                        "email": {
+                            "type": "string"
+                        }
+                    },
+                    "additionalProperties": false
+                },
                 "metrics": {
                     "type": "object",
                     "required": ["enabled", "serviceMonitor"],
