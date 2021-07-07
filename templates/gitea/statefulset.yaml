@@ -247,7 +247,6 @@ spec:
   {{- with .Values.persistence.existingClaim }}
             claimName: {{ tpl . $ }}
   {{- end }}
-    
   {{- else if not .Values.persistence.enabled }}
         - name: data
           emptyDir: {}
