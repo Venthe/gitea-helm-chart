@@ -33,6 +33,57 @@ Dependencies:
 * Helm 3.0+
 * PV provisioner for persistent data support
 
+## Chart upgrade from 3.x.x to 4.0.0
+
+:warning: The most recent 4.0.0 update brings some breaking changes. Please note the following changes in the Chart to upgrade successfully. :warning:
+
+### Ingress changes
+
+To provide a more flexible Ingress configuration we now support not only host settings but also provide configuration for the path and pathType. So this change changes the hosts from a simple string list, to a list containing a more complex object for more configuration.
+
+
+```diff
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+-  hosts:
+-    - git.example.com
++  hosts:
++    - host: git.example.com
++      paths:
++        - path: /
++          pathType: Prefix
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - git.example.com
+```
+
+If you want everything as it was before, you can simply add the following code to all your host entries.
+
+```yaml
+paths:
+  - path: /
+    pathType: Prefix
+```
+
+### Dropped kebab-case support
+
+In 3.x.x it was possible to provide an ldap configuration via kebab-case, this support has now been dropped and only camel case is supported.
+See [LDAP section](#ldap-settings) for more information.
+
+### Dependency update
+
+The chart comes with multiple databases and memcached as dependency, the latest release updated the dependencies.
+
+- memcached: 4.2.20 -> 5.9.0
+- postgresql: 9.7.2 -> 10.3.17
+- mariadb: 8.0.0 -> 9.3.6
+
+If you're using the builtin databases you will most likely redeploy the chart in order to update the database correctly.
+
 ## Gitea Version 1.14.X repository ROOT
 
 Previously the ROOT folder for the gitea repositories was located at /data/git/gitea-repositories
