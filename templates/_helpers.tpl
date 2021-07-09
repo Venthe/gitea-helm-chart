@@ -63,6 +63,13 @@ app.kubernetes.io/name: {{ include "gitea.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
+{{/*
+Network Policy labels
+*/}}
+{{- define "gitea.netpolLabels" -}}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
+
 {{- define "db.servicename" -}}
 {{- if .Values.gitea.database.builtIn.postgresql.enabled -}}
 {{- printf "%s-postgresql" .Release.Name -}}
