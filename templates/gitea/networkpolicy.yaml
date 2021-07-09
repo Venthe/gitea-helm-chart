@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "gitea.fullname" . }}-netpol
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "gitea.netpolLabels" . | nindent 6 }}
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          {{- include "gitea.netpolLabels" . | nindent 10 }}
+    - ipBlock:
+        cidr: 10.0.0.0/8
