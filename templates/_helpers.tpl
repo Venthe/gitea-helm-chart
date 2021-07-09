@@ -61,6 +61,37 @@ app.kubernetes.io/name: {{ include "gitea.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
+{{/*
+Network Policy labels
+*/}}
+{{- define "gitea.netpolLabels" -}}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
+
+{{- define "db.servicename" -}}
+{{- if .Values.gitea.database.builtIn.postgresql.enabled -}}
+{{- printf "%s-postgresql" .Release.Name -}}
+{{- else if .Values.gitea.database.builtIn.mysql.enabled -}}
+{{- printf "%s-mysql" .Release.Name -}}
+{{- else if .Values.gitea.database.builtIn.mariadb.enabled -}}
+{{- printf "%s-mariadb" .Release.Name -}}
+{{- else if ne .Values.gitea.config.database.DB_TYPE "sqlite3" -}}
+{{- $parts := split ":" .Values.gitea.config.database.HOST -}}
+{{- printf "%s %s" $parts._0 $parts._1 -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "db.port" -}}
+{{- if .Values.gitea.database.builtIn.postgresql.enabled -}}
+{{ .Values.postgresql.global.postgresql.servicePort }}
+{{- else if .Values.gitea.database.builtIn.mysql.enabled -}}
+{{ .Values.mysql.service.port }}
+{{- else if .Values.gitea.database.builtIn.mariadb.enabled -}}
+{{ .Values.mariadb.primary.service.port }}
+{{- else -}}
+{{- end -}}
+{{- end -}}
+
 {{- define "postgresql.dns" -}}
 {{- printf "%s-postgresql.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.postgresql.global.postgresql.servicePort -}}
 {{- end -}}
