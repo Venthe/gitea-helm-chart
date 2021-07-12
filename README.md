@@ -84,6 +84,11 @@ The chart comes with multiple databases and memcached as dependency, the latest 
 
 If you're using the builtin databases you will most likely redeploy the chart in order to update the database correctly.
 
+### Execution of initPreScript
+
+Generally spoken, this might not be a breaking change, but it is worth to be mentioned.  
+Prior to 4.0.0 only one init container was used to both setup directories and configure Gitea. As of now the actual Gitea configuration is separated from the other pre-execution. This also includes the execution of _initPreScript_. If you have such script, please be aware of this. Dynamically prepare the Gitea setup during execution by e.g. adding environment variables to the execution context won't work anymore.
+
 ## Gitea Version 1.14.X repository ROOT
 
 Previously the ROOT folder for the gitea repositories was located at /data/git/gitea-repositories
