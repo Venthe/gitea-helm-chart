@@ -508,7 +508,8 @@ Annotations can be added to the Gitea pod.
 |ingress.hosts[0].host | add hosts for ingress | git.example.com |
 |ingress.hosts[0].paths[0].path | add path for each ingress host | / |
 |ingress.hosts[0].paths[0].pathType | add ingress path type | Prefix |
-|ingress.tls|add ingress tls settings|[]|
+|ingress.tls| add ingress tls settings|[]|
+|ingress.className| add ingress class name. Only used in k8s 1.19+ | |
 
 ### Service
 
