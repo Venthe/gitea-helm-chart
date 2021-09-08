@@ -1,5 +1,6 @@
 ---
 kind: pipeline
+type: docker
 name: lint
 
 platform:
@@ -7,12 +8,18 @@ platform:
   arch: arm64
 
 steps:
-- name: lint
+- name: helm lint
   pull: always
   image: alpine:3.13
   commands:
-    - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing helm
-    - helm lint
+  - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing helm
+  - helm lint
+
+- name: markdown lint
+  pull: always
+  image: docker.io/volkerraschek/markdownlint:latest
+  commands:
+  - markdownlint *.md
 
 - name: discord
   pull: always
@@ -29,6 +36,7 @@ steps:
 
 ---
 kind: pipeline
+type: docker
 name: release-version
 
 platform:
@@ -37,33 +45,33 @@ platform:
 
 trigger:
   event:
-    - tag
+  - tag
 
 steps:
-  - name: generate-chart
-    pull: always
-    image: alpine:3.13
-    commands:
-      - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing helm
-      - apk add --no-cache curl
-      - helm dependency update
-      - helm package --version "${DRONE_TAG##v}" ./
-      - mkdir gitea
-      - mv gitea*.tgz gitea/
-      - curl -L -o gitea/index.yaml https://dl.gitea.io/charts/index.yaml
-      - helm repo index gitea/ --url https://dl.gitea.io/charts --merge gitea/index.yaml
+- name: generate-chart
+  pull: always
+  image: alpine:3.13
+  commands:
+    - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing helm
+    - apk add --no-cache curl
+    - helm dependency update
+    - helm package --version "${DRONE_TAG##v}" ./
+    - mkdir gitea
+    - mv gitea*.tgz gitea/
+    - curl -L -o gitea/index.yaml https://dl.gitea.io/charts/index.yaml
+    - helm repo index gitea/ --url https://dl.gitea.io/charts --merge gitea/index.yaml
 
-  - name: upload-chart
-    pull: always
-    image: plugins/s3:latest
-    settings:
-      bucket: gitea-artifacts
-      endpoint: https://storage.gitea.io
-      path_style: true
-      access_key:
-        from_secret: aws_access_key_id
-      secret_key:
-        from_secret: aws_secret_access_key
-      source: gitea/*
-      target: /charts
-      strip_prefix: gitea/
+- name: upload-chart
+  pull: always
+  image: plugins/s3:latest
+  settings:
+    bucket: gitea-artifacts
+    endpoint: https://storage.gitea.io
+    path_style: true
+    access_key:
+      from_secret: aws_access_key_id
+    secret_key:
+      from_secret: aws_secret_access_key
+    source: gitea/*
+    target: /charts
+    strip_prefix: gitea/
