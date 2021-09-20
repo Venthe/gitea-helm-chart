@@ -17,7 +17,9 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/gitea/config.yaml") . | sha256sum }}
-        checksum/ldap: {{ include "gitea.ldap_settings" . | sha256sum }}
+        {{- range $key, $value := .Values.gitea.ldap }}
+        checksum/ldap_{{ $key }}: {{ include "gitea.ldap_settings" (list $key $value) | sha256sum }}
+        {{- end }}
         checksum/oauth: {{ include "gitea.oauth_settings" . | sha256sum }}
         {{- with .Values.gitea.podAnnotations }}
         {{- toYaml . | nindent 8 }}
@@ -79,23 +81,25 @@ spec:
               value: /data
             - name: GITEA_TEMP
               value: /tmp/gitea
-            {{- if .Values.gitea.ldap.enabled }}
-            {{- if .Values.gitea.ldap.existingSecret }}
-            - name: GITEA_LDAP_BIND_DN
+            {{- if .Values.gitea.ldap }}
+            {{- range $key, $value := .Values.gitea.ldap }}
+            {{- if $value.existingSecret }}
+            - name: GITEA_LDAP_BIND_DN_{{ $key }}
               valueFrom:
                 secretKeyRef:
                   key:  bindDn
-                  name: {{ .Values.gitea.ldap.existingSecret }}
-            - name: GITEA_LDAP_PASSWORD
+                  name: {{ $value.existingSecret }}
+            - name: GITEA_LDAP_PASSWORD_{{ $key }}
               valueFrom:
                 secretKeyRef:
                   key:  bindPassword
-                  name: {{ .Values.gitea.ldap.existingSecret }}
+                  name: {{ $value.existingSecret }}
             {{- else }}
-            - name: GITEA_LDAP_BIND_DN
-              value: {{ .Values.gitea.ldap.bindDn | quote }}
-            - name: GITEA_LDAP_PASSWORD
-              value: {{ .Values.gitea.ldap.bindPassword | quote }}
+            - name: GITEA_LDAP_BIND_DN_{{ $key }}
+              value: {{ $value.bindDn | quote }}
+            - name: GITEA_LDAP_PASSWORD_{{ $key }}
+              value: {{ $value.bindPassword | quote }}
+            {{- end }}
             {{- end }}
             {{- end }}
             {{- if .Values.gitea.admin.existingSecret }}

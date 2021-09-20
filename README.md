@@ -376,19 +376,18 @@ All LDAP values from <https://docs.gitea.io/en-us/command-line/#admin> are avail
 ```yaml
   gitea:
     ldap:
-      enabled: true
-      name: 'MyAwesomeGiteaLdap'
-      securityProtocol: unencrypted
-      host: "127.0.0.1"
-      port: "389"
-      userSearchBase: ou=Users,dc=example,dc=com
-      userFilter: sAMAccountName=%s
-      adminFilter: CN=Admin,CN=Group,DC=example,DC=com
-      emailAttribute: mail
-      bindDn: CN=ldap read,OU=Spezial,DC=example,DC=com
-      bindPassword: JustAnotherBindPw
-      usernameAttribute: CN
-      sshPublicKeyAttribute: sshPublicKey
+      MyAwesomeGiteaLdap:
+        securityProtocol: unencrypted
+        host: "127.0.0.1"
+        port: "389"
+        userSearchBase: ou=Users,dc=example,dc=com
+        userFilter: sAMAccountName=%s
+        adminFilter: CN=Admin,CN=Group,DC=example,DC=com
+        emailAttribute: mail
+        bindDn: CN=ldap read,OU=Spezial,DC=example,DC=com
+        bindPassword: JustAnotherBindPw
+        usernameAttribute: CN
+        sshPublicKeyAttribute: sshPublicKey
 ```
 
 You can also use an existing secret to set the bindDn and bindPassword:
@@ -407,7 +406,8 @@ stringData:
 ```yaml
 gitea:
     ldap:
-      existingSecret: gitea-ldap-secret
+      MyAwesomeLdap:
+        existingSecret: gitea-ldap-secret
 ```
 
 :warning: Some options are just flags and therefore don't any values. If they are defined in `gitea.ldap` configuration, they will be passed to the gitea cli without any value. Affected options:

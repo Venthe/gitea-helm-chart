@@ -84,24 +84,28 @@ stringData:
     configure_admin_user
     {{- end }}
 
-    {{- if .Values.gitea.ldap.enabled }}
     function configure_ldap() {
-      local LDAP_NAME={{ (printf "%s" .Values.gitea.ldap.name) | squote }}
+      {{- if .Values.gitea.ldap }}
+      {{- range $key, $value := .Values.gitea.ldap }}
+      local LDAP_NAME={{ (printf "%s" $key) | squote }}
       local GITEA_AUTH_ID=$(gitea admin auth list --vertical-bars | grep -E "\|${LDAP_NAME}\s+\|" | grep -iE '\|LDAP \(via BindDN\)\s+\|' | awk -F " "  "{print \$1}")
 
       if [[ -z "${GITEA_AUTH_ID}" ]]; then
         echo "No ldap configuration found with name '${LDAP_NAME}'. Installing it now..."
-        gitea admin auth add-ldap {{- include "gitea.ldap_settings" . | indent 1 }}
+        gitea admin auth add-ldap {{- include "gitea.ldap_settings" (list $key $value) | indent 1 }}
         echo '...installed.'
       else
         echo "Existing ldap configuration with name '${LDAP_NAME}': '${GITEA_AUTH_ID}'. Running update to sync settings..."
-        gitea admin auth update-ldap --id "${GITEA_AUTH_ID}" {{- include "gitea.ldap_settings" . | indent 1 }}
+        gitea admin auth update-ldap --id "${GITEA_AUTH_ID}" {{- include "gitea.ldap_settings" (list $key $value) | indent 1 }}
         echo '...sync settings done.'
       fi
+      {{- end }}
+      {{- else }}
+        echo 'no ldap configuration... skipping.'
+      {{- end }}
     }
 
     configure_ldap
-    {{- end }}
 
     {{- if .Values.gitea.oauth.enabled }}
     function configure_oauth() {
