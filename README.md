@@ -86,7 +86,8 @@ If you're using the builtin databases you will most likely redeploy the chart in
 
 ### Execution of initPreScript
 
-Generally spoken, this might not be a breaking change, but it is worth to be mentioned.  
+Generally spoken, this might not be a breaking change, but it is worth to be mentioned.
+
 Prior to 4.0.0 only one init container was used to both setup directories and configure Gitea. As of now the actual Gitea configuration is separated from the other pre-execution. This also includes the execution of _initPreScript_. If you have such script, please be aware of this. Dynamically prepare the Gitea setup during execution by e.g. adding environment variables to the execution context won't work anymore.
 
 ## Gitea Version 1.14.X repository ROOT
@@ -98,7 +99,8 @@ This chart will set the gitea.config.repository.ROOT value default to /data/git/
 
 ## Configure Commit Signing
 
-When using the rootless image the gpg key folder was is not persistent by default. If you consider using signed commits for internal Gitea activities (e.g. initial commit), you'd need to provide a signing key. Prior to [PR 186](https://gitea.com/gitea/helm-chart/pulls/186), imported keys had to be re-imported once the container got replaced by another.  
+When using the rootless image the gpg key folder was is not persistent by default. If you consider using signed commits for internal Gitea activities (e.g. initial commit), you'd need to provide a signing key. Prior to [PR 186](https://gitea.com/gitea/helm-chart/pulls/186), imported keys had to be re-imported once the container got replaced by another.
+
 The mentioned PR introduced a new configuration object `signing` allowing you to configure prerequisites for commit signing. By default this section is disabled to maintain backwards compatibility.
 
 ```yaml
@@ -627,3 +629,16 @@ The following parameters are the defaults set by this chart
 |mariadb.auth.rootPassword|Password for the root user.|gitea|
 |mariadb.primary.service.port|Port to connect to mariadb service|3306|
 |mariadb.primary.persistence.size|Persistence size for mariadb |10Gi|
+
+## Local development & testing
+
+For local development and testing of pull requests, the following workflow can be used:
+
+1. Install `minikube` and `helm`.
+2. Start a `minikube` cluster via `minikube start`.
+3. From the `gitea/helm-chart` directory execute `helm install --dependency-update gitea . -f values.yaml`.
+   This will install the dependencies listed in `Chart.yml` and deploy the current state of the helm chart found locally.
+   If you want to test a branch, make sure to switch to the respective branch first.
+4. Gitea is now deployed in `minikube`.
+   To access it, it's port needs to be forwarded first from `minikube` to localhost first via `kubectl --namespace default port-forward svc/gitea-http 3000:3000`.
+   Now Gitea is accessible at http://localhost:3000.
