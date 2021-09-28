@@ -17,8 +17,8 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/gitea/config.yaml") . | sha256sum }}
-        {{- range $key, $value := .Values.gitea.ldap }}
-        checksum/ldap_{{ $key }}: {{ include "gitea.ldap_settings" (list $key $value) | sha256sum }}
+        {{- range $idx, $value := .Values.gitea.ldap }}
+        checksum/ldap_{{ $idx }}: {{ include "gitea.ldap_settings" (list $idx $value) | sha256sum }}
         {{- end }}
         checksum/oauth: {{ include "gitea.oauth_settings" . | sha256sum }}
         {{- with .Values.gitea.podAnnotations }}
@@ -82,22 +82,22 @@ spec:
             - name: GITEA_TEMP
               value: /tmp/gitea
             {{- if .Values.gitea.ldap }}
-            {{- range $key, $value := .Values.gitea.ldap }}
+            {{- range $idx, $value := .Values.gitea.ldap }}
             {{- if $value.existingSecret }}
-            - name: GITEA_LDAP_BIND_DN_{{ $key }}
+            - name: GITEA_LDAP_BIND_DN_{{ $idx }}
               valueFrom:
                 secretKeyRef:
                   key:  bindDn
                   name: {{ $value.existingSecret }}
-            - name: GITEA_LDAP_PASSWORD_{{ $key }}
+            - name: GITEA_LDAP_PASSWORD_{{ $idx }}
               valueFrom:
                 secretKeyRef:
                   key:  bindPassword
                   name: {{ $value.existingSecret }}
             {{- else }}
-            - name: GITEA_LDAP_BIND_DN_{{ $key }}
+            - name: GITEA_LDAP_BIND_DN_{{ $idx }}
               value: {{ $value.bindDn | quote }}
-            - name: GITEA_LDAP_PASSWORD_{{ $key }}
+            - name: GITEA_LDAP_PASSWORD_{{ $idx }}
               value: {{ $value.bindPassword | quote }}
             {{- end }}
             {{- end }}

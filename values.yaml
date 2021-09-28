@@ -154,20 +154,20 @@ gitea:
       #  additionalLabels:
       #    prometheus-release: prom1
 
-  ldap: {}
-    #Name:
-      #existingSecret: gitea-ldap-secret
-      #securityProtocol:
-      #host:
-      #port:
-      #userSearchBase:
-      #userFilter:
-      #adminFilter:
-      #emailAttribute:
-      #bindDn:
-      #bindPassword:
-      #usernameAttribute:
-      #sshPublicKeyAttribute:
+  ldap: []
+    # - name: "LDAP 1"
+    #  existingSecret:
+    #  securityProtocol:
+    #  host:
+    #  port:
+    #  userSearchBase:
+    #  userFilter:
+    #  adminFilter:
+    #  emailAttribute:
+    #  bindDn:
+    #  bindPassword:
+    #  usernameAttribute:
+    #  sshPublicKeyAttribute:
 
   oauth:
     enabled: false

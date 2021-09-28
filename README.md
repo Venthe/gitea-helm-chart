@@ -370,13 +370,15 @@ gitea:
 
 ### LDAP Settings
 
-Like the admin user the LDAP settings can be updated, but also disabled or deleted.
+Like the admin user the LDAP settings can be updated.
 All LDAP values from <https://docs.gitea.io/en-us/command-line/#admin> are available.
+
+Multiple LDAP sources can be configured with additional LDAP list items.
 
 ```yaml
   gitea:
     ldap:
-      MyAwesomeGiteaLdap:
+      - name: MyAwesomeGiteaLdap
         securityProtocol: unencrypted
         host: "127.0.0.1"
         port: "389"
@@ -406,8 +408,8 @@ stringData:
 ```yaml
 gitea:
     ldap:
-      MyAwesomeLdap:
-        existingSecret: gitea-ldap-secret
+      - existingSecret: gitea-ldap-secret
+        ...
 ```
 
 :warning: Some options are just flags and therefore don't any values. If they are defined in `gitea.ldap` configuration, they will be passed to the gitea cli without any value. Affected options:

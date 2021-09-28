@@ -108,7 +108,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "gitea.ldap_settings" -}}
-{{- $name := index . 0 }}
+{{- $idx := index . 0 }}
 {{- $values := index . 1 }}
 
 {{- if not (hasKey $values "bindDn") -}}
@@ -119,17 +119,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- $_ := set $values "bindPassword" "" -}}
 {{- end -}}
 
-{{- if not (hasKey $values "name") -}}
-{{- $_ := set $values "name" $name -}}
-{{- end -}}
-
 {{- $flags := list "notActive" "skipTlsVerify" "allowDeactivateAll" "synchronizeUsers" "attributesInBind" -}}
 {{- range $key, $val := $values -}}
 {{- if and (ne $key "enabled") (ne $key "existingSecret") -}}
 {{- if eq $key "bindDn" -}}
-{{- printf "--%s \"${GITEA_LDAP_BIND_DN_%s}\" " ($key | kebabcase) ($name) -}}
+{{- printf "--%s \"${GITEA_LDAP_BIND_DN_%d}\" " ($key | kebabcase) ($idx) -}}
 {{- else if eq $key "bindPassword" -}}
-{{- printf "--%s \"${GITEA_LDAP_PASSWORD_%s}\" " ($key | kebabcase) ($name) -}}
+{{- printf "--%s \"${GITEA_LDAP_PASSWORD_%d}\" " ($key | kebabcase) ($idx) -}}
 {{- else if eq $key "port" -}}
 {{- printf "--%s %d " $key ($val | int) -}}
 {{- else if has $key $flags -}}
