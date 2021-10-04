@@ -389,7 +389,7 @@ Multiple LDAP sources can be configured with additional LDAP list items.
         bindDn: CN=ldap read,OU=Spezial,DC=example,DC=com
         bindPassword: JustAnotherBindPw
         usernameAttribute: CN
-        sshPublicKeyAttribute: sshPublicKey
+        publicSSHKeyAttribute: publicSSHKey
 ```
 
 You can also use an existing secret to set the bindDn and bindPassword:

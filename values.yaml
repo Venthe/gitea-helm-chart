@@ -167,7 +167,7 @@ gitea:
     #  bindDn:
     #  bindPassword:
     #  usernameAttribute:
-    #  sshPublicKeyAttribute:
+    #  publicSSHKeyAttribute:
 
   oauth:
     enabled: false
