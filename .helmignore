@@ -22,3 +22,4 @@
 .vscode/
 #charts/
 #Chart.lock
+values2.yaml

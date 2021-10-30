@@ -254,6 +254,33 @@ gitea:
   #   successThreshold: 1
   #   failureThreshold: 10
 
+# Customozing your gitea instance.
+# https://docs.gitea.io/en-us/customizing-gitea/#customizing-gitignores-labels-licenses-locales-and-readmes
+customizing:
+  gitignores: {}
+    # myGitignore: |
+    # .DS_Store
+    # .vscode
+    # .swap
+  labels: {}
+    # myLabels: |
+    #   #ee0701 bug ; Something is not working
+    #   #cccccc duplicate ; This issue or pull request already exists
+    #   #84b6eb enhancement ; New feature
+    #   #128a0c help wanted ; Need some help
+    #   #e6e6e6 invalid ; Something is wrong
+    #   #cc317c question ; More information is needed
+    #   #ffffff wontfix ; This won't be fixed
+    #   #598546 renovate/rebase ; Rebase branch on base branch via renovate
+  licenses: {}
+    # proprietaryCompanyLicense: |
+    #   My company license
+  readmes: {}
+    # myReadme: |
+    #   # {Name}
+    #
+    #   Great application for ...
+
 memcached:
   service:
     port: 11211

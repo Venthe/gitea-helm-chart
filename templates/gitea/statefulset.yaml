@@ -217,6 +217,22 @@ spec:
               mountPath: /tmp
             - name: data
               mountPath: /data
+            {{- if .Values.customizing.gitignores }}
+            - name: template-gitignores
+              mountPath: /data/gitea/options/gitignore
+            {{- end}}
+            {{- if .Values.customizing.labels }}
+            - name: template-labels
+              mountPath: /data/gitea/options/label
+            {{- end }}
+            {{- if .Values.customizing.licenses }}
+            - name: template-licenses
+              mountPath: /data/gitea/options/license
+            {{- end }}
+            {{- if .Values.customizing.readmes }}
+            - name: template-readmes
+              mountPath: /data/gitea/options/readme
+            {{- end }}
             {{- if .Values.extraVolumeMounts }}
             {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
             {{- end }}
@@ -240,6 +256,26 @@ spec:
         - name: config
           secret:
             secretName: {{ include "gitea.fullname" . }}
+        {{- if .Values.customizing.gitignores }}
+        - name: template-gitignores
+          configMap:
+            name: {{ include "gitea.fullname" . }}-template-gitignores
+        {{- end }}
+        {{- if .Values.customizing.labels }}
+        - name: template-labels
+          configMap:
+            name: {{ include "gitea.fullname" . }}-template-labels
+        {{- end }}
+        {{- if .Values.customizing.licenses }}
+        - name: template-licenses
+          configMap:
+            name: {{ include "gitea.fullname" . }}-template-licenses
+        {{- end }}
+        {{- if .Values.customizing.readmes }}
+        - name: template-readmes
+          configMap:
+            name: {{ include "gitea.fullname" . }}-template-readmes
+        {{- end }}
         {{- if .Values.extraVolumes }}
         {{- toYaml .Values.extraVolumes | nindent 8 }}
         {{- end }}

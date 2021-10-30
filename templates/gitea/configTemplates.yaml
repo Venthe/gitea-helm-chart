@@ -1,0 +1,63 @@
+{{- if .Values.customizing.gitignores }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gitea.fullname" . }}-template-gitignores
+  labels:
+    {{- include "gitea.labels" . | nindent 4 }}
+data:
+
+  {{- /* add .gitignore template files */ -}}
+  {{- range $key, $value := .Values.customizing.gitignores }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+
+{{- if .Values.customizing.labels }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gitea.fullname" . }}-template-labels
+  labels:
+    {{- include "gitea.labels" . | nindent 4 }}
+data:
+
+  {{- /* add .gitignore template files */ -}}
+  {{- range $key, $value := .Values.customizing.labels }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+
+{{- if .Values.customizing.licenses }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gitea.fullname" . }}-template-licenses
+  labels:
+    {{- include "gitea.labels" . | nindent 4 }}
+data:
+
+  {{- /* add .gitignore template files */ -}}
+  {{- range $key, $value := .Values.customizing.licenses }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+
+{{- if .Values.customizing.readmes }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gitea.fullname" . }}-template-readmes
+  labels:
+    {{- include "gitea.labels" . | nindent 4 }}
+data:
+
+  {{- /* add .gitignore template files */ -}}
+  {{- range $key, $value := .Values.customizing.readmes }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
+{{- end }}

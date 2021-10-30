@@ -468,6 +468,71 @@ Annotations can be added to the Gitea pod.
     podAnnotations: {}
 ```
 
+### Customizing
+
+It is possible to customize `.gitignore`, label templates, licenses, locales and
+README files. A complete documentation is [online](https://docs.gitea.io/en-us/customizing-gitea/#customizing-gitignores-labels-licenses-locales-and-readmes) available.
+
+#### .gitignore templates
+
+An example how to configure a custom gitignore file named `myGitignore`, which
+can be selected during the creation of a new repository as `.gitignore` template.
+
+```yaml
+customizing:
+  gitignores:
+    myGitignore: |
+    .DS_Store
+    .vscode
+    .swap
+```
+
+#### Template for repository labels
+
+An example how to configure a custom label file named `myLabels`, which contains
+custom labels. This template labels can be imported via the settings of the
+repository labels.
+
+```yaml
+customizing:
+  gitignores:
+    myLabels: |
+      #ee0701 bug ; Something is not working
+      #cccccc duplicate ; This issue or pull request already exists
+      #84b6eb enhancement ; New feature
+      #128a0c help wanted ; Need some help
+      #e6e6e6 invalid ; Something is wrong
+      #cc317c question ; More information is needed
+      #ffffff wontfix ; This won't be fixed
+      #598546 renovate/rebase ; Rebase branch on base branch via renovate
+```
+
+#### Lizense templates
+
+An example how to configure a custom licenses which can be selected during the
+creation of a new repository as template.
+
+```yaml
+customizing:
+  licenses:
+    proprietaryCompanyLicense: |
+      My company license
+```
+
+#### README templates
+
+An example how to configure a custom README which can be selected during the
+creation of a new repository as template.
+
+```yaml
+customizing:
+  readmes: {}
+    myReadme: |
+      # {Name}
+
+      Great application for ...
+```
+
 ## Configuration
 
 ### Others
