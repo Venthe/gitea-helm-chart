@@ -60,8 +60,31 @@ spec:
               mountPath: /usr/sbin
             - name: temp
               mountPath: /tmp
+            - name: data
+              mountPath: /data
+            {{- if .Values.extraVolumeMounts }}
+            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
+            {{- end }}
+        - name: init-app-ini
+          image: "{{ include "gitea.image" . }}"
+          command: ["/usr/sbin/config_environment.sh"]
+          env:
+            - name: GITEA_APP_INI
+              value: /data/gitea/conf/app.ini
+            - name: GITEA_CUSTOM
+              value: /data/gitea
+            - name: GITEA_WORK_DIR
+              value: /data
+            - name: GITEA_TEMP
+              value: /tmp/gitea
+            {{- if .Values.statefulset.env }}
+            {{- toYaml .Values.statefulset.env | nindent 12 }}
+            {{- end }}
+          volumeMounts:
             - name: config
-              mountPath: /etc/gitea/conf
+              mountPath: /usr/sbin
+            - name: temp
+              mountPath: /tmp
             - name: data
               mountPath: /data
             {{- if .Values.extraVolumeMounts }}
@@ -240,6 +263,7 @@ spec:
         - name: config
           secret:
             secretName: {{ include "gitea.fullname" . }}
+            defaultMode: 0777
         {{- if .Values.extraVolumes }}
         {{- toYaml .Values.extraVolumes | nindent 8 }}
         {{- end }}
