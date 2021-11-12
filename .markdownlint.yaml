@@ -135,6 +135,8 @@ MD044:
   - MySQL
   - Memcached
   - Prometheus
+  - Git
+  - GitOps
   # Include code blocks
   code_blocks: false
 

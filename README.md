@@ -272,6 +272,54 @@ The Prometheus `/metrics` endpoint is disabled by default.
 ENABLED = false
 ```
 
+### Additional _app.ini_ settings
+
+> **The [generic](https://docs.gitea.io/en-us/config-cheat-sheet/#overall-default)
+section cannot be defined that way.**
+
+Some settings inside _app.ini_ (like passwords or whole authentication configurations)
+must be considered sensitive and therefore should not be passed via plain text
+inside the _values.yaml_ file. In times of _GitOps_ the values.yaml could be stored
+in a Git repository where sensitive data should never be accessible.
+
+The Helm Chart supports this approach and let the user define custom sources like
+Kubernetes Secrets to be loaded as environment variables during _app.ini_ creation
+or update.
+
+```yaml
+gitea:
+  additionalConfigSources:
+    - name: oauth
+      secret:
+        secretName: gitea-app-ini-oauth
+    - name: some-additionals
+      configMap:
+        name: gitea-app-ini-plaintext
+```
+
+This would mount the two additional volumes (`oauth` and `some-additionals`)
+from different sources to the init containerwhere the _app.ini_ gets updated.
+All files mounted that way will be read and converted to environment variables
+and then added to the _app.ini_ using [environment-to-ini](https://github.com/go-gitea/gitea/tree/main/contrib/environment-to-ini).
+
+The key of such additional source represents the section inside the _app.ini_.
+The value for each key can be multiline ini-like definitions.
+
+In example, the referenced `gitea-app-ini-plaintext` could look like this.
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gitea-app-ini-plaintext
+data:
+  session: |
+    PROVIDER=memory
+    SAME_SITE=strict
+  cron.archive_cleanup: |
+    ENABLED=true
+```
+
 ### External Database
 
 An external Database can be used instead of builtIn PostgreSQL or MySQL.
