@@ -138,7 +138,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "gitea.oauth_settings" -}}
-{{- range $key, $val := .Values.gitea.oauth -}}
+{{- $idx := index . 0 }}
+{{- $values := index . 1 }}
+
+{{- range $key, $val := $values -}}
 {{- if ne $key "enabled" -}}
 {{- printf "--%s %s " ($key | kebabcase) ($val | squote) -}}
 {{- end -}}

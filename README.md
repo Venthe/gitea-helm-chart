@@ -87,6 +87,13 @@ gitea:
   podAnnotations: {}
 ```
 
+### Multiple OAuth authentication sources
+
+With `5.0.0` of this Chart it is now possible to configure Gitea with multiple
+OAuth sources. As a result, you need to update an existing OAuth configuration
+in your customized `values.yaml` by replacing the object with settings to a list
+of settings objects. See [OAuth2 Settings](#oauth-settings) section for details.
+
 ## Chart upgrade from 3.x.x to 4.0.0
 
 :warning: The most recent `4.0.0` update brings some breaking changes. Please note
@@ -521,20 +528,21 @@ deleted. Deleting OAuth2 settings has to be done in the ui. All OAuth2 values,
 which are documented [here](https://docs.gitea.io/en-us/command-line/#admin), are
 available.
 
+Multiple OAuth2 sources can be configured with additional OAuth list items.
+
 ```yaml
 gitea:
   oauth:
-    enabled: true
-    name: 'MyAwesomeGiteaOAuth'
-    provider: 'openidConnect'
-    key: 'hello'
-    secret: 'world'
-    autoDiscoverUrl: 'https://gitea.example.com/.well-known/openid-configuration'
-    #useCustomUrls:
-    #customAuthUrl:
-    #customTokenUrl:
-    #customProfileUrl:
-    #customEmailUrl:
+    - name: 'MyAwesomeGiteaOAuth'
+      provider: 'openidConnect'
+      key: 'hello'
+      secret: 'world'
+      autoDiscoverUrl: 'https://gitea.example.com/.well-known/openid-configuration'
+      #useCustomUrls:
+      #customAuthUrl:
+      #customTokenUrl:
+      #customProfileUrl:
+      #customEmailUrl:
 ```
 
 ### Metrics and profiling

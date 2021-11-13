@@ -20,7 +20,9 @@ spec:
         {{- range $idx, $value := .Values.gitea.ldap }}
         checksum/ldap_{{ $idx }}: {{ include "gitea.ldap_settings" (list $idx $value) | sha256sum }}
         {{- end }}
-        checksum/oauth: {{ include "gitea.oauth_settings" . | sha256sum }}
+        {{- range $idx, $value := .Values.gitea.oauth }}
+        checksum/oauth_{{ $idx }}: {{ include "gitea.oauth_settings" (list $idx $value) | sha256sum }}
+        {{- end }}
         {{- with .Values.gitea.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
