@@ -47,7 +47,7 @@ Please note the following changes in the Chart to upgrade successfully. :warning
 The app.ini generation has changed and now utilizes the environment-to-ini
 script provided by newer Gitea versions.
 
-:boom: The Helm Chart now requires Gitea versions of at least 1.11.0.
+> :boom: The Helm Chart now requires Gitea versions of at least 1.11.0.
 
 This change ensures, that the app.ini is now persistent.
 
@@ -61,10 +61,31 @@ automatically in certain situations:
 - Existing installs: The secrets won't be deployed, neither via
   configuration nor via auto generation. We explicitly prevent to set new secrets.
 
-:rotating_light: It would be possible to set new secret keys manually by entering
+> :rotating_light: It would be possible to set new secret keys manually by entering
 the running container and rewriting the app.ini by hand. However, this it is
 not advisable to do so for existing installations. Certain settings like
 _LDAP_ would not be readable anymore.
+
+### Probes
+
+> :boom: `gitea.customLivenessProbe`, `gitea.customReadinessProbe` and `gitea.customStartupProbe`
+have been removed.
+
+They are replaced by the settings `gitea.livenessProbe`, `gitea.readinessProbe`
+and `gitea.startupProbe` which are now fully configurable and used _as-is_ for
+a Chart deployment.
+If you have customized their values instead of using the `custom` prefixed settings,
+please ensure that you remove the `enabled` property from each of them.
+
+In case you want to disable one of these probes, let's say the `livenessProbe`, add
+the following to your values. The `podAnnotation` is just there to have a bit more
+context.
+
+```diff
+gitea:
++ livenessProbe:
+  podAnnotations: {}
+```
 
 ## Chart upgrade from 3.x.x to 4.0.0
 
@@ -635,29 +656,44 @@ gitea:
 Configure Liveness, Readiness and Startup
 [Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
 
+#### Liveness probe
+
+- Default status: Enabled
+- Default action: tcp socket connect
+
 | Parameter                                  | Description                                                          | Default |
 | ------------------------------------------ | -------------------------------------------------------------------- | ------- |
-| `gitea.livenessProbe.enabled`              | Enable liveness probe                                                | `true`  |
 | `gitea.livenessProbe.initialDelaySeconds`  | Delay before probe start                                             | `200`   |
 | `gitea.livenessProbe.timeoutSeconds`       | probe timeout                                                        | `1`     |
 | `gitea.livenessProbe.periodSeconds`        | period between probes                                                | `10`    |
 | `gitea.livenessProbe.successThreshold`     | Minimum consecutive success probes                                   | `1`     |
 | `gitea.livenessProbe.failureThreshold`     | Minimum consecutive error probes                                     | `10`    |
-| `gitea.readinessProbe.enabled`             | Enable readiness probe                                               | `true`  |
+
+#### Readiness probe
+
+- Default status: Enabled
+- Default action: tcp socket connect
+
+| Parameter                                  | Description                                                          | Default |
+| ------------------------------------------ | -------------------------------------------------------------------- | ------- |
 | `gitea.readinessProbe.initialDelaySeconds` | Delay before probe start                                             | `5`     |
 | `gitea.readinessProbe.timeoutSeconds`      | probe timeout                                                        | `1`     |
 | `gitea.readinessProbe.periodSeconds`       | period between probes                                                | `10`    |
 | `gitea.readinessProbe.successThreshold`    | Minimum consecutive success probes                                   | `1`     |
 | `gitea.readinessProbe.failureThreshold`    | Minimum consecutive error probes                                     | `3`     |
-| `gitea.startupProbe.enabled`               | Enable startup probe                                                 | `false` |
+
+#### Startup probe
+
+- Default status: Disabled
+- Default action: tcp socket connect
+
+| Parameter                                  | Description                                                          | Default |
+| ------------------------------------------ | -------------------------------------------------------------------- | ------- |
 | `gitea.startupProbe.initialDelaySeconds`   | Delay before probe start                                             | `60`    |
 | `gitea.startupProbe.timeoutSeconds`        | probe timeout                                                        | `1`     |
 | `gitea.startupProbe.periodSeconds`         | period between probes                                                | `10`    |
 | `gitea.startupProbe.successThreshold`      | Minimum consecutive success probes                                   | `1`     |
 | `gitea.startupProbe.failureThreshold`      | Minimum consecutive error probes                                     | `10`    |
-| `gitea.customLivenessProbe`                | Custom liveness probe (needs `gitea.livenessProbe.enabled: false`)   |         |
-| `gitea.customReadinessProbe`               | Custom readiness probe (needs `gitea.readinessProbe.enabled: false`) |         |
-| `gitea.customStartupProbe`                 | Custom startup probe (needs `gitea.startupProbe.enabled: false`)     |         |
 
 ### Memcached BuiltIn
 

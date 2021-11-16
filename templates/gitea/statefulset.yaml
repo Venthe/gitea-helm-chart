@@ -192,44 +192,17 @@ spec:
             - name: profiler
               containerPort: 6060
             {{- end }}
-          {{- if .Values.gitea.livenessProbe.enabled }}
+          {{- if .Values.gitea.livenessProbe }}
           livenessProbe:
-            tcpSocket:
-              port: http
-            initialDelaySeconds: {{ .Values.gitea.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.gitea.livenessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.gitea.livenessProbe.timeoutSeconds }}
-            successThreshold: {{ .Values.gitea.livenessProbe.successThreshold }}
-            failureThreshold: {{ .Values.gitea.livenessProbe.failureThreshold }}
-          {{- else if .Values.gitea.customLivenessProbe }}
-          livenessProbe:
-            {{- toYaml .Values.gitea.customLivenessProbe | nindent 12 }}
+            {{- toYaml .Values.gitea.livenessProbe | nindent 12 }}
           {{- end }}
-          {{- if .Values.gitea.readinessProbe.enabled }}
+          {{- if .Values.gitea.readinessProbe }}
           readinessProbe:
-            tcpSocket:
-              port: http
-            initialDelaySeconds: {{ .Values.gitea.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.gitea.readinessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.gitea.readinessProbe.timeoutSeconds }}
-            successThreshold: {{ .Values.gitea.readinessProbe.successThreshold }}
-            failureThreshold: {{ .Values.gitea.readinessProbe.failureThreshold }}
-          {{- else if .Values.gitea.customReadinessProbe }}
-          readinessProbe:
-            {{- toYaml .Values.gitea.customReadinessProbe | nindent 12 }}
+            {{- toYaml .Values.gitea.readinessProbe | nindent 12 }}
           {{- end }}
-          {{- if .Values.gitea.startupProbe.enabled }}
+          {{- if .Values.gitea.startupProbe }}
           startupProbe:
-            tcpSocket:
-              port: http
-            initialDelaySeconds: {{ .Values.gitea.startupProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.gitea.startupProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.gitea.startupProbe.timeoutSeconds }}
-            successThreshold: {{ .Values.gitea.startupProbe.successThreshold }}
-            failureThreshold: {{ .Values.gitea.startupProbe.failureThreshold }}
-          {{- else if .Values.gitea.customStartupProbe }}
-          startupProbe:
-            {{- toYaml .Values.gitea.customStartupProbe | nindent 12 }}
+            {{- toYaml .Values.gitea.startupProbe | nindent 12 }}
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

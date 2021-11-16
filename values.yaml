@@ -207,49 +207,32 @@ gitea:
     builtIn:
       enabled: true
 
+  # Modify the liveness probe for your needs or completely disable it by commenting out.
   livenessProbe:
-    enabled: true
+    tcpSocket:
+      port: http
     initialDelaySeconds: 200
     timeoutSeconds: 1
     periodSeconds: 10
     successThreshold: 1
     failureThreshold: 10
+
+  # Modify the readiness probe for your needs or completely disable it by commenting out.
   readinessProbe:
-    enabled: true
+    tcpSocket:
+      port: http
     initialDelaySeconds: 5
     timeoutSeconds: 1
     periodSeconds: 10
     successThreshold: 1
     failureThreshold: 3
-  startupProbe:
-    enabled: false
-    initialDelaySeconds: 60
-    timeoutSeconds: 1
-    periodSeconds: 10
-    successThreshold: 1
-    failureThreshold: 10
 
-  # customLivenessProbe:
-  #   httpGet:
-  #     path: /user/login
+  # # Uncomment the startup probe to enable and modify it for your needs.
+  # startupProbe:
+  #   tcpSocket:
   #     port: http
   #   initialDelaySeconds: 60
-  #   periodSeconds: 10
-  #   successThreshold: 1
-  #   failureThreshold: 10
-  # customReadinessProbe:
-  #   httpGet:
-  #     path: /user/login
-  #     port: http
-  #   initialDelaySeconds: 5
-  #   periodSeconds: 10
-  #   successThreshold: 1
-  #   failureThreshold: 3
-  # customStartupProbe:
-  #   httpGet:
-  #     path: /user/login
-  #     port: http
-  #   initialDelaySeconds: 60
+  #   timeoutSeconds: 1
   #   periodSeconds: 10
   #   successThreshold: 1
   #   failureThreshold: 10
