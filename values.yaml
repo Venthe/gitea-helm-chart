@@ -141,6 +141,8 @@ signing:
   gpgHome: /data/git/.gnupg
 
 gitea:
+  forceSecrets: false
+
   admin:
     #existingSecret: gitea-admin-secret
     username: gitea_admin

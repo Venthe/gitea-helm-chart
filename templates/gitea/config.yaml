@@ -139,6 +139,16 @@ stringData:
     {{- end -}}
     {{- end -}}
 
+    {{- if not (hasKey .Values.gitea.config.security "INTERNAL_TOKEN") }}
+    export ENV_TO_INI__SECURITY__INTERNAL_TOKEN=$(gitea generate secret INTERNAL_TOKEN)
+    {{- end }}
+    {{- if not (hasKey .Values.gitea.config.security "SECRET_KEY") }}
+    export ENV_TO_INI__SECURITY__SECRET_KEY=$(gitea generate secret SECRET_KEY)
+    {{- end }}
+    {{- if not (hasKey .Values.gitea.config.oauth2 "JWT_SECRET") }}
+    export ENV_TO_INI__OAUTH2__JWT_SECRET=$(gitea generate secret JWT_SECRET)
+    {{- end }}
+
     {{- /* autogenerate app.ini environment values */ -}}
     {{- range $key, $value := .Values.gitea.config  }}
     {{- if kindIs "map" $value }}
@@ -152,16 +162,13 @@ stringData:
     {{- end }}
     {{- end }}
 
-    if [ ! -f ${GITEA_APP_INI} ]; then
-      {{- if not (hasKey .Values.gitea.config.security "INTERNAL_TOKEN") }}
-      export ENV_TO_INI__SECURITY__INTERNAL_TOKEN=$(gitea generate secret INTERNAL_TOKEN)
-      {{- end }}
-      {{- if not (hasKey .Values.gitea.config.security "SECRET_KEY") }}
-      export ENV_TO_INI__SECURITY__SECRET_KEY=$(gitea generate secret SECRET_KEY)
-      {{- end }}
-      {{- if not (hasKey .Values.gitea.config.oauth2 "JWT_SECRET") }}
-      export ENV_TO_INI__OAUTH2__JWT_SECRET=$(gitea generate secret JWT_SECRET)
-      {{- end }}
+    {{- if not .Values.gitea.forceSecrets }}
+    # safety to prevent rewrite of secret keys if an app.ini already exists
+    if [ -f ${GITEA_APP_INI} ]; then
+      unset ENV_TO_INI__SECURITY__INTERNAL_TOKEN
+      unset ENV_TO_INI__SECURITY__SECRET_KEY
+      unset ENV_TO_INI__OAUTH2__JWT_SECRET
     fi
+    {{- end }}
 
     environment-to-ini -o $GITEA_APP_INI -p ENV_TO_INI
