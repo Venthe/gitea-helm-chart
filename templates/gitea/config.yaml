@@ -7,7 +7,9 @@ metadata:
 type: Opaque
 stringData:
   config_environment.sh: |-
-    #!/bin/bash
+    #!/usr/bin/env bash
+    set -euo pipefail
+
     {{- if not (hasKey .Values.gitea.config "cache") -}}
     {{- $_ := set .Values.gitea.config "cache" dict -}}
     {{- end -}}
@@ -30,6 +32,10 @@ stringData:
 
     {{- if not .Values.gitea.config.repository -}}
     {{- $_ := set .Values.gitea.config "repository" dict -}}
+    {{- end -}}
+
+    {{- if not (hasKey .Values.gitea.config "oauth2") -}}
+    {{- $_ := set .Values.gitea.config "oauth2" dict -}}
     {{- end -}}
 
     {{- /* repository default settings */ -}}
@@ -145,5 +151,17 @@ stringData:
     export ENV_TO_INI__{{ $key | upper | replace "." "_0X2E_" | replace "-" "_0X2D_" }}__{{ $key | upper }}={{ $value }}
     {{- end }}
     {{- end }}
+
+    if [ ! -f ${GITEA_APP_INI} ]; then
+      {{- if not (hasKey .Values.gitea.config.security "INTERNAL_TOKEN") }}
+      export ENV_TO_INI__SECURITY__INTERNAL_TOKEN=$(gitea generate secret INTERNAL_TOKEN)
+      {{- end }}
+      {{- if not (hasKey .Values.gitea.config.security "SECRET_KEY") }}
+      export ENV_TO_INI__SECURITY__SECRET_KEY=$(gitea generate secret SECRET_KEY)
+      {{- end }}
+      {{- if not (hasKey .Values.gitea.config.oauth2 "JWT_SECRET") }}
+      export ENV_TO_INI__OAUTH2__JWT_SECRET=$(gitea generate secret JWT_SECRET)
+      {{- end }}
+    fi
 
     environment-to-ini -o $GITEA_APP_INI -p ENV_TO_INI
