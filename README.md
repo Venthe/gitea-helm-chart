@@ -37,6 +37,36 @@ helm install gitea gitea-charts/gitea
 - Helm 3.0+
 - PV provisioner for persistent data support
 
+## Chart upgrade to 5.0.0
+
+:warning: The most recent `5.0.0` update brings some major and breaking changes.
+Please note the following changes in the Chart to upgrade successfully. :warning:
+
+### App.ini generation
+
+The app.ini generation has changed and now utilizes the environment-to-ini
+script provided by newer Gitea versions.
+
+:boom: The Helm Chart now requires Gitea versions of at least 1.11.0.
+
+This change ensures, that the app.ini is now persistent.
+
+#### Secret Key generation
+
+Gitea secret keys (SECRET_KEY, INTERNAL_TOKEN, JWT_SECRET) are now generated
+automatically in certain situations:
+
+- New install: By default the secrets are created automatically. If you provide
+  secrets via `gitea.config` they will be used instead of automatic generation.
+- Existing installs: By default the secrets won't be deployed, neither via
+  configuration nor via auto generation.
+- Existing install with `gitea.forceSecrets`: will allow again automatic
+  generation or deploy via `gitea.config`
+
+:rotating_light: Although the Chart provides resetting secret keys, it is
+not advisable to do so for existing installations. Certain settings like
+_LDAP_ would not be readable anymore.
+
 ## Chart upgrade from 3.x.x to 4.0.0
 
 :warning: The most recent `4.0.0` update brings some breaking changes. Please note
@@ -523,48 +553,49 @@ gitea:
 
 ### Others
 
-| Parameter                                 | Description                                              | Default |
-| ------------------------------------------| -------------------------------------------------------- | ------- |
-| statefulset.terminationGracePeriodSeconds | How long to wait until forcefully kill the pod           | `60`    |
-| statefulset.env                           | Additional environment variables to pass to containers   | `[]`    |
-| extraVolumes                              | Additional volumes to mount to the Gitea statefulset     | `{}`    |
-| extraVolumeMounts                         | Additional volume mounts for the Gitea containers        | `{}`    |
-| initPreScript                             | Bash script copied verbatim to start of init container   |         |
-| securityContext                           | Run as a specific securityContext                        | `{}`    |
-| schedulerName                             | Use an alternate scheduler, e.g. "stork"                 |         |
+| Parameter                                   | Description                                                          | Default |
+| ------------------------------------------- | -------------------------------------------------------------------- | ------- |
+| `statefulset.terminationGracePeriodSeconds` | How long to wait until forcefully kill the pod                       | `60`    |
+| `statefulset.env`                           | Additional environment variables to pass to containers               | `[]`    |
+| `extraVolumes`                              | Additional volumes to mount to the Gitea statefulset                 | `{}`    |
+| `extraVolumeMounts`                         | Additional volume mounts for the Gitea containers                    | `{}`    |
+| `initPreScript`                             | Bash script copied verbatim to start of init container               |         |
+| `securityContext`                           | Run as a specific securityContext                                    | `{}`    |
+| `schedulerName`                             | Use an alternate scheduler, e.g. "stork"                             |         |
+| `gitea.forceSecrets`                        | Enforce new secret key generation (SECRET_KEY, INTERNAL_TOKEN, etc.) | `false` |
 
 ### Image
 
-| Parameter        | Description                                                                               | Default       |
-| -----------------| ----------------------------------------------------------------------------------------- | ------------- |
-| image.repository | Image to start for this pod                                                               | `gitea/gitea` |
-| image.tag        | [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated)       | `1.14.6`      |
-| image.pullPolicy | Image pull policy                                                                         | `Always`      |
-| image.rootless   | Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher | `false`       |
+| Parameter          | Description                                                                               | Default       |
+| ------------------ | ----------------------------------------------------------------------------------------- | ------------- |
+| `image.repository` | Image to start for this pod                                                               | `gitea/gitea` |
+| `image.tag`        | [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated)       | `1.14.6`      |
+| `image.pullPolicy` | Image pull policy                                                                         | `Always`      |
+| `image.rootless`   | Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher | `false`       |
 
 ### Persistence
 
-| Parameter                 | Description                                                | Default |
-| ------------------------- | ---------------------------------------------------------- | ------- |
-| persistence.enabled       | Enable persistence for Gitea                               | `true`  |
-| persistence.existingClaim | Use an existing claim to store repository information      |         |
-| persistence.size          | Size for persistence to store repo information             | `10Gi`  |
-| persistence.accessModes   | AccessMode for persistence                                 |         |
-| persistence.storageClass  | Storage class for repository persistence                   |         |
-| persistence.labels        | Labels for the persistence volume claim to be created      | `{}`    |
-| persistence.annotations   | Annotations for the persistence volume claim to be created | `{}`    |
+| Parameter                   | Description                                                | Default |
+| --------------------------- | ---------------------------------------------------------- | ------- |
+| `persistence.enabled`       | Enable persistence for Gitea                               | `true`  |
+| `persistence.existingClaim` | Use an existing claim to store repository information      |         |
+| `persistence.size`          | Size for persistence to store repo information             | `10Gi`  |
+| `persistence.accessModes`   | AccessMode for persistence                                 |         |
+| `persistence.storageClass`  | Storage class for repository persistence                   |         |
+| `persistence.labels`        | Labels for the persistence volume claim to be created      | `{}`    |
+| `persistence.annotations`   | Annotations for the persistence volume claim to be created | `{}`    |
 
 ### Ingress
 
-| Parameter                          | Description                                    | Default           |
-| ---------------------------------- | ---------------------------------------------- | ----------------- |
-| ingress.enabled                    | enable ingress                                 | `false`           |
-| ingress.annotations                | add ingress annotations                        |                   |
-| ingress.hosts[0].host              | add hosts for ingress                          | `git.example.com` |
-| ingress.hosts[0].paths[0].path     | add path for each ingress host                 | `/`               |
-| ingress.hosts[0].paths[0].pathType | add ingress path type                          | `Prefix`          |
-| ingress.tls                        | add ingress tls settings                       | `[]`              |
-| ingress.className                  | add ingress class name. Only used in k8s 1.19+ |                   |
+| Parameter                            | Description                                    | Default           |
+| ------------------------------------ | ---------------------------------------------- | ----------------- |
+| `ingress.enabled`                    | enable ingress                                 | `false`           |
+| `ingress.annotations`                | add ingress annotations                        |                   |
+| `ingress.hosts[0].host`              | add hosts for ingress                          | `git.example.com` |
+| `ingress.hosts[0].paths[0].path`     | add path for each ingress host                 | `/`               |
+| `ingress.hosts[0].paths[0].pathType` | add ingress path type                          | `Prefix`          |
+| `ingress.tls`                        | add ingress tls settings                       | `[]`              |
+| `ingress.className`                  | add ingress class name. Only used in k8s 1.19+ |                   |
 
 ### Service
 
