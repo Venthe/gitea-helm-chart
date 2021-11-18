@@ -60,7 +60,7 @@ automatically in certain situations:
   secrets via `gitea.config` they will be used instead of automatic generation.
 - Existing installs: By default the secrets won't be deployed, neither via
   configuration nor via auto generation.
-- Existing install with `gitea.forceSecrets`: will allow again automatic
+- Existing install with `gitea.enforceAppSecretRecreation`: will allow again automatic
   generation or deploy via `gitea.config`
 
 :rotating_light: Although the Chart provides resetting secret keys, it is
@@ -562,7 +562,7 @@ gitea:
 | `initPreScript`                             | Bash script copied verbatim to start of init container               |         |
 | `securityContext`                           | Run as a specific securityContext                                    | `{}`    |
 | `schedulerName`                             | Use an alternate scheduler, e.g. "stork"                             |         |
-| `gitea.forceSecrets`                        | Enforce new secret key generation (SECRET_KEY, INTERNAL_TOKEN, etc.) | `false` |
+| `gitea.enforceAppSecretRecreation`          | Enforce new secret key generation (SECRET_KEY, INTERNAL_TOKEN, etc.) | `false` |
 
 ### Image
 
