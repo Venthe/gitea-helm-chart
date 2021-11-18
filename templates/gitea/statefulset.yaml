@@ -259,11 +259,11 @@ spec:
         - name: init
           secret:
             secretName: {{ include "gitea.fullname" . }}-init
-            defaultMode: 0777
+            defaultMode: 110
         - name: config
           secret:
             secretName: {{ include "gitea.fullname" . }}
-            defaultMode: 0777
+            defaultMode: 110
         {{- if .Values.extraVolumes }}
         {{- toYaml .Values.extraVolumes | nindent 8 }}
         {{- end }}
