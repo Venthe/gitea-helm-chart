@@ -162,13 +162,11 @@ stringData:
     {{- end }}
     {{- end }}
 
-    {{- if not .Values.gitea.enforceAppSecretRecreation }}
     # safety to prevent rewrite of secret keys if an app.ini already exists
     if [ -f ${GITEA_APP_INI} ]; then
       unset ENV_TO_INI__SECURITY__INTERNAL_TOKEN
       unset ENV_TO_INI__SECURITY__SECRET_KEY
       unset ENV_TO_INI__OAUTH2__JWT_SECRET
     fi
-    {{- end }}
 
     environment-to-ini -o $GITEA_APP_INI -p ENV_TO_INI

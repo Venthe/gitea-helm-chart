@@ -58,12 +58,11 @@ automatically in certain situations:
 
 - New install: By default the secrets are created automatically. If you provide
   secrets via `gitea.config` they will be used instead of automatic generation.
-- Existing installs: By default the secrets won't be deployed, neither via
-  configuration nor via auto generation.
-- Existing install with `gitea.enforceAppSecretRecreation`: will allow again automatic
-  generation or deploy via `gitea.config`
+- Existing installs: The secrets won't be deployed, neither via
+  configuration nor via auto generation. We explicitly prevent to set new secrets.
 
-:rotating_light: Although the Chart provides resetting secret keys, it is
+:rotating_light: It would be possible to set new secret keys manually by entering
+the running container and rewriting the app.ini by hand. However, this it is
 not advisable to do so for existing installations. Certain settings like
 _LDAP_ would not be readable anymore.
 
@@ -562,7 +561,6 @@ gitea:
 | `initPreScript`                             | Bash script copied verbatim to start of init container               |         |
 | `securityContext`                           | Run as a specific securityContext                                    | `{}`    |
 | `schedulerName`                             | Use an alternate scheduler, e.g. "stork"                             |         |
-| `gitea.enforceAppSecretRecreation`          | Enforce new secret key generation (SECRET_KEY, INTERNAL_TOKEN, etc.) | `false` |
 
 ### Image
 
