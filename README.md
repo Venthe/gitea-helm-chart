@@ -545,6 +545,27 @@ gitea:
       #customEmailUrl:
 ```
 
+You can also use an existing secret to set the `key` and `secret`:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gitea-oauth-secret
+type: Opaque
+stringData:
+  key: hello
+  secret: world
+```
+
+```yaml
+gitea:
+  oauth:
+    - name: 'MyAwesomeGiteaOAuth'
+      existingSecret: gitea-oauth-secret
+        ...
+```
+
 ### Metrics and profiling
 
 A Prometheus `/metrics` endpoint on the `HTTP_PORT` and `pprof` profiling

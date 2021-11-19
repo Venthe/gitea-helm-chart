@@ -142,6 +142,22 @@ spec:
             {{- end }}
             {{- end }}
             {{- end }}
+            {{- if .Values.gitea.oauth }}
+            {{- range $idx, $value := .Values.gitea.oauth }}
+            {{- if $value.existingSecret }}
+            - name: GITEA_OAUTH_KEY_{{ $idx }}
+              valueFrom:
+                secretKeyRef:
+                  key:  key
+                  name: {{ $value.existingSecret }}
+            - name: GITEA_OAUTH_SECRET_{{ $idx }}
+              valueFrom:
+                secretKeyRef:
+                  key:  secret
+                  name: {{ $value.existingSecret }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
             {{- if .Values.gitea.admin.existingSecret }}
             - name: GITEA_ADMIN_USERNAME
               valueFrom:

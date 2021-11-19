@@ -141,9 +141,17 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- $idx := index . 0 }}
 {{- $values := index . 1 }}
 
+{{- if not (hasKey $values "key") -}}
+{{- $_ := set $values "key" (printf "${GITEA_OAUTH_KEY_%d}" $idx) -}}
+{{- end -}}
+
+{{- if not (hasKey $values "secret") -}}
+{{- $_ := set $values "secret" (printf "${GITEA_OAUTH_SECRET_%d}" $idx) -}}
+{{- end -}}
+
 {{- range $key, $val := $values -}}
-{{- if ne $key "enabled" -}}
-{{- printf "--%s %s " ($key | kebabcase) ($val | squote) -}}
+{{- if and (ne $key "enabled") (ne $key "existingSecret") -}}
+{{- printf "--%s %s " ($key | kebabcase) ($val | quote) -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}

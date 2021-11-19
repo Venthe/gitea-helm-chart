@@ -181,11 +181,13 @@ gitea:
     #  usernameAttribute:
     #  publicSSHKeyAttribute:
 
+  # Either specify inline `key` and `secret` or refer to them via `existingSecret`
   oauth: []
     # - name: 'OAuth 1'
     #   provider:
     #   key:
     #   secret:
+    #   existingSecret:
     #   autoDiscoverUrl:
     #   useCustomUrls:
     #   customAuthUrl:
