@@ -97,6 +97,10 @@ spec:
               {{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
               {{- end }}
+            {{- range $idx, $value := .Values.gitea.additionalConfigSources }}
+            - name: additional-config-sources-{{ $idx }}
+              mountPath: "/env-to-ini-mounts/{{ $idx }}/"
+            {{- end }}
             {{- if .Values.extraVolumeMounts }}
             {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
             {{- end }}
@@ -284,8 +288,15 @@ spec:
         {{- if .Values.extraVolumes }}
         {{- toYaml .Values.extraVolumes | nindent 8 }}
         {{- end }}
+        {{- range $idx, $value := .Values.gitea.additionalConfigSources }}
+        - name: additional-config-sources-{{ $idx }}
+          {{- toYaml $value | nindent 10 }}
+        {{- end }}
         - name: temp
           emptyDir: {}
+        {{- if .Values.extraVolumeMounts }}
+        {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
+        {{- end }}
   {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
         - name: data
           persistentVolumeClaim:

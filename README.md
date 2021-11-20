@@ -289,11 +289,9 @@ or update.
 ```yaml
 gitea:
   additionalConfigSources:
-    - name: oauth
-      secret:
+    - secret:
         secretName: gitea-app-ini-oauth
-    - name: some-additionals
-      configMap:
+    - configMap:
         name: gitea-app-ini-plaintext
 ```
 

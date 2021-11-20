@@ -10,6 +10,50 @@ stringData:
     #!/usr/bin/env bash
     set -euo pipefail
 
+    function env2ini::log() {
+      echo "${1}"
+    }
+
+    function env2ini::read_config_to_env() {
+      local section="${1}"
+      local line="${2}"
+      
+      # xargs echo -n trims all whitespaces and a trailing new line
+      local setting=$(awk -F '=' '{print $1}' <<< "${line}" | xargs echo -n)
+      local value=$(awk -F '=' '{print $NF}' <<< "${line}" | xargs echo -n)
+
+      if [[ -z "${setting}" ]]; then
+        env2ini::log "    ? unprocessable line '${line}'"
+        return
+      fi
+
+      env2ini::log "    + '${setting}' to '${section}'"
+
+      local masked_section="${section//./_0X2E_}"         # // instructs to replace all matches
+      masked_section="${masked_section//-/_0X2D_}"
+
+      export "ENV_TO_INI__${masked_section^^}__${setting^^}=${value}"
+    }
+
+    function env2ini::process_config_file() {
+      local config_file="${1}"
+      local section="$(basename "${config_file}")"
+
+      env2ini::log "=== Found additional source: ${config_file} ==="
+
+      while read -r line; do
+        env2ini::read_config_to_env "${section}" "${line}"
+      done < "${config_file}"
+    }
+
+    function env2ini::load_additional_config_sources() {
+      while read -d '' configFile; do
+        env2ini::process_config_file "${configFile}"
+      done < <(find /env-to-ini-mounts/ -type l -not -name '..data' -print0)
+
+      env2ini::log "=== All additional config sources processed ==="
+    }
+
     {{- if not (hasKey .Values.gitea.config "cache") -}}
     {{- $_ := set .Values.gitea.config "cache" dict -}}
     {{- end -}}
@@ -162,8 +206,15 @@ stringData:
     {{- end }}
     {{- end }}
 
+    env2ini::load_additional_config_sources
+
     # safety to prevent rewrite of secret keys if an app.ini already exists
     if [ -f ${GITEA_APP_INI} ]; then
+      env2ini::log 'An app.ini file already exists. To prevent overwriting secret keys, these settings are dropped and remain unchanged:'
+      env2ini::log '  -> security.INTERNAL_TOKEN'
+      env2ini::log '  -> security.SECRET_KEY'
+      env2ini::log '  -> oauth2.JWT_SECRET'
+
       unset ENV_TO_INI__SECURITY__INTERNAL_TOKEN
       unset ENV_TO_INI__SECURITY__SECRET_KEY
       unset ENV_TO_INI__OAUTH2__JWT_SECRET

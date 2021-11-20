@@ -205,6 +205,12 @@ gitea:
   #  security:
   #    PASSWORD_COMPLEXITY: spec
 
+  additionalConfigSources: []
+  #   - secret:
+  #       secretName: gitea-app-ini-oauth
+  #   - configMap:
+  #       name: gitea-app-ini-plaintext
+
   podAnnotations: {}
 
   database:
