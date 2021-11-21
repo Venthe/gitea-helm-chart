@@ -1,13 +1,15 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "gitea.fullname" . -}}
 {{- $httpPort := .Values.service.http.port -}}
-{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" -}}
-apiVersion: networking.k8s.io/v1
+{{- $apiVersion := "extensions/v1beta1" -}}
+{{- if .Values.ingress.APIVersionOverride -}}
+{{- $apiVersion = .Values.ingress.APIVersionOverride -}}
+{{- else if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" -}}
+{{- $apiVersion = "networking.k8s.io/v1" }}
 {{- else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1/Ingress" -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
+{{- $apiVersion = "networking.k8s.io/v1beta1" }}
 {{- end }}
+apiVersion: {{ $apiVersion }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}
@@ -38,11 +40,11 @@ spec:
         paths:
           {{- range .paths }}
           - path: {{ .path }}
-            {{- if and .pathType ($.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress") }}
+            {{- if and .pathType (eq $apiVersion "networking.k8s.io/v1") }}
             pathType: {{ .pathType }}
             {{- end }}
             backend:
-            {{- if $.Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+            {{- if eq $apiVersion "networking.k8s.io/v1" }}
               service:
                 name: {{ $fullName }}-http
                 port:
