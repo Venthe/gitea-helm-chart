@@ -72,7 +72,7 @@ ingress:
   #      - git.example.com
   # Mostly for argocd or any other CI that uses `helm template | kubectl apply` or similar
   # If helm doesn't correctly detect your ingress API version you can set it here.
-  # APIVersion: networking.k8s.io/v1
+  # apiVersion: networking.k8s.io/v1
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
