@@ -38,7 +38,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       securityContext:
-        fsGroup: 1000
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: init-directories
           image: "{{ include "gitea.image" . }}"
@@ -65,6 +65,8 @@ spec:
             {{- if .Values.extraVolumeMounts }}
             {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
             {{- end }}
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
         - name: init-app-ini
           image: "{{ include "gitea.image" . }}"
           command: ["/usr/sbin/config_environment.sh"]
@@ -90,11 +92,18 @@ spec:
             {{- if .Values.extraVolumeMounts }}
             {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
             {{- end }}
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
         - name: configure-gitea
           image: "{{ include "gitea.image" . }}"
           command: ["/usr/sbin/configure_gitea.sh"]
           securityContext:
-            runAsUser: 1000
+            {{- /* By default this container runs as user 1000 unless otherwise stated */ -}}
+            {{- $csc := deepCopy .Values.containerSecurityContext -}}
+            {{- if not (hasKey $csc "runAsUser") -}}
+            {{- $_ := set $csc "runAsUser" 1000 -}}
+            {{- end -}}
+            {{- toYaml $csc | nindent 12 }}
           env:
             - name: GITEA_APP_INI
               value: /data/gitea/conf/app.ini
@@ -234,7 +243,12 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
+            {{- /* Honor the deprecated securityContext variable when defined */ -}}
+            {{- if .Values.containerSecurityContext -}}
+            {{ toYaml .Values.containerSecurityContext | nindent 12 -}}
+            {{- else -}}
+            {{ toYaml .Values.securityContext | nindent 12 -}}
+            {{- end }}
           volumeMounts:
             - name: temp
               mountPath: /tmp

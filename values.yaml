@@ -14,8 +14,11 @@ image:
 
 imagePullSecrets: []
 
-# only usable with rootless image due to image design
-securityContext: {}
+# Security context is only usable with rootless image due to image design
+podSecurityContext:
+  fsGroup: 1000
+
+containerSecurityContext: {}
 #   allowPrivilegeEscalation: false
 #   capabilities:
 #     drop:
@@ -32,6 +35,11 @@ securityContext: {}
 #   runAsGroup: 1000
 #   runAsNonRoot: true
 #   runAsUser: 1000
+
+# DEPRECATED. The securityContext variable has been split two:
+# - containerSecurityContext
+# - podSecurityContext.
+securityContext: {}
 
 service:
   http:
