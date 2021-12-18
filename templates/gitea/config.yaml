@@ -17,22 +17,35 @@ stringData:
     function env2ini::read_config_to_env() {
       local section="${1}"
       local line="${2}"
+
+      if [[ -z "${line}" ]]; then
+        # skip empty line
+        return
+      fi
       
-      # xargs echo -n trims all whitespaces and a trailing new line
-      local setting=$(awk -F '=' '{print $1}' <<< "${line}" | xargs echo -n)
-      local value=$(awk -F '=' '{print $NF}' <<< "${line}" | xargs echo -n)
+      # 'xargs echo -n' trims all leading/trailing whitespaces and a trailing new line
+      local setting="$(awk -F '=' '{print $1}' <<< "${line}" | xargs echo -n)"
 
       if [[ -z "${setting}" ]]; then
-        env2ini::log "    ? unprocessable line '${line}'"
-        return
+        env2ini::log "    - invalid setting"
+        exit 1
+      fi
+
+      local value=''
+      local regex="^${setting}(\s*)=(\s*)(.*)"
+      if [[ $line =~ $regex ]]; then
+        value="${BASH_REMATCH[3]}"
+      else
+        env2ini::log "    - invalid setting"
+        exit 1
       fi
 
       env2ini::log "    + '${setting}' to '${section}'"
 
-      local masked_section="${section//./_0X2E_}"         # // instructs to replace all matches
+      local masked_section="${section//./_0X2E_}"                            # '//' instructs to replace all matches
       masked_section="${masked_section//-/_0X2D_}"
 
-      export "ENV_TO_INI__${masked_section^^}__${setting^^}=${value}"
+      export "ENV_TO_INI__${masked_section^^}__${setting^^}=${value}"        # '^^' makes the variable content uppercase
     }
 
     function env2ini::process_config_file() {
