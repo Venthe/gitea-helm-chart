@@ -118,6 +118,7 @@ persistence:
   labels: {}
   annotations: {}
   # storageClass:
+  # subPath:
 
 # additional volumes to add to the Gitea statefulset.
 extraVolumes:
