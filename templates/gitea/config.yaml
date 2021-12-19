@@ -53,7 +53,7 @@ stringData:
       env2ini::log "    + '${setting}'"
 
       if [[ -z "${section}" ]]; then
-        export "ENV_TO_INI__${setting^^}=${value}"                           # '^^' makes the variable content uppercase
+        export "ENV_TO_INI____${setting^^}=${value}"                           # '^^' makes the variable content uppercase
         return
       fi
 
