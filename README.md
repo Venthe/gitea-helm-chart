@@ -581,7 +581,7 @@ gitea:
 | `extraVolumeMounts`                         | Additional volume mounts for the Gitea containers                    | `{}`    |
 | `initPreScript`                             | Bash script copied verbatim to start of init container               |         |
 | `podSecurityContext.fsGroup`                | Set the shared file system group for all containers                  | 1000    |
-| `containerSecurityContext`                  | Run init and gitea containers as a specific securityContext          | `{}`    |
+| `containerSecurityContext`                  | Run init and Gitea containers as a specific securityContext          | `{}`    |
 | `schedulerName`                             | Use an alternate scheduler, e.g. "stork"                             |         |
 
 ### Image
