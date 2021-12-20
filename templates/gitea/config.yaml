@@ -150,18 +150,19 @@ stringData:
     {{- end }}
 
     {{- /* autogenerate app.ini environment values */ -}}
-    {{- /* Note: since there is no proper way to quote a bash string in Helm template,
-           the string is enclosed within single quotes and we assume there is no single
-           quote present in config values */ -}}
+    {{- /* Note: the "quote" helm function will enclose the value within double quotes
+           and escape double quotes within it but we need to manually escape dollar signs.
+           This process is not perfect though and there may be a few misses.
+           See #260/#261 for more details. */ -}}
     {{- range $key, $value := .Values.gitea.config  }}
     {{- if kindIs "map" $value }}
     {{- if gt (len $value) 0 }}
     {{- range $n_key, $n_value := $value }}
-    export ENV_TO_INI__{{ $key | upper | replace "." "_0X2E_" | replace "-" "_0X2D_" }}__{{ $n_key | upper }}='{{ $n_value }}'
+    export ENV_TO_INI__{{ $key | upper | replace "." "_0X2E_" | replace "-" "_0X2D_" }}__{{ $n_key | upper }}={{ $n_value | quote | replace "$" "\\$" }}
     {{- end }}
     {{- end }}
     {{- else }}
-    export ENV_TO_INI__{{ $key | upper | replace "." "_0X2E_" | replace "-" "_0X2D_" }}__{{ $key | upper }}='{{ $value }}'
+    export ENV_TO_INI__{{ $key | upper | replace "." "_0X2E_" | replace "-" "_0X2D_" }}__{{ $key | upper }}={{ $value | quote | replace "$" "\\$" }}
     {{- end }}
     {{- end }}
 
