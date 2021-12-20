@@ -30,7 +30,9 @@ stringData:
 
     # prepare temp directory structure
     mkdir -p "${GITEA_TEMP}"
+    {{- if not .Values.image.rootless }}
     chown 1000:1000 "${GITEA_TEMP}"
+    {{- end }}
     chmod ug+rwx "${GITEA_TEMP}"
 
   configure_gitea.sh: |-
