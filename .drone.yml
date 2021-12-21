@@ -15,6 +15,14 @@ steps:
   - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing helm
   - helm lint
 
+- name: helm template
+  pull: always
+  image: alpine:3.13
+  commands:
+  - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing helm
+  - helm dependency update
+  - helm template --debug gitea-helm .
+
 - name: markdown lint
   pull: always
   image: docker.io/volkerraschek/markdownlint:latest
