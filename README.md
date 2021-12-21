@@ -42,6 +42,28 @@ helm install gitea gitea-charts/gitea
 :warning: The most recent `5.0.0` update brings some major and breaking changes.
 Please note the following changes in the Chart to upgrade successfully. :warning:
 
+### Enable Dependencies
+
+:warning: The values to enable the dependencies,
+such as PostgreSQL, Memcached, MySQL and MariaDB
+have been moved from `gitea.database.builtIn.` to the dependency values. :warning:
+
+You can now enable the dependencies as followed:
+
+```yaml
+memcached:
+  enabled: true
+
+postgresql:
+  enabled: true
+
+mysql:
+  enabled: false
+
+mariadb:
+  enabled: false
+```
+
 ### App.ini generation
 
 The app.ini generation has changed and now utilizes the environment-to-ini
@@ -324,11 +346,6 @@ An external Database can be used instead of builtIn PostgreSQL or MySQL.
 
 ```yaml
 gitea:
-  database:
-    builtIn:
-      postgresql:
-        enabled: false
-
   config:
     database:
       DB_TYPE: mysql
@@ -337,6 +354,9 @@ gitea:
       USER: root
       PASSWD: gitea
       SCHEMA: gitea
+
+postgresql:
+  enabled: false
 ```
 
 ### Ports and external url
@@ -409,10 +429,8 @@ More about this issue [here](https://gitea.com/gitea/helm-chart/issues/161).
 This helm chart can use a built in cache. The default is Memcached from bitnami.
 
 ```yaml
-gitea:
-  cache:
-    builtIn:
-      enabled: true
+memcached:
+  enabled: true
 ```
 
 If the built in cache should not be used simply configure the cache in
@@ -781,9 +799,10 @@ enabled in the values. Complete Configuration can be taken from their website.
 
 The following parameters are the defaults set by this chart
 
-| Parameter                | Description    | Default |
-| ------------------------ | -------------- | ------- |
-| `memcached.service.port` | Memcached Port | 11211   |
+| Parameter                | Description                 | Default |
+| ------------------------ | --------------------------- | ------- |
+| `memcached.service.port` | Memcached Port              | 11211   |
+| `memcached.enabled`      | Enable Memcached dependency | `true`  |
 
 ### MySQL BuiltIn
 
@@ -800,6 +819,7 @@ The following parameters are the defaults set by this chart
 | `mysql.db.name`          | Name for new database to create.                                   | `gitea` |
 | `mysql.service.port`     | Port to connect to MySQL service                                   | `3306`  |
 | `mysql.persistence.size` | Persistence size for MySQL                                         | `10Gi`  |
+| `mysql.enabled`          | Enable MySQL dependency                                            | `false` |
 
 ### PostgreSQL BuiltIn
 
@@ -817,6 +837,7 @@ The following parameters are the defaults set by this chart
 | `postgresql.global.postgresql.postgresqlPassword` | PostgreSQL admin password (overrides postgresqlPassword) | `gitea` |
 | `postgresql.global.postgresql.servicePort`        | PostgreSQL port (overrides service.port)                 | `5432`  |
 | `postgresql.persistence.size`                     | PVC Storage Request for PostgreSQL volume                | `10Gi`  |
+| `postgresql.enabled`                              | Enable PostgreSQL dependency                             | `true`  |
 
 ### MariaDB BuiltIn
 
@@ -834,6 +855,7 @@ The following parameters are the defaults set by this chart
 | `mariadb.auth.rootPassword`        | Password for the root user.                                       | `gitea` |
 | `mariadb.primary.service.port`     | Port to connect to MariaDB service                                | `3306`  |
 | `mariadb.primary.persistence.size` | Persistence size for MariaDB                                      | `10Gi`  |
+| `mariadb.enabled`                  | Enable MariaDB dependency                                         | `false` |
 
 ## Local development & testing
 
