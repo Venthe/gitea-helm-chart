@@ -64,11 +64,11 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "db.servicename" -}}
-{{- if .Values.gitea.database.builtIn.postgresql.enabled -}}
+{{- if .Values.postgresql.enabled -}}
 {{- printf "%s-postgresql" .Release.Name -}}
-{{- else if .Values.gitea.database.builtIn.mysql.enabled -}}
+{{- else if .Values.mysql.enabled -}}
 {{- printf "%s-mysql" .Release.Name -}}
-{{- else if .Values.gitea.database.builtIn.mariadb.enabled -}}
+{{- else if .Values.mariadb.enabled -}}
 {{- printf "%s-mariadb" .Release.Name -}}
 {{- else if ne .Values.gitea.config.database.DB_TYPE "sqlite3" -}}
 {{- $parts := split ":" .Values.gitea.config.database.HOST -}}
@@ -77,11 +77,11 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "db.port" -}}
-{{- if .Values.gitea.database.builtIn.postgresql.enabled -}}
+{{- if .Values.postgresql.enabled -}}
 {{ .Values.postgresql.global.postgresql.servicePort }}
-{{- else if .Values.gitea.database.builtIn.mysql.enabled -}}
+{{- else if .Values.mysql.enabled -}}
 {{ .Values.mysql.service.port }}
-{{- else if .Values.gitea.database.builtIn.mariadb.enabled -}}
+{{- else if .Values.mariadb.enabled -}}
 {{ .Values.mariadb.primary.service.port }}
 {{- else -}}
 {{- end -}}
@@ -222,7 +222,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   {{- if not (hasKey .Values.gitea.config.metrics "ENABLED") -}}
     {{- $_ := set .Values.gitea.config.metrics "ENABLED" .Values.gitea.metrics.enabled -}}
   {{- end -}}
-  {{- if .Values.gitea.cache.builtIn.enabled -}}
+  {{- if .Values.memcached.enabled -}}
     {{- $_ := set .Values.gitea.config.cache "ENABLED" "true" -}}
     {{- $_ := set .Values.gitea.config.cache "ADAPTER" "memcache" -}}
     {{- if not (.Values.gitea.config.cache.HOST) -}}
@@ -283,7 +283,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "gitea.inline_configuration.defaults.database" -}}
-  {{- if .Values.gitea.database.builtIn.postgresql.enabled -}}
+  {{- if .Values.postgresql.enabled -}}
     {{- $_ := set .Values.gitea.config.database "DB_TYPE"   "postgres" -}}
     {{- if not (.Values.gitea.config.database.HOST) -}}
       {{- $_ := set .Values.gitea.config.database "HOST"      (include "postgresql.dns" .) -}}
@@ -291,7 +291,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
     {{- $_ := set .Values.gitea.config.database "NAME"      .Values.postgresql.global.postgresql.postgresqlDatabase -}}
     {{- $_ := set .Values.gitea.config.database "USER"      .Values.postgresql.global.postgresql.postgresqlUsername -}}
     {{- $_ := set .Values.gitea.config.database "PASSWD"    .Values.postgresql.global.postgresql.postgresqlPassword -}}
-  {{- else if .Values.gitea.database.builtIn.mysql.enabled -}}
+  {{- else if .Values.mysql.enabled -}}
     {{- $_ := set .Values.gitea.config.database "DB_TYPE"   "mysql" -}}
     {{- if not (.Values.gitea.config.database.HOST) -}}
       {{- $_ := set .Values.gitea.config.database "HOST"      (include "mysql.dns" .) -}}
@@ -299,7 +299,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
     {{- $_ := set .Values.gitea.config.database "NAME"      .Values.mysql.db.name -}}
     {{- $_ := set .Values.gitea.config.database "USER"      .Values.mysql.db.user -}}
     {{- $_ := set .Values.gitea.config.database "PASSWD"    .Values.mysql.db.password -}}
-  {{- else if .Values.gitea.database.builtIn.mariadb.enabled -}}
+  {{- else if .Values.mariadb.enabled -}}
     {{- $_ := set .Values.gitea.config.database "DB_TYPE"   "mysql" -}}
     {{- if not (.Values.gitea.config.database.HOST) -}}
       {{- $_ := set .Values.gitea.config.database "HOST"      (include "mariadb.dns" .) -}}

@@ -213,19 +213,6 @@ gitea:
 
   podAnnotations: {}
 
-  database:
-    builtIn:
-      postgresql:
-        enabled: true
-      mysql:
-        enabled: false
-      mariadb:
-        enabled: false
-
-  cache:
-    builtIn:
-      enabled: true
-
   # Modify the liveness probe for your needs or completely disable it by commenting out.
   livenessProbe:
     tcpSocket:
@@ -257,10 +244,12 @@ gitea:
   #   failureThreshold: 10
 
 memcached:
+  enabled: true
   service:
     port: 11211
 
 postgresql:
+  enabled: true
   global:
     postgresql:
       postgresqlDatabase: gitea
@@ -271,6 +260,7 @@ postgresql:
     size: 10Gi
 
 mysql:
+  enabled: false
   root:
     password: gitea
   db:
@@ -283,6 +273,7 @@ mysql:
     size: 10Gi
 
 mariadb:
+  enabled: false
   auth:
     database: gitea
     username: gitea
