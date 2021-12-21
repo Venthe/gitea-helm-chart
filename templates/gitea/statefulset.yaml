@@ -300,7 +300,7 @@ spec:
         - name: temp
           emptyDir: {}
         {{- if .Values.extraVolumeMounts }}
-        {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
+        {{- toYaml .Values.extraVolumeMounts | nindent 8 }}
         {{- end }}
   {{- if and .Values.persistence.enabled .Values.persistence.existingClaim }}
         - name: data
