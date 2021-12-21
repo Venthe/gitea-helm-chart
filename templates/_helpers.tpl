@@ -150,7 +150,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- range $key, $val := $values -}}
-{{- if and (ne $key "enabled") (ne $key "existingSecret") -}}
+{{- if ne $key "existingSecret" -}}
 {{- printf "--%s %s " ($key | kebabcase) ($val | quote) -}}
 {{- end -}}
 {{- end -}}
