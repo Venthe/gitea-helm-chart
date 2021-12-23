@@ -109,12 +109,13 @@ gitea:
   podAnnotations: {}
 ```
 
-### Multiple OAuth authentication sources
+### Multiple OAuth and LDAP authentication sources
 
 With `5.0.0` of this Chart it is now possible to configure Gitea with multiple
-OAuth sources. As a result, you need to update an existing OAuth configuration
+OAuth and LDAP sources. As a result, you need to update an existing OAuth/LDAP configuration
 in your customized `values.yaml` by replacing the object with settings to a list
-of settings objects. See [OAuth2 Settings](#oauth-settings) section for details.
+of settings objects. See [OAuth2 Settings](#oauth-settings) and
+[LDAP Settings](#ldap-settings) section for details.
 
 ## Chart upgrade from 3.x.x to 4.0.0
 
