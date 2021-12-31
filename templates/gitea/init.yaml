@@ -7,9 +7,9 @@ metadata:
 type: Opaque
 stringData:
   init_directory_structure.sh: |-
-    #!/usr/bin/env bash
+    #!/bin/sh
 
-    set -euo pipefail
+    set -eu
 
     {{- if .Values.initPreScript }}
     # BEGIN: initPreScript
@@ -36,20 +36,20 @@ stringData:
     chmod ug+rwx "${GITEA_TEMP}"
 
   configure_gitea.sh: |-
-    #!/usr/bin/env bash
+    #!/bin/sh
 
-    set -euo pipefail
+    set -eu
 
     {{- if include "db.servicename" . }}
     # Connection retry inspired by https://gist.github.com/dublx/e99ea94858c07d2ca6de
-    function test_db_connection() {
-      local RETRY=0
-      local MAX=30
+    test_db_connection() {
+      RETRY=0
+      MAX=30
 
       echo 'Wait for database to become avialable...'
-      until [ "${RETRY}" -ge "${MAX}" ]; do
+      while [ "${RETRY}" -lt "${MAX}" ]; do
         nc -vz -w2 {{ include "db.servicename" . }} {{ include "db.port" . }} && break
-        RETRY=$[${RETRY}+1]
+        RETRY="$((RETRY + 1))"
         echo "...not ready yet (${RETRY}/${MAX})"
       done
 
@@ -67,9 +67,9 @@ stringData:
     gitea migrate
 
     {{- if or .Values.gitea.admin.existingSecret (and .Values.gitea.admin.username .Values.gitea.admin.password) }}
-    function configure_admin_user() {
-      local ACCOUNT_ID=$(gitea admin user list --admin | grep -e "\s\+${GITEA_ADMIN_USERNAME}\s\+" | awk -F " " "{printf \$1}")
-      if [[ -z "${ACCOUNT_ID}" ]]; then
+    configure_admin_user() {
+      ACCOUNT_ID=$(gitea admin user list --admin | grep -e "\s\+${GITEA_ADMIN_USERNAME}\s\+" | awk -F " " "{printf \$1}")
+      if [ -z "${ACCOUNT_ID}" ]; then
         echo "No admin user '${GITEA_ADMIN_USERNAME}' found. Creating now..."
         gitea admin user create --admin --username "${GITEA_ADMIN_USERNAME}" --password "${GITEA_ADMIN_PASSWORD}" --email {{ .Values.gitea.admin.email | quote }} --must-change-password=false
         echo '...created.'
@@ -83,13 +83,13 @@ stringData:
     configure_admin_user
     {{- end }}
 
-    function configure_ldap() {
+    configure_ldap() {
       {{- if .Values.gitea.ldap }}
       {{- range $idx, $value := .Values.gitea.ldap }}
-      local LDAP_NAME={{ (printf "%s" $value.name) | squote }}
-      local GITEA_AUTH_ID=$(gitea admin auth list --vertical-bars | grep -E "\|${LDAP_NAME}\s+\|" | grep -iE '\|LDAP \(via BindDN\)\s+\|' | awk -F " "  "{print \$1}")
+      LDAP_NAME={{ (printf "%s" $value.name) | squote }}
+      GITEA_AUTH_ID=$(gitea admin auth list --vertical-bars | grep -E "\|${LDAP_NAME}\s+\|" | grep -iE '\|LDAP \(via BindDN\)\s+\|' | awk -F " "  "{print \$1}")
 
-      if [[ -z "${GITEA_AUTH_ID}" ]]; then
+      if [ -z "${GITEA_AUTH_ID}" ]; then
         echo "No ldap configuration found with name '${LDAP_NAME}'. Installing it now..."
         gitea admin auth add-ldap {{- include "gitea.ldap_settings" (list $idx $value) | indent 1 }}
         echo '...installed.'
@@ -106,13 +106,13 @@ stringData:
 
     configure_ldap
 
-    function configure_oauth() {
+    configure_oauth() {
       {{- if .Values.gitea.oauth }}
       {{- range $idx, $value := .Values.gitea.oauth }}
-      local OAUTH_NAME={{ (printf "%s" $value.name) | squote }}
-      local AUTH_ID=$(gitea admin auth list --vertical-bars | grep -E "\|${OAUTH_NAME}\s+\|" | grep -iE '\|OAuth2\s+\|' | awk -F " "  "{print \$1}")
+      OAUTH_NAME={{ (printf "%s" $value.name) | squote }}
+      AUTH_ID=$(gitea admin auth list --vertical-bars | grep -E "\|${OAUTH_NAME}\s+\|" | grep -iE '\|OAuth2\s+\|' | awk -F " "  "{print \$1}")
 
-      if [[ -z "${AUTH_ID}" ]]; then
+      if [ -z "${AUTH_ID}" ]; then
         echo "No oauth configuration found with name '${OAUTH_NAME}'. Installing it now..."
         gitea admin auth add-oauth {{- include "gitea.oauth_settings" (list $idx $value) | indent 1 }}
         echo '...installed.'
