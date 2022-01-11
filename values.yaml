@@ -60,6 +60,7 @@ service:
     #nodePort:
     #externalTrafficPolicy:
     #externalIPs:
+    #hostPort:
     loadBalancerSourceRanges: []
     annotations:
 

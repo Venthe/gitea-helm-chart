@@ -228,6 +228,9 @@ spec:
           ports:
             - name: ssh
               containerPort: {{ .Values.gitea.config.server.SSH_LISTEN_PORT }}
+            {{- if .Values.service.ssh.hostPort }}
+              hostPort: {{ .Values.service.ssh.hostPort }}
+            {{- end }}
             - name: http
               containerPort: {{ .Values.gitea.config.server.HTTP_PORT }}
             {{- if .Values.gitea.config.server.ENABLE_PPROF }}
