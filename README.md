@@ -344,9 +344,9 @@ data:
 ### External Database
 
 An external Database can be used instead of builtIn PostgreSQL or MySQL.
-Each parameter of the externalDatabase can be referenced through a *literal* value
-(directly specified in the values file) or referencing an exiting **Kubernetes** *Secret*
-object.
+Each parameter of the externalDatabase can be referenced through a *literal*
+value (directly specified in the values file) or referencing an exiting
+**Kubernetes** *Secret* object.
 
 ```yaml
 externalDatabase:
