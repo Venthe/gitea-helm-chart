@@ -83,6 +83,8 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{ .Values.mysql.service.port }}
 {{- else if .Values.mariadb.enabled -}}
 {{ .Values.mariadb.primary.service.port }}
+{{- else if .Values.externalDatabase.enabled -}}
+{{ .Values.externalDatabase.port }}
 {{- else -}}
 {{- end -}}
 {{- end -}}
@@ -282,6 +284,19 @@ app.kubernetes.io/instance: {{ .Release.Name }}
   {{- end -}}
 {{- end -}}
 
+{{- define "externalDatabase.sensibleParam" -}}
+  {{- if .Value.secret -}}
+    {{- $secret := lookup "v1" "Secret" .Release.Namespace .Value.secret.name -}}
+    {{- if $secret -}}
+      {{- printf "%s" (index $secret.data .Value.secret.key | b64dec) -}}
+    {{- else -}}
+      {{- fail (printf "Failed to load secret %s" .Value.secret.name) -}}
+    {{- end -}}
+  {{- else -}}
+    {{- printf "%s" .Value.literal -}}
+  {{- end -}}
+{{- end -}}
+
 {{- define "gitea.inline_configuration.defaults.database" -}}
   {{- if .Values.postgresql.enabled -}}
     {{- $_ := set .Values.gitea.config.database "DB_TYPE"   "postgres" -}}
@@ -307,5 +322,18 @@ app.kubernetes.io/instance: {{ .Release.Name }}
     {{- $_ := set .Values.gitea.config.database "NAME"      .Values.mariadb.auth.database -}}
     {{- $_ := set .Values.gitea.config.database "USER"      .Values.mariadb.auth.username -}}
     {{- $_ := set .Values.gitea.config.database "PASSWD"    .Values.mariadb.auth.password -}}
+  {{- else if .Values.externalDatabase.enabled -}}
+    {{- $_ := set .Values.gitea.config.database "DB_TYPE"	.Values.externalDatabase.type -}}
+    {{- $ExternalDatabaseParams := dict "Release" .Release -}}
+    {{- $_ := set $ExternalDatabaseParams "Value" .Values.externalDatabase.host -}}
+    {{- $_ := set .Values.gitea.config.database "HOST"		(include "externalDatabase.sensibleParam" $ExternalDatabaseParams) -}}
+    {{- $_ := set $ExternalDatabaseParams "Value" .Values.externalDatabase.name -}}
+    {{- $_ := set .Values.gitea.config.database "NAME"		(include "externalDatabase.sensibleParam" $ExternalDatabaseParams) -}}
+    {{- $_ := set $ExternalDatabaseParams "Value" .Values.externalDatabase.user -}}
+    {{- $_ := set .Values.gitea.config.database "USER"		(include "externalDatabase.sensibleParam" $ExternalDatabaseParams) -}}
+    {{- $_ := set $ExternalDatabaseParams "Value" .Values.externalDatabase.password -}}
+    {{- $_ := set .Values.gitea.config.database "PASSWD"	(include "externalDatabase.sensibleParam" $ExternalDatabaseParams) -}}
+    {{- $_ := set $ExternalDatabaseParams "Value" .Values.externalDatabase.schema -}}
+    {{- $_ := set .Values.gitea.config.database "SCHEMA"	(include "externalDatabase.sensibleParam" $ExternalDatabaseParams) -}}
   {{- end -}}
 {{- end -}}

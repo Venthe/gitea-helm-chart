@@ -346,15 +346,24 @@ data:
 An external Database can be used instead of builtIn PostgreSQL or MySQL.
 
 ```yaml
-gitea:
-  config:
-    database:
-      DB_TYPE: mysql
-      HOST: 127.0.0.1:3306
-      NAME: gitea
-      USER: root
-      PASSWD: gitea
-      SCHEMA: gitea
+externalDatabase:
+  enabled: true
+  type: mysql
+  port: 3306
+  host:
+    literal: 127.0.0.1
+  name:
+    literal: gitea
+  user:
+    secret:
+      name: mysql-admin
+      key: admin
+  password:
+    secret:
+      name: mysql-admin
+      key: password
+  schema:
+    literal: gitea
 
 postgresql:
   enabled: false
