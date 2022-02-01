@@ -40,6 +40,8 @@ stringData:
 
     set -euo pipefail
 
+    alias gitea='gitea -c ${GITEA_APP_INI}'
+
     {{- if include "db.servicename" . }}
     # Connection retry inspired by https://gist.github.com/dublx/e99ea94858c07d2ca6de
     function test_db_connection() {
