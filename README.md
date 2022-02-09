@@ -683,7 +683,7 @@ gitea:
 | Parameter          | Description                                                                               | Default       |
 | ------------------ | ----------------------------------------------------------------------------------------- | ------------- |
 | `image.repository` | Image to start for this pod                                                               | `gitea/gitea` |
-| `image.tag`        | [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated)       | `1.15.10`      |
+| `image.tag`        | [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated)       | `1.16.1`      |
 | `image.pullPolicy` | Image pull policy                                                                         | `Always`      |
 | `image.rootless`   | Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher | `false`       |
 
