@@ -239,7 +239,7 @@ service and ingress settings. All defaults can be overwritten in `gitea.config`.
 INSTALL_LOCK is always set to true, since we want to configure Gitea with this
 helm chart and everything is taken care of.
 
-*All default settings are made directly in the generated app.ini, not in the Values.*
+_All default settings are made directly in the generated app.ini, not in the Values._
 
 #### Database defaults
 
