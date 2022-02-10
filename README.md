@@ -341,6 +341,21 @@ data:
     ENABLED=true
 ```
 
+Or when using a Kubernetes secret, having the same data structure:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gitea-security-related-configuration
+type: Opaque
+stringData:
+  security: |
+    PASSWORD_COMPLEXITY=off
+  session: |
+    SAME_SITE=strict
+```
+
 ### External Database
 
 An external Database can be used instead of builtIn PostgreSQL or MySQL.
