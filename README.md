@@ -737,6 +737,7 @@ gitea:
 | `service.ssh.port`                     | Port for ssh traffic                                                                                        | `22`        |
 | `service.ssh.loadBalancerIP`           | LoadBalancer Ip setting                                                                                     |             |
 | `service.ssh.nodePort`                 | NodePort for ssh service                                                                                    |             |
+| `service.ssh.hostPort`                 | HostPort for ssh service                                                                                    |             |
 | `service.ssh.externalTrafficPolicy`    | If `service.ssh.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation |             |
 | `service.ssh.externalIPs`              | ssh service external IP addresses                                                                           |             |
 | `service.ssh.loadBalancerSourceRanges` | Source range filter for ssh loadbalancer                                                                    | `[]`        |
