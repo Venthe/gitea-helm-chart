@@ -239,7 +239,7 @@ service and ingress settings. All defaults can be overwritten in `gitea.config`.
 INSTALL_LOCK is always set to true, since we want to configure Gitea with this
 helm chart and everything is taken care of.
 
-*All default settings are made directly in the generated app.ini, not in the Values.*
+_All default settings are made directly in the generated app.ini, not in the Values._
 
 #### Database defaults
 
@@ -683,7 +683,7 @@ gitea:
 | Parameter          | Description                                                                               | Default       |
 | ------------------ | ----------------------------------------------------------------------------------------- | ------------- |
 | `image.repository` | Image to start for this pod                                                               | `gitea/gitea` |
-| `image.tag`        | [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated)       | `1.15.8`      |
+| `image.tag`        | [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated)       | `1.15.10`      |
 | `image.pullPolicy` | Image pull policy                                                                         | `Always`      |
 | `image.rootless`   | Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher | `false`       |
 
