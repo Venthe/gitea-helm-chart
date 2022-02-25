@@ -104,11 +104,17 @@ stringData:
       env2ini::log "...Initial secrets generated\n"
     }
 
+    env | grep "ENV_TO_INI" >> /tmp/existing-envs
+    sed -i -e 's/^/export /' /tmp/existing-envs
+
     # MUST BE CALLED BEFORE OTHER CONFIGURATION
     env2ini::generate_initial_secrets
 
     env2ini::load_config_sources '/env-to-ini-mounts/inlines/'
     env2ini::load_config_sources '/env-to-ini-mounts/additionals/'
+
+    # load existing envs to override auto generated envs
+    source /tmp/existing-envs
 
     env2ini::log "=== All configuration sources loaded ===\n"
 

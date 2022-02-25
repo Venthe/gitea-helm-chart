@@ -87,6 +87,9 @@ spec:
             {{- if .Values.statefulset.env }}
             {{- toYaml .Values.statefulset.env | nindent 12 }}
             {{- end }}
+            {{- if .Values.gitea.additionalConfigFromEnvs }}
+            {{- toYaml .Values.gitea.additionalConfigFromEnvs | nindent 12 }}
+            {{- end }}
           volumeMounts:
             - name: config
               mountPath: /usr/sbin

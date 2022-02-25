@@ -213,6 +213,8 @@ gitea:
   #   - configMap:
   #       name: gitea-app-ini-plaintext
 
+  additionalConfigFromEnvs: []
+
   podAnnotations: {}
 
   # Modify the liveness probe for your needs or completely disable it by commenting out.
