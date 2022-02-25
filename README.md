@@ -356,6 +356,40 @@ stringData:
     SAME_SITE=strict
 ```
 
+#### User defined environment variables in app.ini
+
+Users are able to define their own environment variables,
+which are loaded into the containers. We also support to
+directly interact with the generated _app.ini_.
+
+To inject self defined variables into the _app.ini_ a
+certain format needs to be honored. This is
+described in detail on the [env-to-ini](https://github.com/go-gitea/gitea/tree/main/contrib/environment-to-ini)
+page.
+
+Note that the Prefix on this helm chart is `ENV_TO_INI`.
+
+For example a database setting needs to have the following
+format:
+
+```yaml
+gitea:
+  additionalConfigFromEnvs:
+    - name: ENV_TO_INI__DATABASE__HOST
+      value: my.own.host
+    - name: ENV_TO_INI__DATABASE__PASSWD
+      valueFrom:
+        secretKeyRef:
+          name: postgres-secret
+          key: password
+```
+
+Priority (highest to lowest) for defining app.ini variables:
+
+1. Environment variables prefixed with `ENV_TO_INI`
+2. Additional config sources
+3. Values defined in `gitea.config`
+
 ### External Database
 
 An external Database can be used instead of builtIn PostgreSQL or MySQL.
