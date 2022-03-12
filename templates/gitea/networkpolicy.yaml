@@ -14,3 +14,4 @@ spec:
           {{- include "gitea.netpolLabels" . | nindent 10 }}
     - ipBlock:
         cidr: {{ .Values.networkpolicy.cidr }}
+{{- end }}
