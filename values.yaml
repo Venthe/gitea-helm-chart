@@ -139,6 +139,10 @@ signing:
   enabled: false
   gpgHome: /data/git/.gnupg
 
+networkpolicy:
+  enabled: false
+  cidr: 10.0.0.0/8
+
 gitea:
   admin:
     #existingSecret: gitea-admin-secret
