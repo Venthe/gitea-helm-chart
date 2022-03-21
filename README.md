@@ -445,7 +445,7 @@ service:
 
 ### SSH and Ingress
 
-If you're using ingress and won't to use SSH, keep in mind, that ingress is not
+If you're using ingress and want to use SSH, keep in mind, that ingress is not
 able to forward SSH Ports. You will need a LoadBalancer like `metallb` and a
 setting in your ssh service annotations.
 
