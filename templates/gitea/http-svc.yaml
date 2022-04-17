@@ -21,6 +21,13 @@ spec:
   externalIPs:
     {{- toYaml .Values.service.http.externalIPs | nindent 4 }}
   {{- end }}
+  {{- if .Values.service.ipFamilyPolicy }}
+  ipFamilyPolicy: {{ .Values.service.ipFamilyPolicy }}
+  {{- end }}
+  {{- with .Values.service.ipFamilies }}
+  ipFamilies:
+  {{- toYaml . | nindent 4 }}
+  {{- end -}}
   {{- if .Values.service.http.externalTrafficPolicy }}
   externalTrafficPolicy: {{ .Values.service.http.externalTrafficPolicy }}
   {{- end }}
