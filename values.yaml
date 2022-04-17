@@ -51,6 +51,8 @@ service:
     #nodePort:
     #externalTrafficPolicy:
     #externalIPs:
+    #ipFamilyPolicy:
+    #ipFamilies:
     loadBalancerSourceRanges: []
     annotations:
   ssh:
@@ -61,6 +63,8 @@ service:
     #nodePort:
     #externalTrafficPolicy:
     #externalIPs:
+    #ipFamilyPolicy:
+    #ipFamilies:
     #hostPort:
     loadBalancerSourceRanges: []
     annotations:
