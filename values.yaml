@@ -113,6 +113,7 @@ statefulset:
     #   value: my-value
   terminationGracePeriodSeconds: 60
   labels: {}
+  annotations: {}
 
 persistence:
   enabled: true
