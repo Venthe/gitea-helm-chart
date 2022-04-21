@@ -775,8 +775,12 @@ gitea:
 | `service.http.nodePort`                 | NodePort for http service                                                                                    |             |
 | `service.http.externalTrafficPolicy`    | If `service.http.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation |             |
 | `service.http.externalIPs`              | http service external IP addresses                                                                           |             |
+| `service.http.ipFamilyPolicy`           | http service dual-stack policy                                                                               |             |
+| `service.http.ipFamilies`               | http service dual-stack familiy selection                                                                    |             |
 | `service.http.loadBalancerSourceRanges` | Source range filter for http loadbalancer                                                                    | `[]`        |
 | `service.http.annotations`              | http service annotations                                                                                     |             |
+
+For dual-stack parameters see official kubernetes [dual-stack concept documentation](https://kubernetes.io/docs/concepts/services-networking/dual-stack/).
 
 #### SSH
 
@@ -789,8 +793,12 @@ gitea:
 | `service.ssh.hostPort`                 | HostPort for ssh service                                                                                    |             |
 | `service.ssh.externalTrafficPolicy`    | If `service.ssh.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation |             |
 | `service.ssh.externalIPs`              | ssh service external IP addresses                                                                           |             |
+| `service.ssh.ipFamilyPolicy`           | ssh service dual-stack policy                                                                               |             |
+| `service.ssh.ipFamilies`               | ssh service dual-stack familiy selection                                                                    |             |
 | `service.ssh.loadBalancerSourceRanges` | Source range filter for ssh loadbalancer                                                                    | `[]`        |
 | `service.ssh.annotations`              | ssh service annotations                                                                                     |             |
+
+For dual-stack parameters see official kubernetes [dual-stack concept documentation](https://kubernetes.io/docs/concepts/services-networking/dual-stack/).
 
 ### Gitea Configuration
 
