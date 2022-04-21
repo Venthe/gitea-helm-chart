@@ -718,6 +718,7 @@ gitea:
 
 | Parameter                                   | Description                                                          | Default |
 | ------------------------------------------- | -------------------------------------------------------------------- | ------- |
+| `statefulset.annotations`                   | Annotations for the Gitea StatefulSet to be created                  | `{}`    |
 | `statefulset.terminationGracePeriodSeconds` | How long to wait until forcefully kill the pod                       | `60`    |
 | `statefulset.env`                           | Additional environment variables to pass to containers               | `[]`    |
 | `extraVolumes`                              | Additional volumes to mount to the Gitea statefulset                 | `{}`    |
