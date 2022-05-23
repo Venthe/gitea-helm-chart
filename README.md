@@ -712,210 +712,220 @@ gitea:
   podAnnotations: {}
 ```
 
-## Configuration
+## Parameters
 
-### Others
+### Global
 
-| Parameter                                   | Description                                                          | Default |
-| ------------------------------------------- | -------------------------------------------------------------------- | ------- |
-| `statefulset.annotations`                   | Annotations for the Gitea StatefulSet to be created                  | `{}`    |
-| `statefulset.terminationGracePeriodSeconds` | How long to wait until forcefully kill the pod                       | `60`    |
-| `statefulset.env`                           | Additional environment variables to pass to containers               | `[]`    |
-| `extraVolumes`                              | Additional volumes to mount to the Gitea statefulset                 | `{}`    |
-| `extraVolumeMounts`                         | Additional volume mounts for the Gitea containers                    | `{}`    |
-| `initPreScript`                             | Bash script copied verbatim to start of init container               |         |
-| `podSecurityContext.fsGroup`                | Set the shared file system group for all containers                  | 1000    |
-| `containerSecurityContext`                  | Run init and Gitea containers as a specific securityContext          | `{}`    |
-| `schedulerName`                             | Use an alternate scheduler, e.g. "stork"                             |         |
+| Name                      | Description                                                               | Value           |
+| ------------------------- | ------------------------------------------------------------------------- | --------------- |
+| `global.imageRegistry`    | global image registry override                                            | `""`            |
+| `global.imagePullSecrets` | global image pull secrets override; can be extended by `imagePullSecrets` | `[]`            |
+| `global.storageClass`     | global storage class override                                             | `""`            |
+| `replicaCount`            | number of replicas for the statefulset                                    | `1`             |
+| `clusterDomain`           | cluster domain                                                            | `cluster.local` |
 
 ### Image
 
-| Parameter          | Description                                                                               | Default                            |
-| ------------------ | ----------------------------------------------------------------------------------------- | ---------------------------------- |
-| `image.repository` | Image to start for this pod                                                               | `gitea/gitea`                      |
-| `image.tag`        | [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated)       | see [Chart.AppVersion](Chart.yaml) |
-| `image.pullPolicy` | Image pull policy                                                                         | `Always`                           |
-| `image.rootless`   | Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher | `false`                            |
+| Name               | Description                                                                                | Value         |
+| ------------------ | ------------------------------------------------------------------------------------------ | ------------- |
+| `image.registry`   | image registry, e.g. gcr.io,docker.io                                                      | `""`          |
+| `image.repository` | Image to start for this pod                                                                | `gitea/gitea` |
+| `image.tag`        | Visit: [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated) | `""`          |
+| `image.pullPolicy` | Image pull policy                                                                          | `Always`      |
+| `image.rootless`   | Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher  | `false`       |
+| `imagePullSecrets` | Secret to use for pulling the image                                                        | `[]`          |
 
-### Persistence
+### Security
 
-| Parameter                   | Description                                                | Default |
-| --------------------------- | ---------------------------------------------------------- | ------- |
-| `persistence.enabled`       | Enable persistence for Gitea                               | `true`  |
-| `persistence.existingClaim` | Use an existing claim to store repository information      |         |
-| `persistence.size`          | Size for persistence to store repo information             | `10Gi`  |
-| `persistence.accessModes`   | AccessMode for persistence                                 |         |
-| `persistence.storageClass`  | Storage class for repository persistence                   |         |
-| `persistence.subPath`       | Subdirectory of the volume to mount at                     |         |
-| `persistence.labels`        | Labels for the persistence volume claim to be created      | `{}`    |
-| `persistence.annotations`   | Annotations for the persistence volume claim to be created | `{}`    |
-
-### Ingress
-
-| Parameter                            | Description                                                                  | Default                                            |
-| ------------------------------------ | ---------------------------------------------------------------------------- | -------------------------------------------------- |
-| `ingress.enabled`                    | enable ingress                                                               | `false`                                            |
-| `ingress.annotations`                | add ingress annotations                                                      |                                                    |
-| `ingress.hosts[0].host`              | add hosts for ingress                                                        | `git.example.com`                                  |
-| `ingress.hosts[0].paths[0].path`     | add path for each ingress host                                               | `/`                                                |
-| `ingress.hosts[0].paths[0].pathType` | add ingress path type                                                        | `Prefix`                                           |
-| `ingress.tls`                        | add ingress tls settings                                                     | `[]`                                               |
-| `ingress.className`                  | add ingress class name. Only used in k8s 1.19+                               |                                                    |
-| `ingress.apiVersion`                 | specify APIVersion of ingress object.  Mostly would only be used for argocd. | version indicated by helm's `Capabilities` object. |
+| Name                         | Description                                                     | Value  |
+| ---------------------------- | --------------------------------------------------------------- | ------ |
+| `podSecurityContext.fsGroup` | Set the shared file system group for all containers in the pod. | `1000` |
+| `containerSecurityContext`   | Security context                                                | `{}`   |
+| `securityContext`            | Run init and Gitea containers as a specific securityContext     | `{}`   |
 
 ### Service
 
-#### Web
+| Name                                    | Description                                                                                                                                                                                          | Value       |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `service.http.type`                     | Kubernetes service type for web traffic                                                                                                                                                              | `ClusterIP` |
+| `service.http.port`                     | Port number for web traffic                                                                                                                                                                          | `3000`      |
+| `service.http.clusterIP`                | ClusterIP setting for http autosetup for statefulset is None                                                                                                                                         | `None`      |
+| `service.http.loadBalancerIP`           | LoadBalancer IP setting                                                                                                                                                                              | `nil`       |
+| `service.http.nodePort`                 | NodePort for http service                                                                                                                                                                            | `nil`       |
+| `service.http.externalTrafficPolicy`    | If `service.http.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation                                                                                         | `nil`       |
+| `service.http.externalIPs`              | External IPs for service                                                                                                                                                                             | `nil`       |
+| `service.http.ipFamilyPolicy`           | HTTP service dual-stack policy                                                                                                                                                                       | `nil`       |
+| `service.http.ipFamilies`               | HTTP service dual-stack familiy selection,for dual-stack parameters see official kubernetes [dual-stack concept documentation](https://kubernetes.io/docs/concepts/services-networking/dual-stack/). | `nil`       |
+| `service.http.loadBalancerSourceRanges` | Source range filter for http loadbalancer                                                                                                                                                            | `[]`        |
+| `service.http.annotations`              | HTTP service annotations                                                                                                                                                                             | `{}`        |
+| `service.ssh.type`                      | Kubernetes service type for ssh traffic                                                                                                                                                              | `ClusterIP` |
+| `service.ssh.port`                      | Port number for ssh traffic                                                                                                                                                                          | `22`        |
+| `service.ssh.clusterIP`                 | ClusterIP setting for ssh autosetup for statefulset is None                                                                                                                                          | `None`      |
+| `service.ssh.loadBalancerIP`            | LoadBalancer IP setting                                                                                                                                                                              | `nil`       |
+| `service.ssh.nodePort`                  | NodePort for ssh service                                                                                                                                                                             | `nil`       |
+| `service.ssh.externalTrafficPolicy`     | If `service.ssh.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation                                                                                          | `nil`       |
+| `service.ssh.externalIPs`               | External IPs for service                                                                                                                                                                             | `nil`       |
+| `service.ssh.ipFamilyPolicy`            | SSH service dual-stack policy                                                                                                                                                                        | `nil`       |
+| `service.ssh.ipFamilies`                | SSH service dual-stack familiy selection,for dual-stack parameters see official kubernetes [dual-stack concept documentation](https://kubernetes.io/docs/concepts/services-networking/dual-stack/).  | `nil`       |
+| `service.ssh.hostPort`                  | HostPort for ssh service                                                                                                                                                                             | `nil`       |
+| `service.ssh.loadBalancerSourceRanges`  | Source range filter for ssh loadbalancer                                                                                                                                                             | `[]`        |
+| `service.ssh.annotations`               | SSH service annotations                                                                                                                                                                              | `{}`        |
 
-| Parameter                               | Description                                                                                                  | Default     |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ----------- |
-| `service.http.type`                     | Kubernetes service type for web traffic                                                                      | `ClusterIP` |
-| `service.http.port`                     | Port for web traffic                                                                                         | `3000`      |
-| `service.http.clusterIP`                | ClusterIP setting for http autosetup for statefulset is None                                                 | `None`      |
-| `service.http.loadBalancerIP`           | LoadBalancer Ip setting                                                                                      |             |
-| `service.http.nodePort`                 | NodePort for http service                                                                                    |             |
-| `service.http.externalTrafficPolicy`    | If `service.http.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation |             |
-| `service.http.externalIPs`              | http service external IP addresses                                                                           |             |
-| `service.http.ipFamilyPolicy`           | http service dual-stack policy                                                                               |             |
-| `service.http.ipFamilies`               | http service dual-stack familiy selection                                                                    |             |
-| `service.http.loadBalancerSourceRanges` | Source range filter for http loadbalancer                                                                    | `[]`        |
-| `service.http.annotations`              | http service annotations                                                                                     |             |
+### Ingress
 
-For dual-stack parameters see official kubernetes [dual-stack concept documentation](https://kubernetes.io/docs/concepts/services-networking/dual-stack/).
+| Name                                 | Description                                                                 | Value             |
+| ------------------------------------ | --------------------------------------------------------------------------- | ----------------- |
+| `ingress.enabled`                    | Enable ingress                                                              | `false`           |
+| `ingress.className`                  | Ingress class name                                                          | `nil`             |
+| `ingress.annotations`                | Ingress annotations                                                         | `{}`              |
+| `ingress.hosts[0].host`              | Default Ingress host                                                        | `git.example.com` |
+| `ingress.hosts[0].paths[0].path`     | Default Ingress path                                                        | `/`               |
+| `ingress.hosts[0].paths[0].pathType` | Ingress path type                                                           | `Prefix`          |
+| `ingress.tls`                        | Ingress tls settings                                                        | `[]`              |
+| `ingress.apiVersion`                 | Specify APIVersion of ingress object. Mostly would only be used for argocd. |                   |
 
-#### SSH
+### StatefulSet
 
-| Parameter                              | Description                                                                                                 | Default     |
-| -------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ----------- |
-| `service.ssh.type`                     | Kubernetes service type for ssh traffic                                                                     | `ClusterIP` |
-| `service.ssh.port`                     | Port for ssh traffic                                                                                        | `22`        |
-| `service.ssh.loadBalancerIP`           | LoadBalancer Ip setting                                                                                     |             |
-| `service.ssh.nodePort`                 | NodePort for ssh service                                                                                    |             |
-| `service.ssh.hostPort`                 | HostPort for ssh service                                                                                    |             |
-| `service.ssh.externalTrafficPolicy`    | If `service.ssh.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation |             |
-| `service.ssh.externalIPs`              | ssh service external IP addresses                                                                           |             |
-| `service.ssh.ipFamilyPolicy`           | ssh service dual-stack policy                                                                               |             |
-| `service.ssh.ipFamilies`               | ssh service dual-stack familiy selection                                                                    |             |
-| `service.ssh.loadBalancerSourceRanges` | Source range filter for ssh loadbalancer                                                                    | `[]`        |
-| `service.ssh.annotations`              | ssh service annotations                                                                                     |             |
+| Name                                        | Description                                            | Value |
+| ------------------------------------------- | ------------------------------------------------------ | ----- |
+| `resources`                                 | Kubernetes resources                                   | `{}`  |
+| `schedulerName`                             | Use an alternate scheduler, e.g. "stork"               | `""`  |
+| `nodeSelector`                              | NodeSelector for the statefulset                       | `{}`  |
+| `tolerations`                               | Tolerations for the statefulset                        | `[]`  |
+| `affinity`                                  | Affinity for the statefulset                           | `{}`  |
+| `statefulset.env`                           | Additional environment variables to pass to containers | `[]`  |
+| `statefulset.terminationGracePeriodSeconds` | How long to wait until forcefully kill the pod         | `60`  |
+| `statefulset.labels`                        | Labels for the statefulset                             | `{}`  |
+| `statefulset.annotations`                   | Annotations for the Gitea StatefulSet to be created    | `{}`  |
 
-For dual-stack parameters see official kubernetes [dual-stack concept documentation](https://kubernetes.io/docs/concepts/services-networking/dual-stack/).
+### Persistence
 
-### Gitea Configuration
+| Name                        | Description                                                | Value               |
+| --------------------------- | ---------------------------------------------------------- | ------------------- |
+| `persistence.enabled`       | Enable persistent storage                                  | `true`              |
+| `persistence.existingClaim` | Use an existing claim to store repository information      | `nil`               |
+| `persistence.size`          | Size for persistence to store repo information             | `10Gi`              |
+| `persistence.accessModes`   | AccessMode for persistence                                 | `["ReadWriteOnce"]` |
+| `persistence.labels`        | Labels for the persistence volume claim to be created      | `{}`                |
+| `persistence.annotations`   | Annotations for the persistence volume claim to be created | `{}`                |
+| `persistence.storageClass`  | Name of the storage class to use                           | `nil`               |
+| `persistence.subPath`       | Subdirectory of the volume to mount at                     | `nil`               |
+| `extraVolumes`              | Additional volumes to mount to the Gitea statefulset       | `nil`               |
+| `extraVolumeMounts`         | Additional volume mounts for the Gitea containers          | `nil`               |
 
-| Parameter      | Description                                                                                          | Default |
-| -------------- | ---------------------------------------------------------------------------------------------------- | ------- |
-| `gitea.config` | Everything in `app.ini` can be configured with this dict. See [Examples](#examples) for more details | `{}`    |
+### Init
 
-### Gitea Probes
+| Name            | Description                                                           | Value |
+| --------------- | --------------------------------------------------------------------- | ----- |
+| `initPreScript` | Bash shell script copied verbatim to the start of the init-container. | `""`  |
 
-Configure Liveness, Readiness and Startup
-[Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/).
+### Signing
 
-#### Liveness probe
+| Name              | Description                  | Value              |
+| ----------------- | ---------------------------- | ------------------ |
+| `signing.enabled` | Enable commit/action signing | `false`            |
+| `signing.gpgHome` | GPG home directory           | `/data/git/.gnupg` |
 
-- Default status: Enabled
-- Default action: tcp socket connect
+### Gitea
 
-| Parameter                                  | Description                                                          | Default |
-| ------------------------------------------ | -------------------------------------------------------------------- | ------- |
-| `gitea.livenessProbe.initialDelaySeconds`  | Delay before probe start                                             | `200`   |
-| `gitea.livenessProbe.timeoutSeconds`       | probe timeout                                                        | `1`     |
-| `gitea.livenessProbe.periodSeconds`        | period between probes                                                | `10`    |
-| `gitea.livenessProbe.successThreshold`     | Minimum consecutive success probes                                   | `1`     |
-| `gitea.livenessProbe.failureThreshold`     | Minimum consecutive error probes                                     | `10`    |
+| Name                                   | Description                                                                                                   | Value                |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------- |
+| `gitea.admin.username`                 | Username for the Gitea admin user                                                                             | `gitea_admin`        |
+| `gitea.admin.existingSecret`           | Use an existing secret to store admin user credentials                                                        | `nil`                |
+| `gitea.admin.password`                 | Password for the Gitea admin user                                                                             | `r8sA8CPHD9!bt6d`    |
+| `gitea.admin.email`                    | Email for the Gitea admin user                                                                                | `gitea@local.domain` |
+| `gitea.metrics.enabled`                | Enable Gitea metrics                                                                                          | `false`              |
+| `gitea.metrics.serviceMonitor.enabled` | Enable Gitea metrics service monitor                                                                          | `false`              |
+| `gitea.ldap`                           | LDAP configuration                                                                                            | `[]`                 |
+| `gitea.oauth`                          | OAuth configuration                                                                                           | `[]`                 |
+| `gitea.config`                         | Configuration for the Gitea server,ref: [config-cheat-sheet](https://docs.gitea.io/en-us/config-cheat-sheet/) | `{}`                 |
+| `gitea.additionalConfigSources`        | Additional configuration from secret or configmap                                                             | `[]`                 |
+| `gitea.additionalConfigFromEnvs`       | Additional configuration sources from environment variables                                                   | `[]`                 |
+| `gitea.podAnnotations`                 | Annotations for the Gitea pod                                                                                 | `{}`                 |
 
-#### Readiness probe
+### LivenessProbe
 
-- Default status: Enabled
-- Default action: tcp socket connect
+| Name                                      | Description                                      | Value  |
+| ----------------------------------------- | ------------------------------------------------ | ------ |
+| `gitea.livenessProbe.enabled`             | Enable liveness probe                            | `true` |
+| `gitea.livenessProbe.tcpSocket.port`      | Port to probe for liveness                       | `http` |
+| `gitea.livenessProbe.initialDelaySeconds` | Initial delay before liveness probe is initiated | `200`  |
+| `gitea.livenessProbe.timeoutSeconds`      | Timeout for liveness probe                       | `1`    |
+| `gitea.livenessProbe.periodSeconds`       | Period for liveness probe                        | `10`   |
+| `gitea.livenessProbe.successThreshold`    | Success threshold for liveness probe             | `1`    |
+| `gitea.livenessProbe.failureThreshold`    | Failure threshold for liveness probe             | `10`   |
 
-| Parameter                                  | Description                                                          | Default |
-| ------------------------------------------ | -------------------------------------------------------------------- | ------- |
-| `gitea.readinessProbe.initialDelaySeconds` | Delay before probe start                                             | `5`     |
-| `gitea.readinessProbe.timeoutSeconds`      | probe timeout                                                        | `1`     |
-| `gitea.readinessProbe.periodSeconds`       | period between probes                                                | `10`    |
-| `gitea.readinessProbe.successThreshold`    | Minimum consecutive success probes                                   | `1`     |
-| `gitea.readinessProbe.failureThreshold`    | Minimum consecutive error probes                                     | `3`     |
+### ReadinessProbe
 
-#### Startup probe
+| Name                                       | Description                                       | Value  |
+| ------------------------------------------ | ------------------------------------------------- | ------ |
+| `gitea.readinessProbe.enabled`             | Enable readiness probe                            | `true` |
+| `gitea.readinessProbe.tcpSocket.port`      | Port to probe for readiness                       | `http` |
+| `gitea.readinessProbe.initialDelaySeconds` | Initial delay before readiness probe is initiated | `5`    |
+| `gitea.readinessProbe.timeoutSeconds`      | Timeout for readiness probe                       | `1`    |
+| `gitea.readinessProbe.periodSeconds`       | Period for readiness probe                        | `10`   |
+| `gitea.readinessProbe.successThreshold`    | Success threshold for readiness probe             | `1`    |
+| `gitea.readinessProbe.failureThreshold`    | Failure threshold for readiness probe             | `3`    |
 
-- Default status: Disabled
-- Default action: tcp socket connect
+### StartupProbe
 
-| Parameter                                  | Description                                                          | Default |
-| ------------------------------------------ | -------------------------------------------------------------------- | ------- |
-| `gitea.startupProbe.initialDelaySeconds`   | Delay before probe start                                             | `60`    |
-| `gitea.startupProbe.timeoutSeconds`        | probe timeout                                                        | `1`     |
-| `gitea.startupProbe.periodSeconds`         | period between probes                                                | `10`    |
-| `gitea.startupProbe.successThreshold`      | Minimum consecutive success probes                                   | `1`     |
-| `gitea.startupProbe.failureThreshold`      | Minimum consecutive error probes                                     | `10`    |
+| Name                                     | Description                                     | Value   |
+| ---------------------------------------- | ----------------------------------------------- | ------- |
+| `gitea.startupProbe.enabled`             | Enable startup probe                            | `false` |
+| `gitea.startupProbe.tcpSocket.port`      | Port to probe for startup                       | `http`  |
+| `gitea.startupProbe.initialDelaySeconds` | Initial delay before startup probe is initiated | `60`    |
+| `gitea.startupProbe.timeoutSeconds`      | Timeout for startup probe                       | `1`     |
+| `gitea.startupProbe.periodSeconds`       | Period for startup probe                        | `10`    |
+| `gitea.startupProbe.successThreshold`    | Success threshold for startup probe             | `1`     |
+| `gitea.startupProbe.failureThreshold`    | Failure threshold for startup probe             | `10`    |
 
-### Memcached BuiltIn
+### Memcached
 
-Memcached is loaded as a dependency from
-[Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if
-enabled in the values. Complete Configuration can be taken from their website.
+| Name                     | Description                                                                                                                                                                                           | Value   |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `memcached.enabled`      | Memcached is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if enabled in the values. Complete Configuration can be taken from their website. | `true`  |
+| `memcached.service.port` | Port for Memcached                                                                                                                                                                                    | `11211` |
 
-The following parameters are the defaults set by this chart
+### PostgreSQL
 
-| Parameter                | Description                 | Default |
-| ------------------------ | --------------------------- | ------- |
-| `memcached.service.port` | Memcached Port              | 11211   |
-| `memcached.enabled`      | Enable Memcached dependency | `true`  |
-
-### MySQL BuiltIn
-
-MySQL is loaded as a dependency from stable. Configuration can be found on this
-[website](https://github.com/helm/charts/tree/master/stable/mysql).
-
-The following parameters are the defaults set by this chart
-
-| Parameter                | Description                                                        | Default |
-| ------------------------ | ------------------------------------------------------------------ | ------- |
-| `mysql.root.password`    | Password for the root user. Ignored if existing secret is provided | `gitea` |
-| `mysql.db.user`          | Username of new user to create.                                    | `gitea` |
-| `mysql.db.password`      | Password for the new user. Ignored if existing secret is provided  | `gitea` |
-| `mysql.db.name`          | Name for new database to create.                                   | `gitea` |
-| `mysql.service.port`     | Port to connect to MySQL service                                   | `3306`  |
-| `mysql.persistence.size` | Persistence size for MySQL                                         | `10Gi`  |
-| `mysql.enabled`          | Enable MySQL dependency                                            | `false` |
-
-### PostgreSQL BuiltIn
-
-PostgreSQL is loaded as a dependency from Bitnami. The chart configuration can
-be found in this
-[Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/postgresql)
-repository.
-
-The following parameters are the defaults set by this chart
-
-| Parameter                                         | Description                                              | Default |
+| Name                                              | Description                                              | Value   |
 | ------------------------------------------------- | -------------------------------------------------------- | ------- |
+| `postgresql.enabled`                              | Enable PostgreSQL                                        | `true`  |
 | `postgresql.global.postgresql.postgresqlDatabase` | PostgreSQL database (overrides postgresqlDatabase)       | `gitea` |
 | `postgresql.global.postgresql.postgresqlUsername` | PostgreSQL username (overrides postgresqlUsername)       | `gitea` |
 | `postgresql.global.postgresql.postgresqlPassword` | PostgreSQL admin password (overrides postgresqlPassword) | `gitea` |
 | `postgresql.global.postgresql.servicePort`        | PostgreSQL port (overrides service.port)                 | `5432`  |
 | `postgresql.persistence.size`                     | PVC Storage Request for PostgreSQL volume                | `10Gi`  |
-| `postgresql.enabled`                              | Enable PostgreSQL dependency                             | `true`  |
 
-### MariaDB BuiltIn
+### MySQL
 
-MariaDB is loaded as a dependency from bitnami. Configuration can be found in
-this [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/mariadb)
-repository.
+| Name                     | Description                                                        | Value   |
+| ------------------------ | ------------------------------------------------------------------ | ------- |
+| `mysql.enabled`          | Enable MySQL                                                       | `false` |
+| `mysql.root.password`    | Password for the root user. Ignored if existing secret is provided | `gitea` |
+| `mysql.db.user`          | Username of new user to create.                                    | `gitea` |
+| `mysql.db.password`      | Password for the new user.Ignored if existing secret is provided   | `gitea` |
+| `mysql.db.name`          | Name for new database to create.                                   | `gitea` |
+| `mysql.service.port`     | Port to connect to MySQL service                                   | `3306`  |
+| `mysql.persistence.size` | PVC Storage Request for MySQL volume                               | `10Gi`  |
 
-The following parameters are the defaults set by this chart
+### MariaDB
 
-| Parameter                          | Description                                                       | Default |
+| Name                               | Description                                                       | Value   |
 | ---------------------------------- | ----------------------------------------------------------------- | ------- |
-| `mariadb.auth.username`            | Username of new user to create.                                   | `gitea` |
+| `mariadb.enabled`                  | Enable MariaDB                                                    | `false` |
+| `mariadb.auth.database`            | Name of the database to create.                                   | `gitea` |
+| `mariadb.auth.username`            | Username of the new user to create.                               | `gitea` |
 | `mariadb.auth.password`            | Password for the new user. Ignored if existing secret is provided | `gitea` |
-| `mariadb.auth.database`            | Name for new database to create.                                  | `gitea` |
 | `mariadb.auth.rootPassword`        | Password for the root user.                                       | `gitea` |
 | `mariadb.primary.service.port`     | Port to connect to MariaDB service                                | `3306`  |
 | `mariadb.primary.persistence.size` | Persistence size for MariaDB                                      | `10Gi`  |
-| `mariadb.enabled`                  | Enable MariaDB dependency                                         | `false` |
+
+### Advanced
+
+| Name               | Description                                          | Value  |
+| ------------------ | ---------------------------------------------------- | ------ |
+| `checkDeprecation` | Set it to false to skip this basic validation check. | `true` |
 
 ## Local development & testing
 

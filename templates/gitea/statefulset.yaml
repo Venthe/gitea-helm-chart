@@ -244,17 +244,17 @@ spec:
             - name: profiler
               containerPort: 6060
             {{- end }}
-          {{- if .Values.gitea.livenessProbe }}
+          {{- if .Values.gitea.livenessProbe.enabled }}
           livenessProbe:
-            {{- toYaml .Values.gitea.livenessProbe | nindent 12 }}
+            {{- toYaml (omit .Values.gitea.livenessProbe "enabled") | nindent 12 }}
           {{- end }}
-          {{- if .Values.gitea.readinessProbe }}
+          {{- if .Values.gitea.readinessProbe.enabled }}
           readinessProbe:
-            {{- toYaml .Values.gitea.readinessProbe | nindent 12 }}
+            {{- toYaml (omit .Values.gitea.readinessProbe "enabled") | nindent 12 }}
           {{- end }}
-          {{- if .Values.gitea.startupProbe }}
+          {{- if .Values.gitea.startupProbe.enabled }}
           startupProbe:
-            {{- toYaml .Values.gitea.startupProbe | nindent 12 }}
+            {{- toYaml (omit .Values.gitea.startupProbe "enabled") | nindent 12 }}
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
