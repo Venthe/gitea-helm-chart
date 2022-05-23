@@ -39,10 +39,7 @@ spec:
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      {{- include "gitea.images.pullSecrets" . | nindent 6 }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
@@ -342,9 +339,7 @@ spec:
           {{- range .Values.persistence.accessModes }}
             - {{ . | quote }}
           {{- end }}
-        {{- if .Values.persistence.storageClass }}
-        storageClassName: {{ .Values.persistence.storageClass | quote }}
-        {{- end }}
+        {{- include "gitea.persistence.storageClass" . | indent 8 }}
         resources:
           requests:
             storage: {{ .Values.persistence.size | quote }}
