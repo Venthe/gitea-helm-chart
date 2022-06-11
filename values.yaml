@@ -461,6 +461,5 @@ mariadb:
 # By default, removed or moved settings that still remain in a user defined values.yaml will cause Helm to fail running the install/update.
 # Set it to false to skip this basic validation check.
 ## @section Advanced
-## @extra failCI This simulates a non-documented new parameter that should break the CI.
 ## @param checkDeprecation Set it to false to skip this basic validation check.
 checkDeprecation: true
