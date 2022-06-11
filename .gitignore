@@ -1,3 +1,4 @@
-charts
+charts/
+node_modules/
 Chart.lock
 .DS_Store

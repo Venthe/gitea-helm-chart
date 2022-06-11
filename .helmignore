@@ -20,5 +20,9 @@
 .idea/
 *.tmproj
 .vscode/
+node_modules/
+.npmrc
+package.json
+package-lock.json
 #charts/
 #Chart.lock
