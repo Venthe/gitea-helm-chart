@@ -37,6 +37,19 @@ helm install gitea gitea-charts/gitea
 - Helm 3.0+
 - PV provisioner for persistent data support
 
+## Chart upgrade to 6.0.0
+
+:warning: The most recent `6.0.0` update brings some major and breaking changes.
+Please note the following changes in the Chart to upgrade successfully. :warning:
+
+### Enabled flag for `startupProbe`
+
+Prior to this version the `startupProbe` was just a commented sample within the
+`values.yaml`. With the migration to an auto-generated [Parameters](#parameters)
+section, a new parameter `gitea.startupProbe.enabled` has been introduced set to
+`false` by default. If you are using the `startupProbe` you need to add that new
+parameter. Otherwise, your defined probe won't be considered after the upgrade.
+
 ## Chart upgrade to 5.0.0
 
 :warning: The most recent `5.0.0` update brings some major and breaking changes.
