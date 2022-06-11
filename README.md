@@ -48,7 +48,8 @@ Prior to this version the `startupProbe` was just a commented sample within the
 `values.yaml`. With the migration to an auto-generated [Parameters](#parameters)
 section, a new parameter `gitea.startupProbe.enabled` has been introduced set to
 `false` by default. If you are using the `startupProbe` you need to add that new
-parameter. Otherwise, your defined probe won't be considered after the upgrade.
+parameter and set it to `true`. Otherwise, your defined probe won't be considered
+after the upgrade.
 
 ## Chart upgrade to 5.0.0
 
