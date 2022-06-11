@@ -31,170 +31,14 @@ helm repo update
 helm install gitea gitea-charts/gitea
 ```
 
+When upgrading, please refer to the [Upgrading](#upgrading) section at the bottom
+of this document for major and breaking changes.
+
 ## Prerequisites
 
 - Kubernetes 1.12+
 - Helm 3.0+
 - PV provisioner for persistent data support
-
-## Chart upgrade to 5.0.0
-
-:warning: The most recent `5.0.0` update brings some major and breaking changes.
-Please note the following changes in the Chart to upgrade successfully. :warning:
-
-### Enable Dependencies
-
-:warning: The values to enable the dependencies,
-such as PostgreSQL, Memcached, MySQL and MariaDB
-have been moved from `gitea.database.builtIn.` to the dependency values. :warning:
-
-You can now enable the dependencies as followed:
-
-```yaml
-memcached:
-  enabled: true
-
-postgresql:
-  enabled: true
-
-mysql:
-  enabled: false
-
-mariadb:
-  enabled: false
-```
-
-### App.ini generation
-
-The app.ini generation has changed and now utilizes the environment-to-ini
-script provided by newer Gitea versions.
-
-> :boom: The Helm Chart now requires Gitea versions of at least 1.11.0.
-
-This change ensures, that the app.ini is now persistent.
-
-#### Secret Key generation
-
-Gitea secret keys (SECRET_KEY, INTERNAL_TOKEN, JWT_SECRET) are now generated
-automatically in certain situations:
-
-- New install: By default the secrets are created automatically. If you provide
-  secrets via `gitea.config` they will be used instead of automatic generation.
-- Existing installs: The secrets won't be deployed, neither via
-  configuration nor via auto generation. We explicitly prevent to set new secrets.
-
-> :rotating_light: It would be possible to set new secret keys manually by entering
-the running container and rewriting the app.ini by hand. However, this it is
-not advisable to do so for existing installations. Certain settings like
-_LDAP_ would not be readable anymore.
-
-### Probes
-
-> :boom: `gitea.customLivenessProbe`, `gitea.customReadinessProbe` and `gitea.customStartupProbe`
-have been removed.
-
-They are replaced by the settings `gitea.livenessProbe`, `gitea.readinessProbe`
-and `gitea.startupProbe` which are now fully configurable and used _as-is_ for
-a Chart deployment.
-If you have customized their values instead of using the `custom` prefixed settings,
-please ensure that you remove the `enabled` property from each of them.
-
-In case you want to disable one of these probes, let's say the `livenessProbe`, add
-the following to your values. The `podAnnotation` is just there to have a bit more
-context.
-
-```diff
-gitea:
-+ livenessProbe:
-  podAnnotations: {}
-```
-
-### Multiple OAuth and LDAP authentication sources
-
-With `5.0.0` of this Chart it is now possible to configure Gitea with multiple
-OAuth and LDAP sources. As a result, you need to update an existing OAuth/LDAP configuration
-in your customized `values.yaml` by replacing the object with settings to a list
-of settings objects. See [OAuth2 Settings](#oauth-settings) and
-[LDAP Settings](#ldap-settings) section for details.
-
-## Chart upgrade from 3.x.x to 4.0.0
-
-:warning: The most recent `4.0.0` update brings some breaking changes. Please note
-the following changes in the Chart to upgrade successfully. :warning:
-
-### Ingress changes
-
-To provide a more flexible Ingress configuration we now support not only host
-settings but also provide configuration for the path and pathType. So this
-change changes the hosts from a simple string list, to a list containing a more
-complex object for more configuration.
-
-```diff
-ingress:
-  enabled: false
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
--  hosts:
--    - git.example.com
-+  hosts:
-+    - host: git.example.com
-+      paths:
-+        - path: /
-+          pathType: Prefix
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - git.example.com
-```
-
-If you want everything as it was before, you can simply add the following code
-to all your host entries.
-
-```yaml
-paths:
-  - path: /
-    pathType: Prefix
-```
-
-### Dropped kebab-case support
-
-In 3.x.x it was possible to provide an ldap configuration via kebab-case, this
-support has now been dropped and only camel case is supported. See [LDAP
-section](#ldap-settings) for more information.
-
-### Dependency update
-
-The chart comes with multiple databases and Memcached as dependency, the latest
-release updated the dependencies.
-
-- Memcached: `4.2.20` -> `5.9.0`
-- PostgreSQL: `9.7.2` -> `10.3.17`
-- MariaDB: `8.0.0` -> `9.3.6`
-
-If you're using the builtin databases you will most likely redeploy the chart in
-order to update the database correctly.
-
-### Execution of initPreScript
-
-Generally spoken, this might not be a breaking change, but it is worth to be
-mentioned.
-
-Prior to `4.0.0` only one init container was used to both setup directories and
-configure Gitea. As of now the actual Gitea configuration is separated from the
-other pre-execution. This also includes the execution of _initPreScript_. If you
-have such script, please be aware of this. Dynamically prepare the Gitea setup
-during execution by e.g. adding environment variables to the execution context
-won't work anymore.
-
-## Gitea Version 1.14.X repository ROOT
-
-Previously the ROOT folder for the Gitea repositories was located at
-`/data/git/gitea-repositories`. In version `1.14` has the path been changed to
-`/data/gitea-repositories`.
-
-This chart will set the `gitea.config.repository.ROOT` value default to
-`/data/git/gitea-repositories`.
 
 ## Configure Commit Signing
 
@@ -926,6 +770,171 @@ gitea:
 | Name               | Description                                          | Value  |
 | ------------------ | ---------------------------------------------------- | ------ |
 | `checkDeprecation` | Set it to false to skip this basic validation check. | `true` |
+
+## Upgrading
+
+### To 5.0.0
+
+:warning: The most recent `5.0.0` update brings some major and breaking changes.
+Please note the following changes in the Chart to upgrade successfully. :warning:
+
+#### Enable Dependencies
+
+:warning: The values to enable the dependencies,
+such as PostgreSQL, Memcached, MySQL and MariaDB
+have been moved from `gitea.database.builtIn.` to the dependency values. :warning:
+
+You can now enable the dependencies as followed:
+
+```yaml
+memcached:
+  enabled: true
+
+postgresql:
+  enabled: true
+
+mysql:
+  enabled: false
+
+mariadb:
+  enabled: false
+```
+
+#### App.ini generation
+
+The app.ini generation has changed and now utilizes the environment-to-ini
+script provided by newer Gitea versions.
+
+> :boom: The Helm Chart now requires Gitea versions of at least 1.11.0.
+
+This change ensures, that the app.ini is now persistent.
+
+##### Secret Key generation
+
+Gitea secret keys (SECRET_KEY, INTERNAL_TOKEN, JWT_SECRET) are now generated
+automatically in certain situations:
+
+- New install: By default the secrets are created automatically. If you provide
+  secrets via `gitea.config` they will be used instead of automatic generation.
+- Existing installs: The secrets won't be deployed, neither via
+  configuration nor via auto generation. We explicitly prevent to set new secrets.
+
+> :rotating_light: It would be possible to set new secret keys manually by entering
+the running container and rewriting the app.ini by hand. However, this it is
+not advisable to do so for existing installations. Certain settings like
+_LDAP_ would not be readable anymore.
+
+#### Probes
+
+> :boom: `gitea.customLivenessProbe`, `gitea.customReadinessProbe` and `gitea.customStartupProbe`
+have been removed.
+
+They are replaced by the settings `gitea.livenessProbe`, `gitea.readinessProbe`
+and `gitea.startupProbe` which are now fully configurable and used _as-is_ for
+a Chart deployment.
+If you have customized their values instead of using the `custom` prefixed settings,
+please ensure that you remove the `enabled` property from each of them.
+
+In case you want to disable one of these probes, let's say the `livenessProbe`, add
+the following to your values. The `podAnnotation` is just there to have a bit more
+context.
+
+```diff
+gitea:
++ livenessProbe:
+  podAnnotations: {}
+```
+
+#### Multiple OAuth and LDAP authentication sources
+
+With `5.0.0` of this Chart it is now possible to configure Gitea with multiple
+OAuth and LDAP sources. As a result, you need to update an existing OAuth/LDAP configuration
+in your customized `values.yaml` by replacing the object with settings to a list
+of settings objects. See [OAuth2 Settings](#oauth-settings) and
+[LDAP Settings](#ldap-settings) section for details.
+
+### To 4.0.0
+
+:warning: The most recent `4.0.0` update brings some breaking changes. Please note
+the following changes in the Chart to upgrade successfully. :warning:
+
+#### Ingress changes
+
+To provide a more flexible Ingress configuration we now support not only host
+settings but also provide configuration for the path and pathType. So this
+change changes the hosts from a simple string list, to a list containing a more
+complex object for more configuration.
+
+```diff
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+-  hosts:
+-    - git.example.com
++  hosts:
++    - host: git.example.com
++      paths:
++        - path: /
++          pathType: Prefix
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - git.example.com
+```
+
+If you want everything as it was before, you can simply add the following code
+to all your host entries.
+
+```yaml
+paths:
+  - path: /
+    pathType: Prefix
+```
+
+#### Dropped kebab-case support
+
+In 3.x.x it was possible to provide an ldap configuration via kebab-case, this
+support has now been dropped and only camel case is supported. See [LDAP
+section](#ldap-settings) for more information.
+
+#### Dependency update
+
+The chart comes with multiple databases and Memcached as dependency, the latest
+release updated the dependencies.
+
+- Memcached: `4.2.20` -> `5.9.0`
+- PostgreSQL: `9.7.2` -> `10.3.17`
+- MariaDB: `8.0.0` -> `9.3.6`
+
+If you're using the builtin databases you will most likely redeploy the chart in
+order to update the database correctly.
+
+#### Execution of initPreScript
+
+Generally spoken, this might not be a breaking change, but it is worth to be
+mentioned.
+
+Prior to `4.0.0` only one init container was used to both setup directories and
+configure Gitea. As of now the actual Gitea configuration is separated from the
+other pre-execution. This also includes the execution of _initPreScript_. If you
+have such script, please be aware of this. Dynamically prepare the Gitea setup
+during execution by e.g. adding environment variables to the execution context
+won't work anymore.
+
+### Misc
+
+#### Gitea Version 1.14.X repository ROOT
+
+Previously the ROOT folder for the Gitea repositories was located at
+`/data/git/gitea-repositories`. In version `1.14` has the path been changed to
+`/data/gitea-repositories`.
+
+This chart will set the `gitea.config.repository.ROOT` value default to
+`/data/git/gitea-repositories`.
+
+---
 
 ## Local development & testing
 
