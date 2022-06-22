@@ -793,7 +793,7 @@ gitea:
 | `nodeSelector`                              | NodeSelector for the statefulset                       | `{}`  |
 | `tolerations`                               | Tolerations for the statefulset                        | `[]`  |
 | `affinity`                                  | Affinity for the statefulset                           | `{}`  |
-| `dnsConfig`                                 | DnsConfig for the statefulset                          | `{}`  |
+| `dnsConfig`                                 | dnsConfig for the statefulset                          | `{}`  |
 | `statefulset.env`                           | Additional environment variables to pass to containers | `[]`  |
 | `statefulset.terminationGracePeriodSeconds` | How long to wait until forcefully kill the pod         | `60`  |
 | `statefulset.labels`                        | Labels for the statefulset                             | `{}`  |
