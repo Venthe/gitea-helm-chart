@@ -389,7 +389,7 @@ gitea:
 ## @section Memcached
 #
 ## @param memcached.enabled Memcached is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if enabled in the values. Complete Configuration can be taken from their website.
-## @param memcached.service.port Port for memcached
+## @param memcached.service.port Port for Memcached
 memcached:
   enabled: true
   service:

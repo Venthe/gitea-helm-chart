@@ -10,24 +10,26 @@ platform:
 steps:
 - name: helm lint
   pull: always
-  image: alpine:3.15
+  image: alpine:3.16
   commands:
   - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing helm
   - helm lint
 
 - name: helm template
   pull: always
-  image: alpine:3.15
+  image: alpine:3.16
   commands:
   - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing helm
   - helm dependency update
   - helm template --debug gitea-helm .
 
-- name: markdown lint
+- name: verify readme
   pull: always
-  image: docker.io/volkerraschek/markdownlint:latest
+  image: alpine:3.16
   commands:
-  - markdownlint *.md
+  - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing make npm git
+  - make readme
+  - git diff --exit-code --name-only README.md
 
 - name: discord
   pull: always
@@ -58,7 +60,7 @@ trigger:
 steps:
 - name: generate-chart
   pull: always
-  image: alpine:3.15
+  image: alpine:3.16
   commands:
     - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing helm
     - apk add --no-cache curl
