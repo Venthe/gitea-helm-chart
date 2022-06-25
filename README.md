@@ -15,13 +15,14 @@ as well as being deployed as a statefulset to retain stored repositories.
 
 Gitea can be run with an external database and cache. This chart provides those
 dependencies, which can be enabled, or disabled via
-[configuration](#configuration).
+configuration.
 
 Dependencies:
 
-- PostgreSQL
-- Memcached
-- MySQL
+- PostgreSQL ([configuration](#postgresql))
+- Memcached ([configuration](#memcached))
+- MySQL ([configuration](#mysql))
+- MariaDB ([configuration](#mariadb))
 
 ## Installing
 
@@ -868,7 +869,7 @@ gitea:
 With `5.0.0` of this Chart it is now possible to configure Gitea with multiple
 OAuth and LDAP sources. As a result, you need to update an existing OAuth/LDAP configuration
 in your customized `values.yaml` by replacing the object with settings to a list
-of settings objects. See [OAuth2 Settings](#oauth-settings) and
+of settings objects. See [OAuth2 Settings](#oauth2-settings) and
 [LDAP Settings](#ldap-settings) section for details.
 
 ### To 4.0.0
