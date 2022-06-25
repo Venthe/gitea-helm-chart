@@ -782,9 +782,9 @@ See [CONTRIBUTORS GUIDE](CONTRIBUTING.md) for details.
 This section list major and breaking changes of each Helm Chart version.
 Please read them carefully to upgrade successfully.
 
-## To 6.0.0
+### To 6.0.0
 
-### New `enabled` flag for `startupProbe`
+#### New `enabled` flag for `startupProbe`
 
 Prior to this version the `startupProbe` was just a commented sample within the
 `values.yaml`. With the migration to an auto-generated [Parameters](#parameters)
