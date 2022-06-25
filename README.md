@@ -771,7 +771,27 @@ gitea:
 | ------------------ | ---------------------------------------------------- | ------ |
 | `checkDeprecation` | Set it to false to skip this basic validation check. | `true` |
 
+## Contributing
+
+Expected workflow is: Fork -> Patch -> Push -> Pull Request
+
+See [CONTRIBUTORS GUIDE](CONTRIBUTING.md) for details.
+
 ## Upgrading
+
+## To 6.0.0
+
+:warning: The most recent `6.0.0` update brings some major and breaking changes.
+Please note the following changes in the Chart to upgrade successfully. :warning:
+
+### New `enabled` flag for `startupProbe`
+
+Prior to this version the `startupProbe` was just a commented sample within the
+`values.yaml`. With the migration to an auto-generated [Parameters](#parameters)
+section, a new parameter `gitea.startupProbe.enabled` has been introduced set to
+`false` by default. If you are using the `startupProbe` you need to add that new
+parameter and set it to `true`. Otherwise, your defined probe won't be considered
+after the upgrade.
 
 ### To 5.0.0
 
@@ -933,22 +953,3 @@ Previously the ROOT folder for the Gitea repositories was located at
 
 This chart will set the `gitea.config.repository.ROOT` value default to
 `/data/git/gitea-repositories`.
-
----
-
-## Local development & testing
-
-For local development and testing of pull requests, the following workflow can
-be used:
-
-1. Install `minikube` and `helm`.
-2. Start a `minikube` cluster via `minikube start`.
-3. From the `gitea/helm-chart` directory execute the following command. This
-   will install the dependencies listed in `Chart.yml` and deploy the current
-   state of the helm chart found locally. If you want to test a branch, make
-   sure to switch to the respective branch first.
-  `helm install --dependency-update gitea . -f values.yaml`.
-4. Gitea is now deployed in `minikube`. To access it, it's port needs to be
-   forwarded first from `minikube` to localhost first via `kubectl --namespace
-   default port-forward svc/gitea-http 3000:3000`. Now Gitea is accessible at
-   [http://localhost:3000](http://localhost:3000).
