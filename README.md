@@ -779,7 +779,7 @@ See [CONTRIBUTORS GUIDE](CONTRIBUTING.md) for details.
 
 ## Upgrading
 
-This section list major and breaking changes of each Helm Chart version.
+This section lists major and breaking changes of each Helm Chart version.
 Please read them carefully to upgrade successfully.
 
 ### To 6.0.0
