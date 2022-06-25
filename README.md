@@ -469,7 +469,7 @@ gitea:
         ...
 ```
 
-:warning: Some options are just flags and therefore don't any values. If they
+⚠ Some options are just flags and therefore don't any values. If they
 are defined in `gitea.ldap` configuration, they will be passed to the Gitea cli
 without any value. Affected options:
 
@@ -779,30 +779,31 @@ See [CONTRIBUTORS GUIDE](CONTRIBUTING.md) for details.
 
 ## Upgrading
 
-## To 6.0.0
+This section list major and breaking changes of each Helm Chart version.
+Please read them carefully to upgrade successfully.
 
-:warning: The most recent `6.0.0` update brings some major and breaking changes.
-Please note the following changes in the Chart to upgrade successfully. :warning:
+## To 6.0.0
 
 ### New `enabled` flag for `startupProbe`
 
 Prior to this version the `startupProbe` was just a commented sample within the
 `values.yaml`. With the migration to an auto-generated [Parameters](#parameters)
 section, a new parameter `gitea.startupProbe.enabled` has been introduced set to
-`false` by default. If you are using the `startupProbe` you need to add that new
+`false` by default.
+
+If you are using the `startupProbe` you need to add that new
 parameter and set it to `true`. Otherwise, your defined probe won't be considered
 after the upgrade.
 
 ### To 5.0.0
 
-:warning: The most recent `5.0.0` update brings some major and breaking changes.
-Please note the following changes in the Chart to upgrade successfully. :warning:
+> 💥 The Helm Chart now requires Gitea versions of at least 1.11.0.
 
 #### Enable Dependencies
 
-:warning: The values to enable the dependencies,
+The values to enable the dependencies,
 such as PostgreSQL, Memcached, MySQL and MariaDB
-have been moved from `gitea.database.builtIn.` to the dependency values. :warning:
+have been moved from `gitea.database.builtIn.` to the dependency values.
 
 You can now enable the dependencies as followed:
 
@@ -823,11 +824,8 @@ mariadb:
 #### App.ini generation
 
 The app.ini generation has changed and now utilizes the environment-to-ini
-script provided by newer Gitea versions.
-
-> :boom: The Helm Chart now requires Gitea versions of at least 1.11.0.
-
-This change ensures, that the app.ini is now persistent.
+script provided by newer Gitea versions. This change ensures, that the app.ini
+is now persistent.
 
 ##### Secret Key generation
 
@@ -839,14 +837,14 @@ automatically in certain situations:
 - Existing installs: The secrets won't be deployed, neither via
   configuration nor via auto generation. We explicitly prevent to set new secrets.
 
-> :rotating_light: It would be possible to set new secret keys manually by entering
+> 💡 It would be possible to set new secret keys manually by entering
 the running container and rewriting the app.ini by hand. However, this it is
 not advisable to do so for existing installations. Certain settings like
 _LDAP_ would not be readable anymore.
 
 #### Probes
 
-> :boom: `gitea.customLivenessProbe`, `gitea.customReadinessProbe` and `gitea.customStartupProbe`
+`gitea.customLivenessProbe`, `gitea.customReadinessProbe` and `gitea.customStartupProbe`
 have been removed.
 
 They are replaced by the settings `gitea.livenessProbe`, `gitea.readinessProbe`
@@ -874,9 +872,6 @@ of settings objects. See [OAuth2 Settings](#oauth-settings) and
 [LDAP Settings](#ldap-settings) section for details.
 
 ### To 4.0.0
-
-:warning: The most recent `4.0.0` update brings some breaking changes. Please note
-the following changes in the Chart to upgrade successfully. :warning:
 
 #### Ingress changes
 
