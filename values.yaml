@@ -180,6 +180,9 @@ tolerations: []
 ## @param affinity Affinity for the statefulset
 affinity: {}
 
+## @param dnsConfig dnsConfig for the statefulset
+dnsConfig: {}
+
 ## @param statefulset.env  Additional environment variables to pass to containers
 ## @param statefulset.terminationGracePeriodSeconds How long to wait until forcefully kill the pod
 ## @param statefulset.labels Labels for the statefulset
