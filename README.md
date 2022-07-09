@@ -571,14 +571,14 @@ gitea:
 
 ### Image
 
-| Name               | Description                                                                                | Value         |
-| ------------------ | ------------------------------------------------------------------------------------------ | ------------- |
-| `image.registry`   | image registry, e.g. gcr.io,docker.io                                                      | `""`          |
-| `image.repository` | Image to start for this pod                                                                | `gitea/gitea` |
-| `image.tag`        | Visit: [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated) | `""`          |
-| `image.pullPolicy` | Image pull policy                                                                          | `Always`      |
-| `image.rootless`   | Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher  | `false`       |
-| `imagePullSecrets` | Secret to use for pulling the image                                                        | `[]`          |
+| Name               | Description                                                                                                                             | Value         |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `image.registry`   | image registry, e.g. gcr.io,docker.io                                                                                                   | `""`          |
+| `image.repository` | Image to start for this pod                                                                                                             | `gitea/gitea` |
+| `image.tag`        | Visit: [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated). Defaults to `appVersion` within Chart.yaml. | `""`          |
+| `image.pullPolicy` | Image pull policy                                                                                                                       | `Always`      |
+| `image.rootless`   | Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher                                               | `false`       |
+| `imagePullSecrets` | Secret to use for pulling the image                                                                                                     | `[]`          |
 
 ### Security
 
