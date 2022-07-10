@@ -42,6 +42,18 @@ helm install gitea gitea-charts/gitea
 :warning: The most recent `6.0.0` update brings some major and breaking changes.
 Please note the following changes in the Chart to upgrade successfully. :warning:
 
+### Different volume mounts for init-containers and runtime container
+
+**The `extraVolumeMounts` is deprecated** in favor of `extraInitVolumeMounts` and
+`extraContainerVolumeMounts`. You can now have different mounts for the initialization
+phase and Gitea runtime. The deprecated `extraVolumeMounts` will still be available
+for the time being and is mounted into every container. If you want to switch to
+the new settings and want to mount specific volumes into all containers, you have
+to configure their mount points within both new settings.
+
+**Combining values from the deprecated setting with values from the new settings
+is not possible.**
+
 ### Enabled flag for `startupProbe`
 
 Prior to this version the `startupProbe` was just a commented sample within the
@@ -815,18 +827,20 @@ gitea:
 
 ### Persistence
 
-| Name                        | Description                                                | Value               |
-| --------------------------- | ---------------------------------------------------------- | ------------------- |
-| `persistence.enabled`       | Enable persistent storage                                  | `true`              |
-| `persistence.existingClaim` | Use an existing claim to store repository information      | `nil`               |
-| `persistence.size`          | Size for persistence to store repo information             | `10Gi`              |
-| `persistence.accessModes`   | AccessMode for persistence                                 | `["ReadWriteOnce"]` |
-| `persistence.labels`        | Labels for the persistence volume claim to be created      | `{}`                |
-| `persistence.annotations`   | Annotations for the persistence volume claim to be created | `{}`                |
-| `persistence.storageClass`  | Name of the storage class to use                           | `nil`               |
-| `persistence.subPath`       | Subdirectory of the volume to mount at                     | `nil`               |
-| `extraVolumes`              | Additional volumes to mount to the Gitea statefulset       | `nil`               |
-| `extraVolumeMounts`         | Additional volume mounts for the Gitea containers          | `nil`               |
+| Name                         | Description                                                                                           | Value               |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------- |
+| `persistence.enabled`        | Enable persistent storage                                                                             | `true`              |
+| `persistence.existingClaim`  | Use an existing claim to store repository information                                                 | `nil`               |
+| `persistence.size`           | Size for persistence to store repo information                                                        | `10Gi`              |
+| `persistence.accessModes`    | AccessMode for persistence                                                                            | `["ReadWriteOnce"]` |
+| `persistence.labels`         | Labels for the persistence volume claim to be created                                                 | `{}`                |
+| `persistence.annotations`    | Annotations for the persistence volume claim to be created                                            | `{}`                |
+| `persistence.storageClass`   | Name of the storage class to use                                                                      | `nil`               |
+| `persistence.subPath`        | Subdirectory of the volume to mount at                                                                | `nil`               |
+| `extraVolumes`               | Additional volumes to mount to the Gitea statefulset                                                  | `[]`                |
+| `extraContainerVolumeMounts` | Mounts that are only mapped into the Gitea runtime/main container, to e.g. override custom templates. | `[]`                |
+| `extraInitVolumeMounts`      | Mounts that are only mapped into the init-containers. Can be used for additional preconfiguration.    | `[]`                |
+| `extraVolumeMounts`          | **DEPRECATED** Additional volume mounts for init containers and the Gitea main container              | `[]`                |
 
 ### Init
 

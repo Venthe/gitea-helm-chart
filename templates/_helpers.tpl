@@ -313,3 +313,21 @@ app.kubernetes.io/instance: {{ .Release.Name }}
     {{- $_ := set .Values.gitea.config.database "PASSWD"    .Values.mariadb.auth.password -}}
   {{- end -}}
 {{- end -}}
+
+{{- define "gitea.init-additional-mounts" -}}
+  {{- /* Honor the deprecated extraVolumeMounts variable when defined */ -}}
+  {{- if gt (len .Values.extraInitVolumeMounts) 0 -}}
+    {{- toYaml .Values.extraInitVolumeMounts -}}
+  {{- else if gt (len .Values.extraVolumeMounts) 0 -}}
+    {{- toYaml .Values.extraVolumeMounts -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "gitea.container-additional-mounts" -}}
+  {{- /* Honor the deprecated extraVolumeMounts variable when defined */ -}}
+  {{- if gt (len .Values.extraContainerVolumeMounts) 0 -}}
+    {{- toYaml .Values.extraContainerVolumeMounts -}}
+  {{- else if gt (len .Values.extraVolumeMounts) 0 -}}
+    {{- toYaml .Values.extraVolumeMounts -}}
+  {{- end -}}
+{{- end -}}
