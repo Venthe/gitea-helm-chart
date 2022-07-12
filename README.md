@@ -470,8 +470,8 @@ gitea:
         ...
 ```
 
-⚠ Some options are just flags and therefore don't any values. If they
-are defined in `gitea.ldap` configuration, they will be passed to the Gitea cli
+⚠️ Some options are just flags and therefore don't have any values. If they
+are defined in `gitea.ldap` configuration, they will be passed to the Gitea CLI
 without any value. Affected options:
 
 - notActive
