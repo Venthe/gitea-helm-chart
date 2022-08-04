@@ -160,6 +160,14 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 {{- end -}}
 
+{{- define "gitea.public_protocol" -}}
+{{- if and .Values.ingress.enabled (gt (len .Values.ingress.tls) 0) -}}
+https
+{{- else -}}
+{{ .Values.gitea.config.server.PROTOCOL }}
+{{- end -}}
+{{- end -}}
+
 {{- define "gitea.inline_configuration" -}}
   {{- include "gitea.inline_configuration.init" . -}}
   {{- include "gitea.inline_configuration.defaults" . -}}
@@ -250,15 +258,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
     {{- end -}}
   {{- end -}}
   {{- if not .Values.gitea.config.server.ROOT_URL -}}
-    {{- if .Values.ingress.enabled -}}
-      {{- if gt (len .Values.ingress.tls) 0 -}}
-        {{- $_ := set .Values.gitea.config.server "ROOT_URL" (printf "%s://%s" .Values.gitea.config.server.PROTOCOL (index (index .Values.ingress.tls 0).hosts 0)) -}}
-      {{- else -}}
-        {{- $_ := set .Values.gitea.config.server "ROOT_URL" (printf "%s://%s" .Values.gitea.config.server.PROTOCOL (index .Values.ingress.hosts 0).host) -}}
-      {{- end -}}
-    {{- else -}}
-      {{- $_ := set .Values.gitea.config.server "ROOT_URL" (printf "%s://%s" .Values.gitea.config.server.PROTOCOL .Values.gitea.config.server.DOMAIN) -}}
-    {{- end -}}
+    {{- $_ := set .Values.gitea.config.server "ROOT_URL" (printf "%s://%s" (include "gitea.public_protocol" .) .Values.gitea.config.server.DOMAIN) -}}
   {{- end -}}
   {{- if not .Values.gitea.config.server.SSH_DOMAIN -}}
     {{- $_ := set .Values.gitea.config.server "SSH_DOMAIN" .Values.gitea.config.server.DOMAIN -}}
