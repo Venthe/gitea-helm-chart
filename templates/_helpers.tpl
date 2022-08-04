@@ -313,3 +313,7 @@ https
     {{- $_ := set .Values.gitea.config.database "PASSWD"    .Values.mariadb.auth.password -}}
   {{- end -}}
 {{- end -}}
+
+{{- define "gitea.gpg-key-secret-name" -}}
+{{ default (printf "%s-gpg-key" (include "gitea.fullname" .)) .Values.signing.existingSecret }}
+{{- end -}}

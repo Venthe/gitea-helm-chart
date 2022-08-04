@@ -667,10 +667,12 @@ gitea:
 
 ### Signing
 
-| Name              | Description                  | Value              |
-| ----------------- | ---------------------------- | ------------------ |
-| `signing.enabled` | Enable commit/action signing | `false`            |
-| `signing.gpgHome` | GPG home directory           | `/data/git/.gnupg` |
+| Name                     | Description                                                       | Value              |
+| ------------------------ | ----------------------------------------------------------------- | ------------------ |
+| `signing.enabled`        | Enable commit/action signing                                      | `false`            |
+| `signing.gpgHome`        | GPG home directory                                                | `/data/git/.gnupg` |
+| `signing.privateKey`     | Inline private gpg key for signed Gitea actions                   | `""`               |
+| `signing.existingSecret` | Use an existing secret to store the value of `signing.privateKey` | `""`               |
 
 ### Gitea
 
