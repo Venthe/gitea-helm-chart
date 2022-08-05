@@ -23,6 +23,15 @@ steps:
   - helm dependency update
   - helm template --debug gitea-helm .
 
+- name: helm unittests
+  pull: always
+  image: alpine:3.16
+  commands:
+  - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing make helm git
+  - helm plugin install https://github.com/heyhabito/helm-unittest
+  - helm dependency update
+  - make unittests
+
 - name: verify readme
   pull: always
   image: alpine:3.16

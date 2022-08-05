@@ -58,5 +58,5 @@ be used:
 $ helm plugin install https://github.com/heyhabito/helm-unittest
 
 # run the unittests
-helm unittest --helm3 --strict -f 'unittests/**/*.yaml' ./
+make unittests
 ```
