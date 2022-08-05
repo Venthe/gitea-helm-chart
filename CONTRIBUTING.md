@@ -50,3 +50,13 @@ be used:
    forwarded first from `minikube` to localhost first via `kubectl --namespace
    default port-forward svc/gitea-http 3000:3000`. Now Gitea is accessible at
    [http://localhost:3000](http://localhost:3000).
+
+### Unit tests
+
+```bash
+# install the unittest plugin
+$ helm plugin install https://github.com/heyhabito/helm-unittest
+
+# run the unittests
+helm unittest --helm3 --strict -f 'unittests/**/*.yaml' ./
+```
