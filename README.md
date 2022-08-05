@@ -41,24 +41,6 @@ of this document for major and breaking changes.
 - Helm 3.0+
 - PV provisioner for persistent data support
 
-## Configure Commit Signing
-
-When using the rootless image the gpg key folder was is not persistent by
-default. If you consider using signed commits for internal Gitea activities
-(e.g. initial commit), you'd need to provide a signing key. Prior to
-[PR186](https://gitea.com/gitea/helm-chart/pulls/186), imported keys had to be
-re-imported once the container got replaced by another.
-
-The mentioned PR introduced a new configuration object `signing` allowing you to
-configure prerequisites for commit signing. By default this section is disabled
-to maintain backwards compatibility.
-
-```yaml
-signing:
-  enabled: false
-  gpgHome: /data/git/.gnupg
-```
-
 ## Examples
 
 ### Gitea Configuration
@@ -524,6 +506,49 @@ gitea:
       existingSecret: gitea-oauth-secret
         ...
 ```
+
+## Configure commit signing
+
+When using the rootless image the gpg key folder was is not persistent by
+default. If you consider using signed commits for internal Gitea activities
+(e.g. initial commit), you'd need to provide a signing key. Prior to
+[PR186](https://gitea.com/gitea/helm-chart/pulls/186), imported keys had to be
+re-imported once the container got replaced by another.
+
+The mentioned PR introduced a new configuration object `signing` allowing you to
+configure prerequisites for commit signing. By default this section is disabled
+to maintain backwards compatibility.
+
+```yaml
+signing:
+  enabled: false
+  gpgHome: /data/git/.gnupg
+```
+
+Regardless of the used container image the `signing` object allows to specify a
+private gpg key. Either using the `signing.privateKey` to define the key inline,
+or refer to an existing secret containing the key data by using `signing.existingKey`.
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: custom-gitea-gpg-key
+type: Opaque
+stringData:
+  privateKey: |-
+    -----BEGIN PGP PRIVATE KEY BLOCK-----
+    ...
+    -----END PGP PRIVATE KEY BLOCK-----
+```
+
+```yaml
+signing:
+  existingSecret: custom-gitea-gpg-key
+```
+
+To use the gpg key, Gitea needs to be configured accordingly. A detailed description
+can be found in the [official Gitea documentation](https://docs.gitea.io/en-us/signing/#general-configuration).
 
 ### Metrics and profiling
 
