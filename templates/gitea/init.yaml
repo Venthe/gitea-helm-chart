@@ -40,7 +40,7 @@ stringData:
     {{- end }}
     chmod ug+rwx "${GITEA_TEMP}"
 
-    {{- if .Values.signing.enabled }}
+    {{ if .Values.signing.enabled -}}
     if [ ! -d "${GNUPGHOME}" ]; then
       mkdir -p "${GNUPGHOME}"
       chmod 700 "${GNUPGHOME}"
