@@ -117,13 +117,15 @@ stringData:
     function env2ini::load_config_sources() {
       local path="${1}"
 
-      env2ini::log "Processing $(basename "${path}")..."
+      if [[ -d "${path}" ]]; then
+        env2ini::log "Processing $(basename "${path}")..."
 
-      while read -d '' configFile; do
-        env2ini::process_config_file "${configFile}"
-      done < <(find "${path}" -type l -not -name '..data' -print0)
+        while read -d '' configFile; do
+          env2ini::process_config_file "${configFile}"
+        done < <(find "${path}" -type l -not -name '..data' -print0)
 
-      env2ini::log "\n"
+        env2ini::log "\n"
+      fi
     }
 
     function env2ini::generate_initial_secrets() {
