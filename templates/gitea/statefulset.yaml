@@ -73,9 +73,7 @@ spec:
               {{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
               {{- end }}
-            {{- if .Values.extraVolumeMounts }}
-            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
-            {{- end }}
+            {{- include "gitea.init-additional-mounts" . | nindent 12 }}
           securityContext:
             {{- toYaml .Values.containerSecurityContext | nindent 12 }}
         - name: init-app-ini
@@ -113,9 +111,7 @@ spec:
             - name: additional-config-sources-{{ $idx }}
               mountPath: "/env-to-ini-mounts/additionals/{{ $idx }}/"
             {{- end }}
-            {{- if .Values.extraVolumeMounts }}
-            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
-            {{- end }}
+            {{- include "gitea.init-additional-mounts" . | nindent 12 }}
           securityContext:
             {{- toYaml .Values.containerSecurityContext | nindent 12 }}
         {{- if .Values.signing.enabled }}
@@ -235,9 +231,7 @@ spec:
               {{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
               {{- end }}
-            {{- if .Values.extraVolumeMounts }}
-            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
-            {{- end }}
+            {{- include "gitea.init-additional-mounts" . | nindent 12 }}
       terminationGracePeriodSeconds: {{ .Values.statefulset.terminationGracePeriodSeconds }}
       containers:
         - name: {{ .Chart.Name }}
@@ -307,9 +301,7 @@ spec:
               {{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
               {{- end }}
-            {{- if .Values.extraVolumeMounts }}
-            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
-            {{- end }}
+            {{- include "gitea.container-additional-mounts" . | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -335,7 +327,7 @@ spec:
           secret:
             secretName: {{ include "gitea.fullname" . }}
             defaultMode: 110
-        {{- if .Values.extraVolumes }}
+        {{- if gt (len .Values.extraVolumes) 0 }}
         {{- toYaml .Values.extraVolumes | nindent 8 }}
         {{- end }}
         - name: inline-config-sources
