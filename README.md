@@ -509,7 +509,7 @@ gitea:
 
 ## Configure commit signing
 
-When using the rootless image the gpg key folder was is not persistent by
+When using the rootless image the gpg key folder is not persistent by
 default. If you consider using signed commits for internal Gitea activities
 (e.g. initial commit), you'd need to provide a signing key. Prior to
 [PR186](https://gitea.com/gitea/helm-chart/pulls/186), imported keys had to be
