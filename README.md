@@ -687,6 +687,7 @@ gitea:
 | `gitea.ldap`                           | LDAP configuration                                                                                            | `[]`                 |
 | `gitea.oauth`                          | OAuth configuration                                                                                           | `[]`                 |
 | `gitea.config`                         | Configuration for the Gitea server,ref: [config-cheat-sheet](https://docs.gitea.io/en-us/config-cheat-sheet/) | `{}`                 |
+| `gitea.gitconfig`                      | System-wide Git configuration allowing to customize/override Gitea Git configuration                          | `""`                 |
 | `gitea.additionalConfigSources`        | Additional configuration from secret or configmap                                                             | `[]`                 |
 | `gitea.additionalConfigFromEnvs`       | Additional configuration sources from environment variables                                                   | `[]`                 |
 | `gitea.podAnnotations`                 | Annotations for the Gitea pod                                                                                 | `{}`                 |

@@ -1,0 +1,30 @@
+suite: Git config configmap template (specified)
+release:
+  name: gitea-unittests
+  namespace: testing
+templates:
+  - templates/gitea/gitconfig.yaml
+tests:
+  - it: renders configmap specification using specified gitconfig
+    set:
+      gitea:
+        gitconfig: |
+          [user]
+            name=Gitea Testing
+            email=gitea-testing@example.com
+    asserts:
+      - hasDocuments:
+          count: 1
+      - documentIndex: 0
+        containsDocument:
+          kind: ConfigMap
+          apiVersion: v1
+          name: gitea-unittests-gitconfig
+      - isNotEmpty:
+          path: metadata.labels
+      - equal:
+          path: data.gitconfig
+          value: |-
+            [user]
+              name=Gitea Testing
+              email=gitea-testing@example.com

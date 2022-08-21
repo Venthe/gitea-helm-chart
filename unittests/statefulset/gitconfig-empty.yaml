@@ -1,0 +1,28 @@
+suite: Statefulset template (empty gitconfig)
+release:
+  name: gitea-unittests
+  namespace: testing
+templates:
+  - templates/gitea/statefulset.yaml
+  - templates/gitea/config.yaml
+tests:
+  - it: skips /etc/gitconfig mount
+    template: templates/gitea/statefulset.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.containers[0].volumeMounts
+          any: true
+          content:
+            name: gitea-unittests-etc-gitconfig
+  - it: skips gitconfig volume spec
+    template: templates/gitea/statefulset.yaml
+    asserts:
+      - notContains:
+          path: spec.template.spec.volumes
+          content:
+            name: gitea-unittests-etc-gitconfig
+  - it: skips checksum annotation for gitconfig configmap
+    template: templates/gitea/statefulset.yaml
+    asserts:
+      - isNull:
+          path: spec.template.metadata.annotations.[checksum/gitconfig]

@@ -322,6 +322,15 @@ gitea:
   #  security:
   #    PASSWORD_COMPLEXITY: spec
 
+  ## @param gitea.gitconfig System-wide git configuration allowing to customize/override Gitea git configuration
+  gitconfig: ""
+  # gitconfig: |-
+  #   [user]
+  #     name=Gitea
+  #     email=gitea@example.com
+  #   [core]
+  #     logAllRefUpdates=true
+
   ## @param gitea.additionalConfigSources Additional configuration from secret or configmap
   additionalConfigSources: []
   #   - secret:

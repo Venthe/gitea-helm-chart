@@ -1,0 +1,11 @@
+{{- if .Values.gitea.gitconfig -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gitea.fullname" . }}-gitconfig
+  labels:
+    {{- include "gitea.labels" . | nindent 4 }}
+data:
+  gitconfig: |-
+{{- .Values.gitea.gitconfig | nindent 4 }}
+{{- end }}

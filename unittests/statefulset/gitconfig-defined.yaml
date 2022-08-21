@@ -1,0 +1,53 @@
+suite: Statefulset template (specified gitconfig)
+release:
+  name: gitea-unittests
+  namespace: testing
+templates:
+  - templates/gitea/statefulset.yaml
+  - templates/gitea/config.yaml
+tests:
+  - it: adds /etc/gitconfig mount point to runtime container
+    template: templates/gitea/statefulset.yaml
+    set:
+      gitea:
+        gitconfig: |-
+          [user]
+            name=Gitea Testing
+            email=gitea-testing@example.com
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: gitea-unittests-etc-gitconfig
+            mountPath: /etc/gitconfig
+            subPath: gitconfig
+  - it: adds gitconfig volume spec
+    template: templates/gitea/statefulset.yaml
+    set:
+      gitea:
+        gitconfig: |-
+          [user]
+            name=Gitea Testing
+            email=gitea-testing@example.com
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: gitea-unittests-etc-gitconfig
+            configMap:
+              name: gitea-unittests-gitconfig
+              items:
+                - key: gitconfig
+                  path: gitconfig
+  - it: adds checksum annotation for gitconfig configmap
+    template: templates/gitea/statefulset.yaml
+    set:
+      gitea:
+        gitconfig: |-
+          [user]
+            name=Gitea Testing
+            email=gitea-testing@example.com
+    asserts:
+      - equal:
+          path: spec.template.metadata.annotations.[checksum/gitconfig]
+          value: 9ece0d3620aa478b4258f8bae694d9013c70d1135b083c4ee13ec5022e50f8d6

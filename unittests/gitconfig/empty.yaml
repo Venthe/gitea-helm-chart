@@ -1,0 +1,13 @@
+suite: Git config configmap template (empty value)
+release:
+  name: gitea-unittests
+  namespace: testing
+templates:
+  - templates/gitea/gitconfig.yaml
+tests:
+  - it: renders nothing
+    set:
+      gitea.gitconfig: ""
+    asserts:
+      - hasDocuments:
+          count: 0
