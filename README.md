@@ -37,6 +37,11 @@ helm install gitea gitea-charts/gitea
 - Helm 3.0+
 - PV provisioner for persistent data support
 
+## High Availability
+
+High availability is not supported out-of-the-box (i.e., setting `replicas` > 1 won't result in HA) but can be achieved by using additional services and linking these with Gitea.
+See the [HA Setup](docs/ha-setup.md) document for more details.
+
 ## Chart upgrade to 5.0.0
 
 :warning: The most recent `5.0.0` update brings some major and breaking changes.
