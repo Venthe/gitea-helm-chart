@@ -19,7 +19,7 @@ The latest chart version can be looked up in https://dl.gitea.io/charts or in th
 The chart aims to follow Gitea's releases closely.
 There might be times when the chart is behind the latest Gitea release.
 This might be caused by different reasons, most often due to time constraints of the maintainers (remember, all work here is done voluntarily in the spare time of people).
-If you're eager to use the latest Gitea version earlier than this chart catches up, then change the tag in `values.yml` to the latest Gitea version.
+If you're eager to use the latest Gitea version earlier than this chart catches up, then change the tag in `values.yaml` to the latest Gitea version.
 Note that besides the exact Gitea version one can also use the `:1` tag to automatically follow the latest Gitea version.
 This should be combined with `image.pullPolicy: "Always"`.
 Note that using the `:1` will also automatically jump to new minor release (e.g. from 1.13 to 1.14) which may eventually cause incompatibilities if major changes happened between these versions.
