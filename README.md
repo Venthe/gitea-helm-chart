@@ -23,8 +23,7 @@ If you're eager to use the latest Gitea version earlier than this chart catches 
 Note that besides the exact Gitea version one can also use the `:1` tag to automatically follow the latest Gitea version.
 This should be combined with `image.pullPolicy: "Always"`.
 Note that using the `:1` will also automatically jump to new minor release (e.g. from 1.13 to 1.14) which may eventually cause incompatibilities if major changes happened between these versions.
-Though most often no issues will encountered and the chart maintainers aim to communicate early if this would be the case.
-You might
+Though most often no issues will be encountered and the chart maintainers aim to communicate early/upfront if this would be the case.
 
 ## Dependencies
 
