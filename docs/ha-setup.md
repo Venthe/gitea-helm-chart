@@ -13,7 +13,8 @@ In a nutshell, the following capabilities are required:
 - DB: Postgres instead of SQLite
 - A RWX file-system (e.g. NFS or EFS (AWS), or similar)
 
-The default `memcached.enabled` setting in the chart should not be used for a stable HA setup.
+The default `memcached.enabled` and `postgres.enabled` settings in the chart should be set to `false` for a HA setup.
+Instead, custom HA-ready deployments should be used.
 
 The following sections discuss each of the services above, list potential services and their configuration.
 Note that for each service discussed, possibly other implementations could be used and all shown configurations only provide a starting point, not necessarily the most optimal setup.
