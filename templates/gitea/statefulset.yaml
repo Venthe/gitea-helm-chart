@@ -39,10 +39,7 @@ spec:
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}
-      {{- with .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      {{- include "gitea.images.pullSecrets" . | nindent 6 }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
@@ -72,9 +69,7 @@ spec:
               {{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
               {{- end }}
-            {{- if .Values.extraVolumeMounts }}
-            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
-            {{- end }}
+            {{- include "gitea.init-additional-mounts" . | nindent 12 }}
           securityContext:
             {{- toYaml .Values.containerSecurityContext | nindent 12 }}
         - name: init-app-ini
@@ -112,9 +107,7 @@ spec:
             - name: additional-config-sources-{{ $idx }}
               mountPath: "/env-to-ini-mounts/additionals/{{ $idx }}/"
             {{- end }}
-            {{- if .Values.extraVolumeMounts }}
-            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
-            {{- end }}
+            {{- include "gitea.init-additional-mounts" . | nindent 12 }}
           securityContext:
             {{- toYaml .Values.containerSecurityContext | nindent 12 }}
         - name: configure-gitea
@@ -204,9 +197,7 @@ spec:
               {{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
               {{- end }}
-            {{- if .Values.extraVolumeMounts }}
-            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
-            {{- end }}
+            {{- include "gitea.init-additional-mounts" . | nindent 12 }}
       terminationGracePeriodSeconds: {{ .Values.statefulset.terminationGracePeriodSeconds }}
       containers:
         - name: {{ .Chart.Name }}
@@ -247,17 +238,17 @@ spec:
             - name: profiler
               containerPort: 6060
             {{- end }}
-          {{- if .Values.gitea.livenessProbe }}
+          {{- if .Values.gitea.livenessProbe.enabled }}
           livenessProbe:
-            {{- toYaml .Values.gitea.livenessProbe | nindent 12 }}
+            {{- toYaml (omit .Values.gitea.livenessProbe "enabled") | nindent 12 }}
           {{- end }}
-          {{- if .Values.gitea.readinessProbe }}
+          {{- if .Values.gitea.readinessProbe.enabled }}
           readinessProbe:
-            {{- toYaml .Values.gitea.readinessProbe | nindent 12 }}
+            {{- toYaml (omit .Values.gitea.readinessProbe "enabled") | nindent 12 }}
           {{- end }}
-          {{- if .Values.gitea.startupProbe }}
+          {{- if .Values.gitea.startupProbe.enabled }}
           startupProbe:
-            {{- toYaml .Values.gitea.startupProbe | nindent 12 }}
+            {{- toYaml (omit .Values.gitea.startupProbe "enabled") | nindent 12 }}
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -276,9 +267,7 @@ spec:
               {{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
               {{- end }}
-            {{- if .Values.extraVolumeMounts }}
-            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
-            {{- end }}
+            {{- include "gitea.container-additional-mounts" . | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -291,6 +280,10 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+    {{- if .Values.dnsConfig }}
+      dnsConfig:
+        {{- toYaml .Values.dnsConfig | nindent 8 }}
+    {{- end }}
       volumes:
         - name: init
           secret:
@@ -300,7 +293,7 @@ spec:
           secret:
             secretName: {{ include "gitea.fullname" . }}
             defaultMode: 110
-        {{- if .Values.extraVolumes }}
+        {{- if gt (len .Values.extraVolumes) 0 }}
         {{- toYaml .Values.extraVolumes | nindent 8 }}
         {{- end }}
         - name: inline-config-sources
@@ -342,9 +335,7 @@ spec:
           {{- range .Values.persistence.accessModes }}
             - {{ . | quote }}
           {{- end }}
-        {{- if .Values.persistence.storageClass }}
-        storageClassName: {{ .Values.persistence.storageClass | quote }}
-        {{- end }}
+        {{- include "gitea.persistence.storageClass" . | indent 8 }}
         resources:
           requests:
             storage: {{ .Values.persistence.size | quote }}

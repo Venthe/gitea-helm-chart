@@ -35,10 +35,40 @@ Create chart name and version as used by the chart label.
 Create image name and tag used by the deployment.
 */}}
 {{- define "gitea.image" -}}
+{{- $registry := .Values.global.imageRegistry | default .Values.image.registry -}}
 {{- $name := .Values.image.repository -}}
 {{- $tag := .Values.image.tag | default .Chart.AppVersion -}}
 {{- $rootless := ternary "-rootless" "" (.Values.image.rootless) -}}
-{{- printf "%s:%s%s" $name $tag $rootless -}}
+{{- if $registry -}}
+  {{- printf "%s/%s:%s%s" $registry $name $tag $rootless -}}
+{{- else -}}
+  {{- printf "%s:%s%s" $name $tag $rootless -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Docker Image Registry Secret Names evaluating values as templates
+*/}}
+{{- define "gitea.images.pullSecrets" -}}
+{{- $pullSecrets := .Values.imagePullSecrets -}}
+{{- range .Values.global.imagePullSecrets -}}
+    {{- $pullSecrets = append $pullSecrets (dict "name" .) -}}
+{{- end -}}
+{{- if (not (empty $pullSecrets)) }}
+imagePullSecrets:
+{{ toYaml $pullSecrets }}
+{{- end }}
+{{- end -}}
+
+
+{{/*
+Storage Class
+*/}}
+{{- define "gitea.persistence.storageClass" -}}
+{{- $storageClass := .Values.global.storageClass | default .Values.persistence.storageClass }}
+{{- if $storageClass }}
+storageClassName: {{ $storageClass | quote }}
+{{- end }}
 {{- end -}}
 
 {{/*
@@ -127,6 +157,14 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- if ne $key "existingSecret" -}}
 {{- printf "--%s %s " ($key | kebabcase) ($val | quote) -}}
 {{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "gitea.public_protocol" -}}
+{{- if and .Values.ingress.enabled (gt (len .Values.ingress.tls) 0) -}}
+https
+{{- else -}}
+{{ .Values.gitea.config.server.PROTOCOL }}
 {{- end -}}
 {{- end -}}
 
@@ -220,15 +258,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
     {{- end -}}
   {{- end -}}
   {{- if not .Values.gitea.config.server.ROOT_URL -}}
-    {{- if .Values.ingress.enabled -}}
-      {{- if gt (len .Values.ingress.tls) 0 -}}
-        {{- $_ := set .Values.gitea.config.server "ROOT_URL" (printf "%s://%s" .Values.gitea.config.server.PROTOCOL (index (index .Values.ingress.tls 0).hosts 0)) -}}
-      {{- else -}}
-        {{- $_ := set .Values.gitea.config.server "ROOT_URL" (printf "%s://%s" .Values.gitea.config.server.PROTOCOL (index .Values.ingress.hosts 0).host) -}}
-      {{- end -}}
-    {{- else -}}
-      {{- $_ := set .Values.gitea.config.server "ROOT_URL" (printf "%s://%s" .Values.gitea.config.server.PROTOCOL .Values.gitea.config.server.DOMAIN) -}}
-    {{- end -}}
+    {{- $_ := set .Values.gitea.config.server "ROOT_URL" (printf "%s://%s" (include "gitea.public_protocol" .) .Values.gitea.config.server.DOMAIN) -}}
   {{- end -}}
   {{- if not .Values.gitea.config.server.SSH_DOMAIN -}}
     {{- $_ := set .Values.gitea.config.server "SSH_DOMAIN" .Values.gitea.config.server.DOMAIN -}}
@@ -281,5 +311,23 @@ app.kubernetes.io/instance: {{ .Release.Name }}
     {{- $_ := set .Values.gitea.config.database "NAME"      .Values.mariadb.auth.database -}}
     {{- $_ := set .Values.gitea.config.database "USER"      .Values.mariadb.auth.username -}}
     {{- $_ := set .Values.gitea.config.database "PASSWD"    .Values.mariadb.auth.password -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "gitea.init-additional-mounts" -}}
+  {{- /* Honor the deprecated extraVolumeMounts variable when defined */ -}}
+  {{- if gt (len .Values.extraInitVolumeMounts) 0 -}}
+    {{- toYaml .Values.extraInitVolumeMounts -}}
+  {{- else if gt (len .Values.extraVolumeMounts) 0 -}}
+    {{- toYaml .Values.extraVolumeMounts -}}
+  {{- end -}}
+{{- end -}}
+
+{{- define "gitea.container-additional-mounts" -}}
+  {{- /* Honor the deprecated extraVolumeMounts variable when defined */ -}}
+  {{- if gt (len .Values.extraContainerVolumeMounts) 0 -}}
+    {{- toYaml .Values.extraContainerVolumeMounts -}}
+  {{- else if gt (len .Values.extraVolumeMounts) 0 -}}
+    {{- toYaml .Values.extraVolumeMounts -}}
   {{- end -}}
 {{- end -}}
