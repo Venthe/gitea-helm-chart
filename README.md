@@ -643,6 +643,7 @@ gitea:
 | `statefulset.terminationGracePeriodSeconds` | How long to wait until forcefully kill the pod         | `60`  |
 | `statefulset.labels`                        | Labels for the statefulset                             | `{}`  |
 | `statefulset.annotations`                   | Annotations for the Gitea StatefulSet to be created    | `{}`  |
+| `statefulset.serviceAccountName`            | Name of a service account to use with the Gitea pods   | `""`  |
 
 ### Persistence
 

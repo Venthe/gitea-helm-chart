@@ -187,6 +187,7 @@ dnsConfig: {}
 ## @param statefulset.terminationGracePeriodSeconds How long to wait until forcefully kill the pod
 ## @param statefulset.labels Labels for the statefulset
 ## @param statefulset.annotations Annotations for the Gitea StatefulSet to be created
+## @param statefulset.serviceAccountName Name of a service account to use with the Gitea pods
 statefulset:
   env: []
     # - name: VARIABLE
