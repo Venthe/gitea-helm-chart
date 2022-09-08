@@ -40,6 +40,9 @@ spec:
       schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}
       {{- include "gitea.images.pullSecrets" . | nindent 6 }}
+      {{- if .Values.statefulset.serviceAccountName }}
+      serviceAccountName: {{ .Values.statefulset.serviceAccountName }}
+      {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:

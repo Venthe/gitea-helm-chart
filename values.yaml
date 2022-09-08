@@ -194,6 +194,7 @@ statefulset:
   terminationGracePeriodSeconds: 60
   labels: {}
   annotations: {}
+  serviceAccountName: ""
 
 ## @section Persistence
 #
