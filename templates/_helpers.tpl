@@ -92,15 +92,15 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "postgresql.dns" -}}
-{{- printf "%s-postgresql.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.postgresql.global.postgresql.service.ports.postgresql -}}
+{{- printf "%s.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.postgresql.global.postgresql.service.ports.postgresql -}}
 {{- end -}}
 
 {{- define "memcached.dns" -}}
-{{- printf "%s-memcached.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.memcached.service.ports.memcached | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.memcached.service.ports.memcached -}}
 {{- end -}}
 
 {{- define "gitea.default_domain" -}}
-{{- printf "%s-gitea.%s.svc.%s" (include "gitea.fullname" .) .Release.Namespace .Values.clusterDomain | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-http.%s.svc.%s" (include "gitea.fullname" .) .Release.Namespace .Values.clusterDomain -}}
 {{- end -}}
 
 {{- define "gitea.ldap_settings" -}}
