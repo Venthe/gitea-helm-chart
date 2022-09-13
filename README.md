@@ -775,6 +775,13 @@ gitea:
 | ------------------ | ---------------------------------------------------- | ------ |
 | `checkDeprecation` | Set it to false to skip this basic validation check. | `true` |
 
+### Test
+
+| Name           | Description                                                   | Value     |
+| -------------- | ------------------------------------------------------------- | --------- |
+| `test.enabled` | Set it to false to disable test-connection Pod.               | `true`    |
+| `test.image`   | Image for the wget container used in the test-connection Pod. | `busybox` |
+
 ## Contributing
 
 Expected workflow is: Fork -> Patch -> Push -> Pull Request

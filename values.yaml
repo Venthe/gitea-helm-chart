@@ -472,3 +472,11 @@ mariadb:
 ## @section Advanced
 ## @param checkDeprecation Set it to false to skip this basic validation check.
 checkDeprecation: true
+
+## @section Test
+#
+## @param test.enabled Set it to false to disable test-connection Pod.
+## @param test.image Image for the wget container used in the test-connection Pod.
+test:
+  enabled: true
+  image: busybox
