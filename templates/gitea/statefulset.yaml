@@ -72,6 +72,8 @@ spec:
             {{- include "gitea.init-additional-mounts" . | nindent 12 }}
           securityContext:
             {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          resources:
+            {{- toYaml .Values.initContainers.resources | nindent 12 }}
         - name: init-app-ini
           image: "{{ include "gitea.image" . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -110,6 +112,8 @@ spec:
             {{- include "gitea.init-additional-mounts" . | nindent 12 }}
           securityContext:
             {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          resources:
+            {{- toYaml .Values.initContainers.resources | nindent 12 }}
         - name: configure-gitea
           image: "{{ include "gitea.image" . }}"
           command: ["/usr/sbin/configure_gitea.sh"]
@@ -187,6 +191,8 @@ spec:
             {{- if .Values.statefulset.env }}
             {{- toYaml .Values.statefulset.env | nindent 12 }}
             {{- end }}
+          resources:
+            {{- toYaml .Values.initContainers.resources | nindent 12 }}
           volumeMounts:
             - name: init
               mountPath: /usr/sbin
