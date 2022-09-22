@@ -248,7 +248,6 @@ initPreScript: ""
 #   chown -R git:git /data/git/.postgresql/
 #   chmod 400 /data/git/.postgresql/postgresql.key
 
-## @param initContainers setting resouce limits and requests for init-containers.
 ## @param initContainers.resources initContainers Kubernetes resources
 initContainers:
   resources: {}
