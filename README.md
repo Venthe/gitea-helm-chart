@@ -569,7 +569,6 @@ gitea:
 | `replicaCount`            | number of replicas for the statefulset                                    | `1`             |
 | `clusterDomain`           | cluster domain                                                            | `cluster.local` |
 
-
 ### Image
 
 | Name               | Description                                                                                                                             | Value         |
@@ -581,7 +580,6 @@ gitea:
 | `image.rootless`   | Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher                                               | `false`       |
 | `imagePullSecrets` | Secret to use for pulling the image                                                                                                     | `[]`          |
 
-
 ### Security
 
 | Name                         | Description                                                     | Value  |
@@ -589,7 +587,6 @@ gitea:
 | `podSecurityContext.fsGroup` | Set the shared file system group for all containers in the pod. | `1000` |
 | `containerSecurityContext`   | Security context                                                | `{}`   |
 | `securityContext`            | Run init and Gitea containers as a specific securityContext     | `{}`   |
-
 
 ### Service
 
@@ -619,7 +616,6 @@ gitea:
 | `service.ssh.loadBalancerSourceRanges`  | Source range filter for ssh loadbalancer                                                                                                                                                             | `[]`        |
 | `service.ssh.annotations`               | SSH service annotations                                                                                                                                                                              | `{}`        |
 
-
 ### Ingress
 
 | Name                                 | Description                                                                 | Value             |
@@ -632,7 +628,6 @@ gitea:
 | `ingress.hosts[0].paths[0].pathType` | Ingress path type                                                           | `Prefix`          |
 | `ingress.tls`                        | Ingress tls settings                                                        | `[]`              |
 | `ingress.apiVersion`                 | Specify APIVersion of ingress object. Mostly would only be used for argocd. |                   |
-
 
 ### StatefulSet
 
@@ -648,7 +643,6 @@ gitea:
 | `statefulset.terminationGracePeriodSeconds` | How long to wait until forcefully kill the pod         | `60`  |
 | `statefulset.labels`                        | Labels for the statefulset                             | `{}`  |
 | `statefulset.annotations`                   | Annotations for the Gitea StatefulSet to be created    | `{}`  |
-
 
 ### Persistence
 
@@ -667,7 +661,6 @@ gitea:
 | `extraInitVolumeMounts`      | Mounts that are only mapped into the init-containers. Can be used for additional preconfiguration.    | `[]`                |
 | `extraVolumeMounts`          | **DEPRECATED** Additional volume mounts for init containers and the Gitea main container              | `[]`                |
 
-
 ### Init
 
 | Name                       | Description                                                           | Value |
@@ -675,14 +668,12 @@ gitea:
 | `initPreScript`            | Bash shell script copied verbatim to the start of the init-container. | `""`  |
 | `initContainers.resources` | initContainers Kubernetes resources                                   | `{}`  |
 
-
 ### Signing
 
 | Name              | Description                  | Value              |
 | ----------------- | ---------------------------- | ------------------ |
 | `signing.enabled` | Enable commit/action signing | `false`            |
 | `signing.gpgHome` | GPG home directory           | `/data/git/.gnupg` |
-
 
 ### Gitea
 
@@ -701,7 +692,6 @@ gitea:
 | `gitea.additionalConfigFromEnvs`       | Additional configuration sources from environment variables                                                   | `[]`                 |
 | `gitea.podAnnotations`                 | Annotations for the Gitea pod                                                                                 | `{}`                 |
 
-
 ### LivenessProbe
 
 | Name                                      | Description                                      | Value  |
@@ -713,7 +703,6 @@ gitea:
 | `gitea.livenessProbe.periodSeconds`       | Period for liveness probe                        | `10`   |
 | `gitea.livenessProbe.successThreshold`    | Success threshold for liveness probe             | `1`    |
 | `gitea.livenessProbe.failureThreshold`    | Failure threshold for liveness probe             | `10`   |
-
 
 ### ReadinessProbe
 
@@ -727,7 +716,6 @@ gitea:
 | `gitea.readinessProbe.successThreshold`    | Success threshold for readiness probe             | `1`    |
 | `gitea.readinessProbe.failureThreshold`    | Failure threshold for readiness probe             | `3`    |
 
-
 ### StartupProbe
 
 | Name                                     | Description                                     | Value   |
@@ -740,14 +728,12 @@ gitea:
 | `gitea.startupProbe.successThreshold`    | Success threshold for startup probe             | `1`     |
 | `gitea.startupProbe.failureThreshold`    | Failure threshold for startup probe             | `10`    |
 
-
 ### Memcached
 
 | Name                     | Description                                                                                                                                                                                           | Value   |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
 | `memcached.enabled`      | Memcached is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if enabled in the values. Complete Configuration can be taken from their website. | `true`  |
 | `memcached.service.port` | Port for Memcached                                                                                                                                                                                    | `11211` |
-
 
 ### PostgreSQL
 
@@ -759,7 +745,6 @@ gitea:
 | `postgresql.global.postgresql.postgresqlPassword` | PostgreSQL admin password (overrides postgresqlPassword) | `gitea` |
 | `postgresql.global.postgresql.servicePort`        | PostgreSQL port (overrides service.port)                 | `5432`  |
 | `postgresql.persistence.size`                     | PVC Storage Request for PostgreSQL volume                | `10Gi`  |
-
 
 ### MySQL
 
@@ -773,7 +758,6 @@ gitea:
 | `mysql.service.port`     | Port to connect to MySQL service                                   | `3306`  |
 | `mysql.persistence.size` | PVC Storage Request for MySQL volume                               | `10Gi`  |
 
-
 ### MariaDB
 
 | Name                               | Description                                                       | Value   |
@@ -786,13 +770,11 @@ gitea:
 | `mariadb.primary.service.port`     | Port to connect to MariaDB service                                | `3306`  |
 | `mariadb.primary.persistence.size` | Persistence size for MariaDB                                      | `10Gi`  |
 
-
 ### Advanced
 
 | Name               | Description                                          | Value  |
 | ------------------ | ---------------------------------------------------- | ------ |
 | `checkDeprecation` | Set it to false to skip this basic validation check. | `true` |
-
 
 ## Contributing
 
