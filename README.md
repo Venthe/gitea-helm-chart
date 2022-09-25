@@ -14,7 +14,7 @@ as well as being deployed as a statefulset to retain stored repositories.
 ## Update and versioning policy
 
 The Gitea helm chart versioning does not follow Gitea's versioning.
-The latest chart version can be looked up in https://dl.gitea.io/charts or in the [repository releases](https://gitea.com/gitea/helm-chart/releases).
+The latest chart version can be looked up in [https://dl.gitea.io/charts](https://dl.gitea.io/charts) or in the [repository releases](https://gitea.com/gitea/helm-chart/releases).
 
 The chart aims to follow Gitea's releases closely.
 There might be times when the chart is behind the latest Gitea release.
