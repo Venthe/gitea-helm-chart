@@ -22,8 +22,10 @@ This might be caused by different reasons, most often due to time constraints of
 If you're eager to use the latest Gitea version earlier than this chart catches up, then change the tag in `values.yaml` to the latest Gitea version.
 Note that besides the exact Gitea version one can also use the `:1` tag to automatically follow the latest Gitea version.
 This should be combined with `image.pullPolicy: "Always"`.
-Note that using the `:1` will also automatically jump to new minor release (e.g. from 1.13 to 1.14) which may eventually cause incompatibilities if major changes happened between these versions.
-Though most often no issues will be encountered and the chart maintainers aim to communicate early/upfront if this would be the case.
+Important: Using the `:1` will also automatically jump to new minor release (e.g. from 1.13 to 1.14) which may eventually cause incompatibilities if major/breaking changes happened between these versions.
+This is due to Gitea not strictly following [semantic versioning](https://semver.org/#summary) as breaking changes do not increase the major version.
+I.e., "minor" version bumps are actually "major".
+Yet most often no issues will be encountered and the chart maintainers aim to communicate early/upfront if this would be the case.
 
 ## Dependencies
 
