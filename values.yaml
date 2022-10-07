@@ -199,6 +199,7 @@ statefulset:
 #
 ## @param persistence.enabled Enable persistent storage
 ## @param persistence.existingClaim Use an existing claim to store repository information
+## @param persistence.customVolumeType Use a [kubernetes volume type](https://kubernetes.io/docs/concepts/storage/volumes/#volume-types) to store repository information
 ## @param persistence.size Size for persistence to store repo information
 ## @param persistence.accessModes AccessMode for persistence
 ## @param persistence.labels Labels for the persistence volume claim to be created
@@ -208,6 +209,12 @@ statefulset:
 persistence:
   enabled: true
   existingClaim:
+  customVolumeType:
+    # csi:
+    #   driver: file.csi.azure.com
+    #   readOnly: false
+    #   volumeAttributes:
+    #     mountOptions: "dir_mode=0777,file_mode=0777,cache=strict,actimeo=30"  # optional
   size: 10Gi
   accessModes:
     - ReadWriteOnce
