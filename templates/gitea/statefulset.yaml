@@ -353,11 +353,11 @@ spec:
         - name: data
           persistentVolumeClaim:
     {{- with .Values.persistence.existingClaim }}
-            claimName: {{ tpl . $ }}
+            claimName: {{ include "tplvalues.render" ( dict "value" . "context" $) }}
     {{- end }}
     {{- else if .Values.persistence.customVolumeType }}
         - name: data
-        {{ include "tplvalues.render" ( dict "value" .Values.persistence.customVolumeType "context" $) | indent 10 }}
+        {{- include "tplvalues.render" ( dict "value" .Values.persistence.customVolumeType "context" $) | indent 10 }}
     {{- else }}
   volumeClaimTemplates:
     - metadata:
