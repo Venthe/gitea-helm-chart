@@ -353,7 +353,7 @@ spec:
         - name: data
           persistentVolumeClaim:
     {{- with .Values.persistence.existingClaim }}
-            claimName: {{ tpl . $ }}
+            claimName: {{ include "tplvalues.render" ( dict "value" . "context" $) }}
     {{- end }}
     {{- else if .Values.persistence.customVolumeType }}
         - name: data
