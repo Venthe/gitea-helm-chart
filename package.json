@@ -14,6 +14,6 @@
   },
   "devDependencies": {
     "markdownlint-cli": "^0.31.1",
-    "readme-generator-for-helm": "https://github.com/bitnami-labs/readme-generator-for-helm/tarball/main"
+    "readme-generator-for-helm": "https://github.com/bitnami-labs/readme-generator-for-helm/tarball/498ea5d19478a36556f1636e1e041a7510d09289"
   }
 }
