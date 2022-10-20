@@ -5,17 +5,6 @@ release:
 templates:
   - templates/gitea/init.yaml
 tests:
-  - it: runs gpg in batch mode
-    set:
-      signing.enabled: true
-    asserts:
-      - equal:
-          path: stringData.[configure_gpg_environment.sh]
-          value: |-
-            #!/usr/bin/env bash
-            set -eu
-
-            gpg --batch --import /raw/private.asc
   - it: skips gpg script block for disabled signing
     asserts:
       - equal:
