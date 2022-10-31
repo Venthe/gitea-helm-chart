@@ -46,6 +46,17 @@ Create image name and tag used by the deployment.
 {{- end -}}
 {{- end -}}
 
+{{- define "test.image" -}}
+{{- $registry := .Values.global.imageRegistry | default .Values.test.imageRegistry -}}
+{{- $name := .Values.test.imageRepository -}}
+{{- $tag := .Values.test.imageTag | default "latest" -}}
+{{- if $registry -}}
+  {{- printf "%s/%s:%s" $registry $name $tag -}}
+{{- else -}}
+  {{- printf "%s:%s" $name $tag -}}
+{{- end -}}
+{{- end -}}
+
 {{/*
 Docker Image Registry Secret Names evaluating values as templates
 */}}

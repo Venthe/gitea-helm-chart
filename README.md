@@ -775,6 +775,15 @@ gitea:
 | ------------------ | ---------------------------------------------------- | ------ |
 | `checkDeprecation` | Set it to false to skip this basic validation check. | `true` |
 
+### Test
+
+| Name                   | Description                           | Value     |
+| ---------------------- | ------------------------------------- | --------- |
+| `test.imageRegistry`   | image registry, e.g. gcr.io,docker.io | `""`      |
+| `test.imageRepository` | Image for test pod                    | `busybox` |
+| `test.imageTag`        | Defaults to `latest`                  | `""`      |
+| `test.imagePullPolicy` | Image pull policy                     | `Always`  |
+
 ## Contributing
 
 Expected workflow is: Fork -> Patch -> Push -> Pull Request

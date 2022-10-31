@@ -472,3 +472,14 @@ mariadb:
 ## @section Advanced
 ## @param checkDeprecation Set it to false to skip this basic validation check.
 checkDeprecation: true
+
+## @section Test
+## @param test.imageRegistry image registry, e.g. gcr.io,docker.io
+## @param test.imageRepository Image for test pod
+## @param test.imageTag Defaults to `latest`
+## @param test.imagePullPolicy Image pull policy
+test:
+  imageRegistry: ""
+  imageRepository: busybox
+  imageTag: ""
+  imagePullPolicy: Always
