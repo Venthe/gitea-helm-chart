@@ -398,7 +398,7 @@ gitea:
   ## @section Test
   # modifications for YAMLs in tests directory
   tests:
-    ## @param gitea.tests.connectionTest.image.tag: Modify busybox image tag in test connection pod
+    ## @param gitea.tests.connectionTest.image.tag: Busybox image tag in test connection pod
     connectionTest:
       image:
         tag: latest
