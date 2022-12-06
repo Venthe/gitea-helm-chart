@@ -775,6 +775,12 @@ gitea:
 | ------------------ | ---------------------------------------------------- | ------ |
 | `checkDeprecation` | Set it to false to skip this basic validation check. | `true` |
 
+### Tests
+
+| Name               | Description                                          | Value  |
+| ------------------ | ---------------------------------------------------- | ------ |
+| `tests.connectionTest.image.tag` | tag for busybox image used for connection test | `latest` |
+
 ## Contributing
 
 Expected workflow is: Fork -> Patch -> Push -> Pull Request
