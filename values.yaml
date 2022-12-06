@@ -395,14 +395,6 @@ gitea:
     successThreshold: 1
     failureThreshold: 10
 
-  ## @section Tests
-  # Modifications for YAMLs in templates/tests/ directory
-  tests:
-    ## @param gitea.tests.connectionTest.image.tag: Busybox image tag in test connection pod
-    connectionTest:
-      image:
-        tag: latest
-
 ## @section Memcached
 #
 ## @param memcached.enabled Memcached is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if enabled in the values. Complete Configuration can be taken from their website.
@@ -480,3 +472,11 @@ mariadb:
 ## @section Advanced
 ## @param checkDeprecation Set it to false to skip this basic validation check.
 checkDeprecation: true
+
+## @section Tests
+# Modifications for YAMLs in templates/tests/ directory
+tests:
+  ## @param tests.connectionTest.image.tag: Busybox image tag in gitea connection test
+  connectionTest:
+    image:
+      tag: latest
