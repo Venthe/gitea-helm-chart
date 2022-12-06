@@ -395,6 +395,14 @@ gitea:
     successThreshold: 1
     failureThreshold: 10
 
+  ## @section Test
+  # modifications for YAMLs in tests directory
+  tests:
+    ## @param gitea.tests.connectionTest.image.tag: Modify busybox image tag in test connection pod
+    connectionTest:
+      image:
+        tag: latest
+
 ## @section Memcached
 #
 ## @param memcached.enabled Memcached is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if enabled in the values. Complete Configuration can be taken from their website.
