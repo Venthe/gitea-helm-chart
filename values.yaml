@@ -395,8 +395,8 @@ gitea:
     successThreshold: 1
     failureThreshold: 10
 
-  ## @section Test
-  # modifications for YAMLs in tests directory
+  ## @section Tests
+  # Modifications for YAMLs in templates/tests/ directory
   tests:
     ## @param gitea.tests.connectionTest.image.tag: Busybox image tag in test connection pod
     connectionTest:
