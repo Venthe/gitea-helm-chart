@@ -779,7 +779,7 @@ gitea:
 
 | Name               | Description                                          | Value  |
 | ------------------ | ---------------------------------------------------- | ------ |
-| `tests.connectionTest.image.tag` | tag for busybox image used for connection test | `latest` |
+| `tests.connectionTest.image.tag` | Busybox image tag in gitea connection test | `latest` |
 
 ## Contributing
 
