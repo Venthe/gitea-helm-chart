@@ -726,6 +726,7 @@ gitea:
 | `gitea.startupProbe.periodSeconds`       | Period for startup probe                        | `10`    |
 | `gitea.startupProbe.successThreshold`    | Success threshold for startup probe             | `1`     |
 | `gitea.startupProbe.failureThreshold`    | Failure threshold for startup probe             | `10`    |
+| `gitea.sidecars`                         | Add sidecars to the Gitea pod                   | `[]`    |
 
 ### Memcached
 

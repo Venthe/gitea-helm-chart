@@ -395,6 +395,9 @@ gitea:
     successThreshold: 1
     failureThreshold: 10
 
+  ## @param gitea.sidecars Add sidecars to the gitea pod
+  sidecars: []
+
 ## @section Memcached
 #
 ## @param memcached.enabled Memcached is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if enabled in the values. Complete Configuration can be taken from their website.

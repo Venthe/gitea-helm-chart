@@ -268,6 +268,13 @@ spec:
               subPath: {{ .Values.persistence.subPath }}
               {{- end }}
             {{- include "gitea.container-additional-mounts" . | nindent 12 }}
+        {{- with .Values.gitea.sidecars }}
+        {{-   if typeIs "string" . }}
+        {{-     tpl . $ | nindent 8 }}
+        {{-   else }}
+        {{-     tpl ( . | toYaml ) $ | nindent 8 }}
+        {{-   end }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
