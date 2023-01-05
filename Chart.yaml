@@ -40,7 +40,7 @@ dependencies:
   version: 6.14.10
   condition: mysql.enabled
 - name: postgresql
-  repository: https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami
+  repository: https://charts.bitnami.com/bitnami
   version: 11.9.13
   condition: postgresql.enabled
 - name: mariadb
