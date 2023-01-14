@@ -25,3 +25,8 @@ node_modules/
 package.json
 package-lock.json
 .gitea/
+Makefile
+.markdownlintignore
+.markdownlint.yaml
+.drone.yml
+CONTRIBUTING.md
