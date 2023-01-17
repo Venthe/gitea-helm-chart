@@ -30,3 +30,4 @@ Makefile
 .markdownlint.yaml
 .drone.yml
 CONTRIBUTING.md
+unittests/
