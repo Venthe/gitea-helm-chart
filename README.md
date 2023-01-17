@@ -790,7 +790,7 @@ gitea:
 | ---------------------------------- | ----------------------------------------------------------------- | ------- |
 | `mariadb.enabled`                  | Enable MariaDB                                                    | `false` |
 | `mariadb.auth.database`            | Name of the database to create.                                   | `gitea` |
-| `mariadb.auth.username`            | Username of the new user to create.                               | `gitea` |
+| `mariadb.auth. username`            | Username of the new user to create.                               | `gitea` |
 | `mariadb.auth.password`            | Password for the new user. Ignored if existing secret is provided | `gitea` |
 | `mariadb.auth.rootPassword`        | Password for the root user.                                       | `gitea` |
 | `mariadb.primary.service.port`     | Port to connect to MariaDB service                                | `3306`  |
@@ -814,6 +814,10 @@ This section lists major and breaking changes of each Helm Chart version.
 Please read them carefully to upgrade successfully.
 
 ### To 7.0.0
+
+#### Gitea 1.18.0
+
+This Chart version updates Gitea to 1.18.0. Don't miss any application related [breaking changes](https://blog.gitea.io/2022/12/gitea-1.18.0-is-released/#breaking-changes).
 
 #### Private GPG key configuration for Gitea signing actions
 
