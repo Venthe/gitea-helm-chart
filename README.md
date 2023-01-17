@@ -790,7 +790,7 @@ gitea:
 | ---------------------------------- | ----------------------------------------------------------------- | ------- |
 | `mariadb.enabled`                  | Enable MariaDB                                                    | `false` |
 | `mariadb.auth.database`            | Name of the database to create.                                   | `gitea` |
-| `mariadb.auth. username`            | Username of the new user to create.                               | `gitea` |
+| `mariadb.auth.username`            | Username of the new user to create.                               | `gitea` |
 | `mariadb.auth.password`            | Password for the new user. Ignored if existing secret is provided | `gitea` |
 | `mariadb.auth.rootPassword`        | Password for the root user.                                       | `gitea` |
 | `mariadb.primary.service.port`     | Port to connect to MariaDB service                                | `3306`  |
