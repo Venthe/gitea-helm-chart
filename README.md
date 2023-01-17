@@ -815,9 +815,9 @@ Please read them carefully to upgrade successfully.
 
 ### To 7.0.0
 
-#### Gitea 1.18.0
+#### Gitea 1.18.1
 
-This Chart version updates Gitea to 1.18.0. Don't miss any application related [breaking changes](https://blog.gitea.io/2022/12/gitea-1.18.0-is-released/#breaking-changes).
+This Chart version updates Gitea to 1.18.1. Don't miss any application related [breaking changes of 1.18.0](https://blog.gitea.io/2022/12/gitea-1.18.0-is-released/#breaking-changes).
 
 #### Private GPG key configuration for Gitea signing actions
 
