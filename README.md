@@ -814,6 +814,17 @@ See [CONTRIBUTORS GUIDE](CONTRIBUTING.md) for details.
 This section lists major and breaking changes of each Helm Chart version.
 Please read them carefully to upgrade successfully.
 
+### To 7.0.0
+
+#### Gitea 1.18.1
+
+This Chart version updates Gitea to 1.18.1. Don't miss any application related [breaking changes of 1.18.0](https://blog.gitea.io/2022/12/gitea-1.18.0-is-released/#breaking-changes).
+
+#### Private GPG key configuration for Gitea signing actions
+
+Having `signing.enabled=true` now requires to use either `signing.privateKey` or `signing.existingSecret` so that the Chart can automatically prepare the GPG key for Gitea internal signing actions.
+See [Configure commit signing](#configure-commit-signing) for details.
+
 ### To 6.0.0
 
 #### Different volume mounts for init-containers and runtime container

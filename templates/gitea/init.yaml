@@ -10,7 +10,7 @@ stringData:
     #!/usr/bin/env bash
     set -eu
 
-    gpg --import /raw/private.asc
+    gpg --batch --import /raw/private.asc
   init_directory_structure.sh: |-
     #!/usr/bin/env bash
 
