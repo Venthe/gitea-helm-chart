@@ -10,7 +10,7 @@ metadata:
 spec:
   containers:
     - name: wget
-      image: {{ .Values.test.image | default "busybox" }}
+      image: "{{ .Values.test.image.name }}:{{ .Values.test.image.tag }}"
       command: ['wget']
       args:  ['{{ include "gitea.fullname" . }}-http:{{ .Values.service.http.port }}']
   restartPolicy: Never
