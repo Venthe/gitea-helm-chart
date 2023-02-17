@@ -591,6 +591,7 @@ gitea:
 | `global.imageRegistry`    | global image registry override                                            | `""`            |
 | `global.imagePullSecrets` | global image pull secrets override; can be extended by `imagePullSecrets` | `[]`            |
 | `global.storageClass`     | global storage class override                                             | `""`            |
+| `global.hostAliases`      | global hostAliases which will be added to the pod's hosts files           | `[]`            |
 | `replicaCount`            | number of replicas for the statefulset                                    | `1`             |
 | `clusterDomain`           | cluster domain                                                            | `cluster.local` |
 
