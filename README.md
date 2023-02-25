@@ -764,14 +764,13 @@ gitea:
 
 ### PostgreSQL
 
-| Name                                              | Description                                              | Value   |
-| ------------------------------------------------- | -------------------------------------------------------- | ------- |
-| `postgresql.enabled`                              | Enable PostgreSQL                                        | `true`  |
-| `postgresql.global.postgresql.postgresqlDatabase` | PostgreSQL database (overrides postgresqlDatabase)       | `gitea` |
-| `postgresql.global.postgresql.postgresqlUsername` | PostgreSQL username (overrides postgresqlUsername)       | `gitea` |
-| `postgresql.global.postgresql.postgresqlPassword` | PostgreSQL admin password (overrides postgresqlPassword) | `gitea` |
-| `postgresql.global.postgresql.servicePort`        | PostgreSQL port (overrides service.port)                 | `5432`  |
-| `postgresql.persistence.size`                     | PVC Storage Request for PostgreSQL volume                | `10Gi`  |
+| Name                                      | Description                                              | Value   |
+| ----------------------------------------- | -------------------------------------------------------- | ------- |
+| `postgresql.enabled`                      | Enable PostgreSQL                                        | `true`  |
+| `postgresql.global.auth.database`         | PostgreSQL database (overrides postgresqlDatabase)       | `gitea` |
+| `postgresql.global.auth.username`         | PostgreSQL username (overrides postgresqlUsername)       | `gitea` |
+| `postgresql.global.auth.postgresPassword` | PostgreSQL admin password (overrides postgresqlPassword) | `gitea` |
+| `postgresql.persistence.size`             | PVC Storage Request for PostgreSQL volume                | `10Gi`  |
 
 ### MySQL
 
@@ -814,7 +813,13 @@ See [CONTRIBUTORS GUIDE](CONTRIBUTING.md) for details.
 This section lists major and breaking changes of each Helm Chart version.
 Please read them carefully to upgrade successfully.
 
-### To 7.0.0
+### To 8.0.0
+
+#### Postgres Update from v11 to v14
+
+This Chart version updates the Postgres chart dependency and subsequently Postgres from v11 to v14.
+Don't miss any application related [breaking changes of Postgres 14](https://www.postgresql.org/docs/14/release-14.html#id.
+With respect to `values.yml`, parameters `username`, `database` and `postgresPassword` have been regrouped under `auth` and slightly renamed. Please adjust your `values.yml` accordingly.
 
 #### Gitea 1.18.1
 
