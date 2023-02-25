@@ -34,7 +34,7 @@ dependencies:
 # OCI registry: https://blog.bitnami.com/2023/01/bitnami-helm-charts-available-as-oci.html (2023-01)
 # Chart release date: 2023-02
 - name: memcached
-  repository: oci://registry-1.docker.io/bitnamicharts/memcached
+  repository: oci://registry-1.docker.io/bitnamicharts
   version: 6.3.7
   condition: memcached.enabled
 - name: mysql
