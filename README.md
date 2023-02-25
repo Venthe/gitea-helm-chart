@@ -764,14 +764,14 @@ gitea:
 
 ### PostgreSQL
 
-| Name                                      | Description                                              | Value   |
-| ----------------------------------------- | -------------------------------------------------------- | ------- |
-| `postgresql.enabled`                      | Enable PostgreSQL                                        | `true`  |
-| `postgresql.global.auth.database`         | PostgreSQL database (overrides postgresqlDatabase)       | `gitea` |
-| `postgresql.global.auth.username`         | PostgreSQL username (overrides postgresqlUsername)       | `gitea` |
-| `postgresql.global.auth.postgresPassword` | PostgreSQL admin password (overrides postgresqlPassword) | `gitea` |
-| `postgresql.service.ports.postgresql`     | PostgreSQL servicePort                                   | `5432`  |
-| `postgresql.persistence.size`             | PVC Storage Request for PostgreSQL volume                | `10Gi`  |
+| Name                                                 | Description                                                                | Value   |
+| ---------------------------------------------------- | -------------------------------------------------------------------------- | ------- |
+| `postgresql.enabled`                                 | Enable PostgreSQL                                                          | `true`  |
+| `postgresql.global.postgresql.auth.postgresPassword` | Password for the "postgres" admin user (overrides `auth.postgresPassword`) | `gitea` |
+| `postgresql.global.postgresql.auth.database`         | Name for a custom database to create (overrides `auth.database`)           | `gitea` |
+| `postgresql.global.postgresql.auth.username`         | Name for a custom user to create (overrides `auth.username`)               | `gitea` |
+| `postgresql.global.service.ports.postgresql`         | PostgreSQL service port (overrides `service.ports.postgresql`)             | `5432`  |
+| `postgresql.primary.persistence.size`                | PVC Storage Request for PostgreSQL volume                                  | `10Gi`  |
 
 ### MySQL
 
@@ -821,6 +821,7 @@ Please read them carefully to upgrade successfully.
 This Chart version updates the Postgres chart dependency and subsequently Postgres from v11 to v15.
 Please read the [Postgres Release Notes](https://www.postgresql.org/docs/release/) for version-specific changes.
 With respect to `values.yml`, parameters `username`, `database` and `postgresPassword` have been regrouped under `auth` and slightly renamed.
+`persistence` has also been regrouped under the `primary` key.
 Please adjust your `values.yml` accordingly.
 
 #### Gitea 1.18.1
