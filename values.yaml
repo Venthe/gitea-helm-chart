@@ -125,7 +125,6 @@ service:
     loadBalancerSourceRanges: []
     annotations: {}
 
-
 ## @section Ingress
 ## @param ingress.enabled Enable ingress
 ## @param ingress.className Ingress class name
@@ -139,7 +138,8 @@ ingress:
   enabled: false
   # className: nginx
   className:
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
@@ -158,7 +158,8 @@ ingress:
 ## @section StatefulSet
 #
 ## @param resources Kubernetes resources
-resources: {}
+resources:
+  {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -193,7 +194,8 @@ dnsConfig: {}
 ## @param statefulset.labels Labels for the statefulset
 ## @param statefulset.annotations Annotations for the Gitea StatefulSet to be created
 statefulset:
-  env: []
+  env:
+    []
     # - name: VARIABLE
     #   value: my-value
   terminationGracePeriodSeconds: 60
@@ -294,7 +296,8 @@ gitea:
       #    prometheus-release: prom1
 
   ## @param gitea.ldap LDAP configuration
-  ldap: []
+  ldap:
+    []
     # - name: "LDAP 1"
     #  existingSecret:
     #  securityProtocol:
@@ -311,7 +314,8 @@ gitea:
 
   # Either specify inline `key` and `secret` or refer to them via `existingSecret`
   ## @param gitea.oauth OAuth configuration
-  oauth: []
+  oauth:
+    []
     # - name: 'OAuth 1'
     #   provider:
     #   key:
@@ -420,18 +424,17 @@ memcached:
 ## @section PostgreSQL
 #
 ## @param postgresql.enabled Enable PostgreSQL
-## @param postgresql.global.postgresql.postgresqlDatabase PostgreSQL database (overrides postgresqlDatabase)
-## @param postgresql.global.postgresql.postgresqlUsername PostgreSQL username (overrides postgresqlUsername)
-## @param postgresql.global.postgresql.postgresqlPassword PostgreSQL admin password (overrides postgresqlPassword)
-## @param postgresql.global.postgresql.servicePort PostgreSQL port (overrides service.port)
+## @param global.postgresql.auth.postgresPassword Password for the "postgres" admin user (overrides `auth.postgresPassword`)
+## @param global.postgresql.auth.database Name for a custom database to create (overrides `auth.database`)
+## @param global.postgresql.auth.username Name for a custom user to create (overrides `auth.username`)
 ## @param postgresql.persistence.size PVC Storage Request for PostgreSQL volume
 postgresql:
   enabled: true
   global:
-    postgresql:
-      postgresqlDatabase: gitea
-      postgresqlUsername: gitea
-      postgresqlPassword: gitea
+    auth:
+      postgresPassword: gitea
+      database: gitea
+      username: gitea
       servicePort: 5432
   persistence:
     size: 10Gi
