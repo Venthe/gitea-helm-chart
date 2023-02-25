@@ -815,11 +815,12 @@ Please read them carefully to upgrade successfully.
 
 ### To 8.0.0
 
-#### Postgres Update from v11 to v14
+#### Postgres Update from v11 to v15
 
-This Chart version updates the Postgres chart dependency and subsequently Postgres from v11 to v14.
-Don't miss any application related [breaking changes of Postgres 14](https://www.postgresql.org/docs/14/release-14.html#id.
-With respect to `values.yml`, parameters `username`, `database` and `postgresPassword` have been regrouped under `auth` and slightly renamed. Please adjust your `values.yml` accordingly.
+This Chart version updates the Postgres chart dependency and subsequently Postgres from v11 to v15.
+Please read the [Postgres Release Notes](https://www.postgresql.org/docs/release/) for version-specific changes.
+With respect to `values.yml`, parameters `username`, `database` and `postgresPassword` have been regrouped under `auth` and slightly renamed.
+Please adjust your `values.yml` accordingly.
 
 #### Gitea 1.18.1
 
