@@ -427,6 +427,7 @@ memcached:
 ## @param global.postgresql.auth.postgresPassword Password for the "postgres" admin user (overrides `auth.postgresPassword`)
 ## @param global.postgresql.auth.database Name for a custom database to create (overrides `auth.database`)
 ## @param global.postgresql.auth.username Name for a custom user to create (overrides `auth.username`)
+## @param global.postgresql.service.ports.postgresql PostgreSQL service port (overrides `service.ports.postgresql`)
 ## @param postgresql.persistence.size PVC Storage Request for PostgreSQL volume
 postgresql:
   enabled: true
@@ -435,7 +436,9 @@ postgresql:
       postgresPassword: gitea
       database: gitea
       username: gitea
-      servicePort: 5432
+  service:
+    ports:
+      postgresql: 5432
   persistence:
     size: 10Gi
 
