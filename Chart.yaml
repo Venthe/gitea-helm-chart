@@ -45,7 +45,8 @@ dependencies:
   repository: https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami
   version: 10.3.17
   condition: postgresql.enabled
+# Chart release date: 2023-02
 - name: mariadb
-  repository: https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami
-  version: 9.3.6
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 11.4.7
   condition: mariadb.enabled

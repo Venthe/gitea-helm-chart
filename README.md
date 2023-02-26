@@ -125,7 +125,7 @@ ENABLED = false
 ### Additional _app.ini_ settings
 
 > **The [generic](https://docs.gitea.io/en-us/config-cheat-sheet/#overall-default)
-section cannot be defined that way.**
+> section cannot be defined that way.**
 
 Some settings inside _app.ini_ (like passwords or whole authentication configurations)
 must be considered sensitive and therefore should not be passed via plain text
@@ -347,9 +347,9 @@ by default.
 If you want to manage your own PVC you can simply pass the PVC name to the chart.
 
 ```yaml
-  persistence:
-    enabled: true
-    existingClaim: MyAwesomeGiteaClaim
+persistence:
+  enabled: true
+  existingClaim: MyAwesomeGiteaClaim
 ```
 
 In case that peristence has been disabled it will simply use an empty dir volume.
@@ -358,20 +358,20 @@ PostgreSQL handles the persistence in the exact same way.
 You can interact with the postgres settings as displayed in the following example:
 
 ```yaml
-  postgresql:
-    persistence:
-      enabled: true
-      existingClaim: MyAwesomeGiteaPostgresClaim
+postgresql:
+  persistence:
+    enabled: true
+    existingClaim: MyAwesomeGiteaPostgresClaim
 ```
 
 MySQL also handles persistence the same, even though it is not deployed as a statefulset.
 You can interact with the postgres settings as displayed in the following example:
 
 ```yaml
-  mysql:
-    persistence:
-      enabled: true
-      existingClaim: MyAwesomeGiteaMysqlClaim
+mysql:
+  persistence:
+    enabled: true
+    existingClaim: MyAwesomeGiteaMysqlClaim
 ```
 
 ### Admin User
@@ -382,11 +382,11 @@ not possible to delete an admin user after it has been created. This has to be
 done in the ui. You cannot use `admin` as username.
 
 ```yaml
-  gitea:
-    admin:
-      username: "MyAwesomeGiteaAdmin"
-      password: "AReallyAwesomeGiteaPassword"
-      email: "gi@tea.com"
+gitea:
+  admin:
+    username: "MyAwesomeGiteaAdmin"
+    password: "AReallyAwesomeGiteaPassword"
+    email: "gi@tea.com"
 ```
 
 You can also use an existing Secret to configure the admin user:
@@ -404,8 +404,8 @@ stringData:
 
 ```yaml
 gitea:
-    admin:
-      existingSecret: gitea-admin-secret
+  admin:
+    existingSecret: gitea-admin-secret
 ```
 
 ### LDAP Settings
@@ -416,20 +416,20 @@ All LDAP values from <https://docs.gitea.io/en-us/command-line/#admin> are avail
 Multiple LDAP sources can be configured with additional LDAP list items.
 
 ```yaml
-  gitea:
-    ldap:
-      - name: MyAwesomeGiteaLdap
-        securityProtocol: unencrypted
-        host: "127.0.0.1"
-        port: "389"
-        userSearchBase: ou=Users,dc=example,dc=com
-        userFilter: sAMAccountName=%s
-        adminFilter: CN=Admin,CN=Group,DC=example,DC=com
-        emailAttribute: mail
-        bindDn: CN=ldap read,OU=Spezial,DC=example,DC=com
-        bindPassword: JustAnotherBindPw
-        usernameAttribute: CN
-        publicSSHKeyAttribute: publicSSHKey
+gitea:
+  ldap:
+    - name: MyAwesomeGiteaLdap
+      securityProtocol: unencrypted
+      host: "127.0.0.1"
+      port: "389"
+      userSearchBase: ou=Users,dc=example,dc=com
+      userFilter: sAMAccountName=%s
+      adminFilter: CN=Admin,CN=Group,DC=example,DC=com
+      emailAttribute: mail
+      bindDn: CN=ldap read,OU=Spezial,DC=example,DC=com
+      bindPassword: JustAnotherBindPw
+      usernameAttribute: CN
+      publicSSHKeyAttribute: publicSSHKey
 ```
 
 You can also use an existing secret to set the bindDn and bindPassword:
@@ -474,11 +474,11 @@ Multiple OAuth2 sources can be configured with additional OAuth list items.
 ```yaml
 gitea:
   oauth:
-    - name: 'MyAwesomeGiteaOAuth'
-      provider: 'openidConnect'
-      key: 'hello'
-      secret: 'world'
-      autoDiscoverUrl: 'https://gitea.example.com/.well-known/openid-configuration'
+    - name: "MyAwesomeGiteaOAuth"
+      provider: "openidConnect"
+      key: "hello"
+      secret: "world"
+      autoDiscoverUrl: "https://gitea.example.com/.well-known/openid-configuration"
       #useCustomUrls:
       #customAuthUrl:
       #customTokenUrl:
@@ -502,7 +502,7 @@ stringData:
 ```yaml
 gitea:
   oauth:
-    - name: 'MyAwesomeGiteaOAuth'
+    - name: "MyAwesomeGiteaOAuth"
       existingSecret: gitea-oauth-secret
         ...
 ```
@@ -787,15 +787,15 @@ gitea:
 
 ### MariaDB
 
-| Name                               | Description                                                       | Value   |
-| ---------------------------------- | ----------------------------------------------------------------- | ------- |
-| `mariadb.enabled`                  | Enable MariaDB                                                    | `false` |
-| `mariadb.auth.database`            | Name of the database to create.                                   | `gitea` |
-| `mariadb.auth.username`            | Username of the new user to create.                               | `gitea` |
-| `mariadb.auth.password`            | Password for the new user. Ignored if existing secret is provided | `gitea` |
-| `mariadb.auth.rootPassword`        | Password for the root user.                                       | `gitea` |
-| `mariadb.primary.service.port`     | Port to connect to MariaDB service                                | `3306`  |
-| `mariadb.primary.persistence.size` | Persistence size for MariaDB                                      | `10Gi`  |
+| Name                                  | Description                                                       | Value   |
+| ------------------------------------- | ----------------------------------------------------------------- | ------- |
+| `mariadb.enabled`                     | Enable MariaDB                                                    | `false` |
+| `mariadb.auth.database`               | Name of the database to create.                                   | `gitea` |
+| `mariadb.auth.username`               | Username of the new user to create.                               | `gitea` |
+| `mariadb.auth.password`               | Password for the new user. Ignored if existing secret is provided | `gitea` |
+| `mariadb.auth.rootPassword`           | Password for the root user.                                       | `gitea` |
+| `mariadb.primary.service.ports.mysql` | Port to connect to MariaDB service                                | `3306`  |
+| `mariadb.primary.persistence.size`    | Persistence size for MariaDB                                      | `10Gi`  |
 
 ### Advanced
 
@@ -814,6 +814,14 @@ See [CONTRIBUTORS GUIDE](CONTRIBUTING.md) for details.
 This section lists major and breaking changes of each Helm Chart version.
 Please read them carefully to upgrade successfully.
 
+### To 8.0.0
+
+#### MariaDB
+
+This update bumps the MariDB chart from 9.x to 11., which comes with a MariaDB version update from 10.5.9 to 10.6.12 [(update instructions)](https://mariadb.com/kb/en/upgrading-from-mariadb-10-5-to-mariadb-10-6/).
+See the [MariaDB Chart Changelog for 10.0](https://github.com/bitnami/charts/tree/main/bitnami/mariadb#to-1000) for details.
+With respect to values, `primary.service.port` has been renamed to `primary.service.ports.mysql`.
+
 ### To 7.0.0
 
 #### Gitea 1.18.1
@@ -821,6 +829,8 @@ Please read them carefully to upgrade successfully.
 This Chart version updates Gitea to 1.18.1. Don't miss any application related [breaking changes of 1.18.0](https://blog.gitea.io/2022/12/gitea-1.18.0-is-released/#breaking-changes).
 
 #### Private GPG key configuration for Gitea signing actions
+
+---
 
 Having `signing.enabled=true` now requires to use either `signing.privateKey` or `signing.existingSecret` so that the Chart can automatically prepare the GPG key for Gitea internal signing actions.
 See [Configure commit signing](#configure-commit-signing) for details.
@@ -893,9 +903,9 @@ automatically in certain situations:
   configuration nor via auto generation. We explicitly prevent to set new secrets.
 
 > 💡 It would be possible to set new secret keys manually by entering
-the running container and rewriting the app.ini by hand. However, this it is
-not advisable to do so for existing installations. Certain settings like
-_LDAP_ would not be readable anymore.
+> the running container and rewriting the app.ini by hand. However, this it is
+> not advisable to do so for existing installations. Certain settings like
+> _LDAP_ would not be readable anymore.
 
 #### Probes
 
