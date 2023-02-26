@@ -6,10 +6,10 @@ dependencies:
   repository: https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami
   version: 6.14.10
 - name: postgresql
-  repository: https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami
-  version: 10.3.17
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 12.2.1
 - name: mariadb
   repository: https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami
   version: 9.3.6
-digest: sha256:eb786e862718ddd8c66d66b0a7d3501bd7fbb3c8edef12a406c9544159971965
-generated: "2023-02-26T13:51:59.1429398+01:00"
+digest: sha256:3bdda69e3ea5fad550f1a56ad9a0d1905ff847a1ec4fe77ba2299b6fbb25f604
+generated: "2023-02-26T15:59:58.381205+01:00"
