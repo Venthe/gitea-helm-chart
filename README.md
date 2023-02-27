@@ -382,11 +382,11 @@ not possible to delete an admin user after it has been created. This has to be
 done in the ui. You cannot use `admin` as username.
 
 ```yaml
-gitea:
-  admin:
-    username: "MyAwesomeGiteaAdmin"
-    password: "AReallyAwesomeGiteaPassword"
-    email: "gi@tea.com"
+  gitea:
+    admin:
+      username: "MyAwesomeGiteaAdmin"
+      password: "AReallyAwesomeGiteaPassword"
+      email: "gi@tea.com"
 ```
 
 You can also use an existing Secret to configure the admin user:
@@ -403,9 +403,9 @@ stringData:
 ```
 
 ```yaml
-gitea:
-  admin:
-    existingSecret: gitea-admin-secret
+  gitea:
+    admin:
+      existingSecret: gitea-admin-secret
 ```
 
 ### LDAP Settings
