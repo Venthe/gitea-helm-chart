@@ -347,31 +347,31 @@ by default.
 If you want to manage your own PVC you can simply pass the PVC name to the chart.
 
 ```yaml
-persistence:
-  enabled: true
-  existingClaim: MyAwesomeGiteaClaim
+  persistence:
+    enabled: true
+    existingClaim: MyAwesomeGiteaClaim
 ```
 
-In case that peristence has been disabled it will simply use an empty dir volume.
+In case that persistence has been disabled it will simply use an empty dir volume.
 
 PostgreSQL handles the persistence in the exact same way.
 You can interact with the postgres settings as displayed in the following example:
 
 ```yaml
-postgresql:
-  persistence:
-    enabled: true
-    existingClaim: MyAwesomeGiteaPostgresClaim
+  postgresql:
+    persistence:
+      enabled: true
+      existingClaim: MyAwesomeGiteaPostgresClaim
 ```
 
 MySQL also handles persistence the same, even though it is not deployed as a statefulset.
 You can interact with the postgres settings as displayed in the following example:
 
 ```yaml
-mysql:
-  persistence:
-    enabled: true
-    existingClaim: MyAwesomeGiteaMysqlClaim
+  mysql:
+    persistence:
+      enabled: true
+      existingClaim: MyAwesomeGiteaMysqlClaim
 ```
 
 ### Admin User
@@ -416,20 +416,20 @@ All LDAP values from <https://docs.gitea.io/en-us/command-line/#admin> are avail
 Multiple LDAP sources can be configured with additional LDAP list items.
 
 ```yaml
-gitea:
-  ldap:
-    - name: MyAwesomeGiteaLdap
-      securityProtocol: unencrypted
-      host: "127.0.0.1"
-      port: "389"
-      userSearchBase: ou=Users,dc=example,dc=com
-      userFilter: sAMAccountName=%s
-      adminFilter: CN=Admin,CN=Group,DC=example,DC=com
-      emailAttribute: mail
-      bindDn: CN=ldap read,OU=Spezial,DC=example,DC=com
-      bindPassword: JustAnotherBindPw
-      usernameAttribute: CN
-      publicSSHKeyAttribute: publicSSHKey
+  gitea:
+    ldap:
+      - name: MyAwesomeGiteaLdap
+        securityProtocol: unencrypted
+        host: "127.0.0.1"
+        port: "389"
+        userSearchBase: ou=Users,dc=example,dc=com
+        userFilter: sAMAccountName=%s
+        adminFilter: CN=Admin,CN=Group,DC=example,DC=com
+        emailAttribute: mail
+        bindDn: CN=ldap read,OU=Spezial,DC=example,DC=com
+        bindPassword: JustAnotherBindPw
+        usernameAttribute: CN
+        publicSSHKeyAttribute: publicSSHKey
 ```
 
 You can also use an existing secret to set the bindDn and bindPassword:
