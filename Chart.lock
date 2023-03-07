@@ -1,7 +1,7 @@
 dependencies:
 - name: memcached
-  repository: https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami
-  version: 5.9.0
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 6.3.7
 - name: mysql
   repository: https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami
   version: 6.14.10
@@ -11,5 +11,5 @@ dependencies:
 - name: mariadb
   repository: https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami
   version: 9.3.6
-digest: sha256:08f967276fa0c083e9756a974a9791a487a71be0a226dc14351b3e5a2641e8fd
-generated: "2022-06-11T12:18:36.672047+02:00"
+digest: sha256:eb786e862718ddd8c66d66b0a7d3501bd7fbb3c8edef12a406c9544159971965
+generated: "2023-02-26T13:51:59.1429398+01:00"
