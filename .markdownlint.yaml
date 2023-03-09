@@ -129,14 +129,14 @@ MD041:
 MD044:
   # List of proper names
   names:
-  - Gitea
-  - PostgreSQL
-  - MariaDB
-  - MySQL
-  - Memcached
-  - Prometheus
-  - Git
-  - GitOps
+    - Gitea
+    - PostgreSQL
+    - MariaDB
+    - MySQL
+    - Memcached
+    - Prometheus
+    - Git
+    - GitOps
   # Include code blocks
   code_blocks: false
 

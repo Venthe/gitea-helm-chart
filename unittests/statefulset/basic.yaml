@@ -12,6 +12,6 @@ tests:
       - hasDocuments:
           count: 1
       - containsDocument:
-          kind: StatefulSet  
+          kind: StatefulSet
           apiVersion: apps/v1
           name: gitea-unittests
