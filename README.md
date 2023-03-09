@@ -791,15 +791,16 @@ gitea:
 
 ### MySQL
 
-| Name                     | Description                                                        | Value   |
-| ------------------------ | ------------------------------------------------------------------ | ------- |
-| `mysql.enabled`          | Enable MySQL                                                       | `false` |
-| `mysql.root.password`    | Password for the root user. Ignored if existing secret is provided | `gitea` |
-| `mysql.db.user`          | Username of new user to create.                                    | `gitea` |
-| `mysql.db.password`      | Password for the new user.Ignored if existing secret is provided   | `gitea` |
-| `mysql.db.name`          | Name for new database to create.                                   | `gitea` |
-| `mysql.service.port`     | Port to connect to MySQL service                                   | `3306`  |
-| `mysql.persistence.size` | PVC Storage Request for MySQL volume                               | `10Gi`  |
+| Name                               | Description                                                                    | Value   |
+| ---------------------------------- | ------------------------------------------------------------------------------ | ------- |
+| `mysql.enabled`                    | Enable MySQL                                                                   | `false` |
+| `mysql.auth.rootPassword`          | Password for the `root` user. Ignored if existing secret is provided           | `gitea` |
+| `mysql.auth.username`              | Name for a custom user to create                                               | `gitea` |
+| `mysql.auth.password`              | Password for the new user. Ignored if existing secret is provided              | `gitea` |
+| `mysql.auth.database`              | Name for a custom database to create                                           | `gitea` |
+| `mysql.service.ports.mysql`        | MySQL Primary K8s service port                                                 | `3306`  |
+| `mysql.primary.persistence.size`   | Enable persistence on MySQL primary replicas using a `PersistentVolumeClaim`   | `10Gi`  |
+| `mysql.secondary.persistence.size` | Enable persistence on MySQL secondary replicas using a `PersistentVolumeClaim` | `10Gi`  |
 
 ### MariaDB
 
@@ -829,6 +830,22 @@ See [CONTRIBUTORS GUIDE](CONTRIBUTING.md) for details.
 
 This section lists major and breaking changes of each Helm Chart version.
 Please read them carefully to upgrade successfully.
+
+### To 8.0.0
+
+#### MySQL
+
+This update bumps the MySQL chart from 6.x to 9.x, which comes with a MySQL version update from 8.0.21 to 8.0.32.
+See the [MySQL Chart Changelog](https://github.com/bitnami/charts/tree/main/bitnami/mysql#upgrading) for details.
+
+With respect to values, the following renames apply:
+
+- `mysql.root.password` has been renamed to `mysql.auth.rootPassword`.
+- `mysql.root.db.user` has been renamed to `mysql.auth.username`.
+- `mysql.root.db.name` has been renamed to `mysql.auth.database`.
+- `mysql.root.db.password` has been renamed to `mysql.auth.userPassword`.
+- `mysql.service.port` has been renamed to `mysql.service.ports.mysql`.
+- `mysql.persistence.size` has been renamed (and split) to `mysql.primary.persistence.size` and `mysql.secondary.persistence.size`.
 
 ### To 7.0.0
 

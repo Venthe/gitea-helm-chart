@@ -37,9 +37,10 @@ dependencies:
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 6.3.7
   condition: memcached.enabled
+# Chart release date: 2023-03
 - name: mysql
-  repository: https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami
-  version: 6.14.10
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 9.5.2
   condition: mysql.enabled
 - name: postgresql
   repository: https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami
