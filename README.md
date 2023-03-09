@@ -11,6 +11,22 @@ different approach in providing a database and cache with dependencies.
 Additionally, this chart provides LDAP and admin user configuration with values,
 as well as being deployed as a statefulset to retain stored repositories.
 
+## Update and versioning policy
+
+The Gitea helm chart versioning does not follow Gitea's versioning.
+The latest chart version can be looked up in [https://dl.gitea.com/charts](https://dl.gitea.com/charts) or in the [repository releases](https://gitea.com/gitea/helm-chart/releases).
+
+The chart aims to follow Gitea's releases closely.
+There might be times when the chart is behind the latest Gitea release.
+This might be caused by different reasons, most often due to time constraints of the maintainers (remember, all work here is done voluntarily in the spare time of people).
+If you're eager to use the latest Gitea version earlier than this chart catches up, then change the tag in `values.yaml` to the latest Gitea version.
+Note that besides the exact Gitea version one can also use the `:1` tag to automatically follow the latest Gitea version.
+This should be combined with `image.pullPolicy: "Always"`.
+Important: Using the `:1` will also automatically jump to new minor release (e.g. from 1.13 to 1.14) which may eventually cause incompatibilities if major/breaking changes happened between these versions.
+This is due to Gitea not strictly following [semantic versioning](https://semver.org/#summary) as breaking changes do not increase the major version.
+I.e., "minor" version bumps are considered "major".
+Yet most often no issues will be encountered and the chart maintainers aim to communicate early/upfront if this would be the case.
+
 ## Dependencies
 
 Gitea can be run with an external database and cache. This chart provides those
