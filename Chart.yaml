@@ -28,24 +28,26 @@ maintainers:
     email: lucas.hahn@novum-rgi.de
   - name: Steven Kriegler
     email: sk.bunsenbrenner@gmail.com
+  - name: Patrick Schratz
+    email: patrick.schratz@gmail.com
 
 # Bitnami charts are served from GitHub CDN - See https://github.com/bitnami/charts/issues/10539 for details
 dependencies:
-# OCI registry: https://blog.bitnami.com/2023/01/bitnami-helm-charts-available-as-oci.html (2023-01)
-# Chart release date: 2023-02
-- name: memcached
-  repository: oci://registry-1.docker.io/bitnamicharts
-  version: 6.3.7
-  condition: memcached.enabled
-- name: mysql
-  repository: https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami
-  version: 6.14.10
-  condition: mysql.enabled
-- name: postgresql
-  repository: https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami
-  version: 10.3.17
-  condition: postgresql.enabled
-- name: mariadb
-  repository: https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami
-  version: 9.3.6
-  condition: mariadb.enabled
+  # OCI registry: https://blog.bitnami.com/2023/01/bitnami-helm-charts-available-as-oci.html (2023-01)
+  # Chart release date: 2023-02
+  - name: memcached
+    repository: oci://registry-1.docker.io/bitnamicharts
+    version: 6.3.7
+    condition: memcached.enabled
+  - name: mysql
+    repository: https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami
+    version: 6.14.10
+    condition: mysql.enabled
+  - name: postgresql
+    repository: https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami
+    version: 10.3.17
+    condition: postgresql.enabled
+  - name: mariadb
+    repository: https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami
+    version: 9.3.6
+    condition: mariadb.enabled
