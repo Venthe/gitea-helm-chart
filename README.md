@@ -718,6 +718,7 @@ gitea:
 | `gitea.additionalConfigSources`        | Additional configuration from secret or configmap                                                             | `[]`                 |
 | `gitea.additionalConfigFromEnvs`       | Additional configuration sources from environment variables                                                   | `[]`                 |
 | `gitea.podAnnotations`                 | Annotations for the Gitea pod                                                                                 | `{}`                 |
+| `gitea.ssh.logLevel`                   | Configure OpenSSH's log level. Only available for root-based Gitea image.                                     | `INFO`               |
 
 ### LivenessProbe
 

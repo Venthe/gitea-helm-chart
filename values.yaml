@@ -348,6 +348,10 @@ gitea:
   ## @param gitea.podAnnotations Annotations for the Gitea pod
   podAnnotations: {}
 
+  ## @param gitea.ssh.logLevel Configure OpenSSH's log level. Only available for root-based Gitea image.
+  ssh:
+    logLevel: "INFO"
+
   ## @section LivenessProbe
   #
   ## @param gitea.livenessProbe.enabled Enable liveness probe
