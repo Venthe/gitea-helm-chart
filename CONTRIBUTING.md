@@ -55,7 +55,7 @@ be used:
 
 ```bash
 # install the unittest plugin
-$ helm plugin install https://github.com/heyhabito/helm-unittest
+$ helm plugin install https://github.com/helm-unittest/helm-unittest
 
 # run the unittests
 make unittests
