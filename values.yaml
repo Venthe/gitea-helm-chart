@@ -280,7 +280,7 @@ gitea:
   ## @param gitea.admin.password Password for the Gitea admin user
   ## @param gitea.admin.email Email for the Gitea admin user
   admin:
-    #existingSecret: gitea-admin-secret
+    # existingSecret: gitea-admin-secret
     existingSecret:
     username: gitea_admin
     password: r8sA8CPHD9!bt6d
