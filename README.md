@@ -543,7 +543,7 @@ signing:
 
 Regardless of the used container image the `signing` object allows to specify a
 private gpg key. Either using the `signing.privateKey` to define the key inline,
-or refer to an existing secret containing the key data by using `signing.existingKey`.
+or refer to an existing secret containing the key data by using `signing.existingSecret`.
 
 ```yaml
 apiVersion: v1
