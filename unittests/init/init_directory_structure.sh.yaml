@@ -10,7 +10,7 @@ tests:
       signing.enabled: true
     asserts:
       - equal:
-          path: stringData.[configure_gpg_environment.sh]
+          path: stringData["configure_gpg_environment.sh"]
           value: |-
             #!/usr/bin/env bash
             set -eu
@@ -19,7 +19,7 @@ tests:
   - it: skips gpg script block for disabled signing
     asserts:
       - equal:
-          path: stringData.[init_directory_structure.sh]
+          path: stringData["init_directory_structure.sh"]
           value: |-
             #!/usr/bin/env bash
 
@@ -40,7 +40,7 @@ tests:
       signing.enabled: true
     asserts:
       - equal:
-          path: stringData.[init_directory_structure.sh]
+          path: stringData["init_directory_structure.sh"]
           value: |-
             #!/usr/bin/env bash
 
