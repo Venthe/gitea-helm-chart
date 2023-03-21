@@ -11,6 +11,22 @@ different approach in providing a database and cache with dependencies.
 Additionally, this chart provides LDAP and admin user configuration with values,
 as well as being deployed as a statefulset to retain stored repositories.
 
+## Update and versioning policy
+
+The Gitea helm chart versioning does not follow Gitea's versioning.
+The latest chart version can be looked up in [https://dl.gitea.com/charts](https://dl.gitea.com/charts) or in the [repository releases](https://gitea.com/gitea/helm-chart/releases).
+
+The chart aims to follow Gitea's releases closely.
+There might be times when the chart is behind the latest Gitea release.
+This might be caused by different reasons, most often due to time constraints of the maintainers (remember, all work here is done voluntarily in the spare time of people).
+If you're eager to use the latest Gitea version earlier than this chart catches up, then change the tag in `values.yaml` to the latest Gitea version.
+Note that besides the exact Gitea version one can also use the `:1` tag to automatically follow the latest Gitea version.
+This should be combined with `image.pullPolicy: "Always"`.
+Important: Using the `:1` will also automatically jump to new minor release (e.g. from 1.13 to 1.14) which may eventually cause incompatibilities if major/breaking changes happened between these versions.
+This is due to Gitea not strictly following [semantic versioning](https://semver.org/#summary) as breaking changes do not increase the major version.
+I.e., "minor" version bumps are considered "major".
+Yet most often no issues will be encountered and the chart maintainers aim to communicate early/upfront if this would be the case.
+
 ## Dependencies
 
 Gitea can be run with an external database and cache. This chart provides those
@@ -125,7 +141,7 @@ ENABLED = false
 ### Additional _app.ini_ settings
 
 > **The [generic](https://docs.gitea.io/en-us/config-cheat-sheet/#overall-default)
-section cannot be defined that way.**
+> section cannot be defined that way.**
 
 Some settings inside _app.ini_ (like passwords or whole authentication configurations)
 must be considered sensitive and therefore should not be passed via plain text
@@ -347,9 +363,9 @@ by default.
 If you want to manage your own PVC you can simply pass the PVC name to the chart.
 
 ```yaml
-  persistence:
-    enabled: true
-    existingClaim: MyAwesomeGiteaClaim
+persistence:
+  enabled: true
+  existingClaim: MyAwesomeGiteaClaim
 ```
 
 In case that peristence has been disabled it will simply use an empty dir volume.
@@ -358,20 +374,20 @@ PostgreSQL handles the persistence in the exact same way.
 You can interact with the postgres settings as displayed in the following example:
 
 ```yaml
-  postgresql:
-    persistence:
-      enabled: true
-      existingClaim: MyAwesomeGiteaPostgresClaim
+postgresql:
+  persistence:
+    enabled: true
+    existingClaim: MyAwesomeGiteaPostgresClaim
 ```
 
 MySQL also handles persistence the same, even though it is not deployed as a statefulset.
 You can interact with the postgres settings as displayed in the following example:
 
 ```yaml
-  mysql:
-    persistence:
-      enabled: true
-      existingClaim: MyAwesomeGiteaMysqlClaim
+mysql:
+  persistence:
+    enabled: true
+    existingClaim: MyAwesomeGiteaMysqlClaim
 ```
 
 ### Admin User
@@ -382,11 +398,11 @@ not possible to delete an admin user after it has been created. This has to be
 done in the ui. You cannot use `admin` as username.
 
 ```yaml
-  gitea:
-    admin:
-      username: "MyAwesomeGiteaAdmin"
-      password: "AReallyAwesomeGiteaPassword"
-      email: "gi@tea.com"
+gitea:
+  admin:
+    username: "MyAwesomeGiteaAdmin"
+    password: "AReallyAwesomeGiteaPassword"
+    email: "gi@tea.com"
 ```
 
 You can also use an existing Secret to configure the admin user:
@@ -404,8 +420,8 @@ stringData:
 
 ```yaml
 gitea:
-    admin:
-      existingSecret: gitea-admin-secret
+  admin:
+    existingSecret: gitea-admin-secret
 ```
 
 ### LDAP Settings
@@ -416,20 +432,20 @@ All LDAP values from <https://docs.gitea.io/en-us/command-line/#admin> are avail
 Multiple LDAP sources can be configured with additional LDAP list items.
 
 ```yaml
-  gitea:
-    ldap:
-      - name: MyAwesomeGiteaLdap
-        securityProtocol: unencrypted
-        host: "127.0.0.1"
-        port: "389"
-        userSearchBase: ou=Users,dc=example,dc=com
-        userFilter: sAMAccountName=%s
-        adminFilter: CN=Admin,CN=Group,DC=example,DC=com
-        emailAttribute: mail
-        bindDn: CN=ldap read,OU=Spezial,DC=example,DC=com
-        bindPassword: JustAnotherBindPw
-        usernameAttribute: CN
-        publicSSHKeyAttribute: publicSSHKey
+gitea:
+  ldap:
+    - name: MyAwesomeGiteaLdap
+      securityProtocol: unencrypted
+      host: "127.0.0.1"
+      port: "389"
+      userSearchBase: ou=Users,dc=example,dc=com
+      userFilter: sAMAccountName=%s
+      adminFilter: CN=Admin,CN=Group,DC=example,DC=com
+      emailAttribute: mail
+      bindDn: CN=ldap read,OU=Spezial,DC=example,DC=com
+      bindPassword: JustAnotherBindPw
+      usernameAttribute: CN
+      publicSSHKeyAttribute: publicSSHKey
 ```
 
 You can also use an existing secret to set the bindDn and bindPassword:
@@ -474,11 +490,11 @@ Multiple OAuth2 sources can be configured with additional OAuth list items.
 ```yaml
 gitea:
   oauth:
-    - name: 'MyAwesomeGiteaOAuth'
-      provider: 'openidConnect'
-      key: 'hello'
-      secret: 'world'
-      autoDiscoverUrl: 'https://gitea.example.com/.well-known/openid-configuration'
+    - name: "MyAwesomeGiteaOAuth"
+      provider: "openidConnect"
+      key: "hello"
+      secret: "world"
+      autoDiscoverUrl: "https://gitea.example.com/.well-known/openid-configuration"
       #useCustomUrls:
       #customAuthUrl:
       #customTokenUrl:
@@ -502,7 +518,7 @@ stringData:
 ```yaml
 gitea:
   oauth:
-    - name: 'MyAwesomeGiteaOAuth'
+    - name: "MyAwesomeGiteaOAuth"
       existingSecret: gitea-oauth-secret
         ...
 ```
@@ -799,9 +815,12 @@ gitea:
 
 ### Advanced
 
-| Name               | Description                                          | Value  |
-| ------------------ | ---------------------------------------------------- | ------ |
-| `checkDeprecation` | Set it to false to skip this basic validation check. | `true` |
+| Name               | Description                                                        | Value     |
+| ------------------ | ------------------------------------------------------------------ | --------- |
+| `checkDeprecation` | Set it to false to skip this basic validation check.               | `true`    |
+| `test.enabled`     | Set it to false to disable test-connection Pod.                    | `true`    |
+| `test.image.name`  | Image name for the wget container used in the test-connection Pod. | `busybox` |
+| `test.image.tag`   | Image tag for the wget container used in the test-connection Pod.  | `latest`  |
 
 ## Contributing
 
@@ -893,9 +912,9 @@ automatically in certain situations:
   configuration nor via auto generation. We explicitly prevent to set new secrets.
 
 > 💡 It would be possible to set new secret keys manually by entering
-the running container and rewriting the app.ini by hand. However, this it is
-not advisable to do so for existing installations. Certain settings like
-_LDAP_ would not be readable anymore.
+> the running container and rewriting the app.ini by hand. However, this it is
+> not advisable to do so for existing installations. Certain settings like
+> _LDAP_ would not be readable anymore.
 
 #### Probes
 
