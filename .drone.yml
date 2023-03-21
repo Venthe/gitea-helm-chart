@@ -40,6 +40,12 @@ steps:
       - make readme
       - git diff --exit-code --name-only README.md
 
+  - name: yaml lint
+    pull: always
+    image: cytopia/yamllint:alpine-1
+    commands:
+      - yamllint -f colored .
+
   - name: discord
     pull: always
     image: appleboy/drone-discord:1.2.4
