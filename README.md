@@ -834,6 +834,12 @@ See [CONTRIBUTORS GUIDE](CONTRIBUTING.md) for details.
 This section lists major and breaking changes of each Helm Chart version.
 Please read them carefully to upgrade successfully.
 
+### To 8.0.0
+
+#### Gitea 1.19.0
+
+This Chart version updates Gitea to 1.19.0. Don't miss any application related [breaking changes of 1.19.0](https://blog.gitea.io/2023/03/gitea-1.19.0-is-released/#breaking-changes)
+
 ### To 7.0.0
 
 #### Gitea 1.18.1
