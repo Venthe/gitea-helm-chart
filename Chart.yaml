@@ -38,6 +38,6 @@ dependencies:
   version: 6.3.7
   condition: memcached.enabled
 - name: postgresql
-  repository: https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami
-  version: 10.3.17
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 12.2.6
   condition: postgresql.enabled

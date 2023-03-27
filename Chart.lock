@@ -3,7 +3,7 @@ dependencies:
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 6.3.7
 - name: postgresql
-  repository: https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami
-  version: 10.3.17
-digest: sha256:64a01d4296ba5ab931fc1ca7d95f3fdf570cef1738432639a7a5278d87e5cca9
-generated: "2023-03-25T11:05:21.627487+01:00"
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 12.2.6
+digest: sha256:c2026881f71eca24c72e9da3e798a1ad2a5af8e86a39a5341015584eaacf8b64
+generated: "2023-03-27T19:20:21.125036+02:00"
