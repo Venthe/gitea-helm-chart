@@ -824,9 +824,8 @@ With respect to `values.yaml`, parameters `username`, `database` and `postgresPa
 `persistence` has also been regrouped under the `primary` key.
 Please adjust your `values.yaml` accordingly.
 
-#### Gitea 1.18.1
 
-This Chart version updates Gitea to 1.18.1. Don't miss any application related [breaking changes of 1.18.0](https://blog.gitea.io/2022/12/gitea-1.18.0-is-released/#breaking-changes).
+### To 7.0.0
 
 #### Private GPG key configuration for Gitea signing actions
 
