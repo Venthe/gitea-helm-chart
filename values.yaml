@@ -419,7 +419,7 @@ memcached:
 ## @section PostgreSQL
 #
 ## @param postgresql.enabled Enable PostgreSQL
-## @param postgresql.global.postgresql.auth.postgresPassword Password for the "postgres" admin user (overrides `auth.postgresPassword`)
+## @param postgresql.global.postgresql.auth.password Password for the "gitea" user (overrides `auth.password`)
 ## @param postgresql.global.postgresql.auth.database Name for a custom database to create (overrides `auth.database`)
 ## @param postgresql.global.postgresql.auth.username Name for a custom user to create (overrides `auth.username`)
 ## @param postgresql.global.service.ports.postgresql PostgreSQL service port (overrides `service.ports.postgresql`)
@@ -429,7 +429,7 @@ postgresql:
   global:
     postgresql:
       auth:
-        postgresPassword: gitea
+        password: gitea
         database: gitea
         username: gitea
     service:

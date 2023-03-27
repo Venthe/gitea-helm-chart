@@ -764,14 +764,14 @@ gitea:
 
 ### PostgreSQL
 
-| Name                                                 | Description                                                                | Value   |
-| ---------------------------------------------------- | -------------------------------------------------------------------------- | ------- |
-| `postgresql.enabled`                                 | Enable PostgreSQL                                                          | `true`  |
-| `postgresql.global.postgresql.auth.postgresPassword` | Password for the "postgres" admin user (overrides `auth.postgresPassword`) | `gitea` |
-| `postgresql.global.postgresql.auth.database`         | Name for a custom database to create (overrides `auth.database`)           | `gitea` |
-| `postgresql.global.postgresql.auth.username`         | Name for a custom user to create (overrides `auth.username`)               | `gitea` |
-| `postgresql.global.service.ports.postgresql`         | PostgreSQL service port (overrides `service.ports.postgresql`)             | `5432`  |
-| `postgresql.primary.persistence.size`                | PVC Storage Request for PostgreSQL volume                                  | `10Gi`  |
+| Name                                         | Description                                                      | Value   |
+| -------------------------------------------- | ---------------------------------------------------------------- | ------- |
+| `postgresql.enabled`                         | Enable PostgreSQL                                                | `true`  |
+| `postgresql.global.postgresql.auth.password` | Password for the "Gitea" user (overrides `auth.password`)        | `gitea` |
+| `postgresql.global.postgresql.auth.database` | Name for a custom database to create (overrides `auth.database`) | `gitea` |
+| `postgresql.global.postgresql.auth.username` | Name for a custom user to create (overrides `auth.username`)     | `gitea` |
+| `postgresql.global.service.ports.postgresql` | PostgreSQL service port (overrides `service.ports.postgresql`)   | `5432`  |
+| `postgresql.primary.persistence.size`        | PVC Storage Request for PostgreSQL volume                        | `10Gi`  |
 
 ### MySQL
 
