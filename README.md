@@ -880,7 +880,7 @@ after the upgrade.
 #### Enable Dependencies
 
 The values to enable the dependencies,
-such as PostgreSQL or Memcached.
+such as PostgreSQL, Memcached, MySQL and MariaDB.
 have been moved from `gitea.database.builtIn.` to the dependency values.
 
 You can now enable the dependencies as followed:
@@ -891,6 +891,12 @@ memcached:
 
 postgresql:
   enabled: true
+
+mysql:
+  enabled: false
+
+mariadb:
+  enabled: false
 ```
 
 #### App.ini generation
