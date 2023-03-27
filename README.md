@@ -840,7 +840,7 @@ Please read them carefully to upgrade successfully.
 
 This Chart version updates the Postgres chart dependency and subsequently Postgres from v11 to v15.
 Please read the [Postgres Release Notes](https://www.postgresql.org/docs/release/) for version-specific changes.
-With respect to `values.yaml`, parameters `username`, `database` and `postgresPassword` have been regrouped under `auth` and slightly renamed.
+With respect to `values.yaml`, parameters `username`, `database` and `password` have been regrouped under `auth` and slightly renamed.
 `persistence` has also been regrouped under the `primary` key.
 Please adjust your `values.yaml` accordingly.
 

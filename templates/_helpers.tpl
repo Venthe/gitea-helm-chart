@@ -294,7 +294,7 @@ https
     {{- end -}}
     {{- $_ := set .Values.gitea.config.database "NAME"      .Values.postgresql.global.postgresql.auth.database -}}
     {{- $_ := set .Values.gitea.config.database "USER"      .Values.postgresql.global.postgresql.auth.username -}}
-    {{- $_ := set .Values.gitea.config.database "PASSWD"    .Values.postgresql.global.postgresql.auth.postgresPassword -}}
+    {{- $_ := set .Values.gitea.config.database "PASSWD"    .Values.postgresql.global.postgresql.auth.password -}}
   {{- else if .Values.mysql.enabled -}}
     {{- $_ := set .Values.gitea.config.database "DB_TYPE"   "mysql" -}}
     {{- if not (.Values.gitea.config.database.HOST) -}}
