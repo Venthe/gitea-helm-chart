@@ -235,7 +235,6 @@ Priority (highest to lowest) for defining app.ini variables:
 
 Any external Database listed in [https://docs.gitea.io/en-us/database-prep/](https://docs.gitea.io/en-us/database-prep/) can be used instead of the built-in PostgreSQL.
 In fact, it is **highly recommended** to use an external database to ensure a stable Gitea installation longterm.
-The built-in dependency is mainly for testing and development purposes.
 
 If an external database is used, no matter which type, make sure to set `postgresql.enabled` to `false` to disable the use of the built-in PostgreSQL.
 
