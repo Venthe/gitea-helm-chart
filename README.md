@@ -844,7 +844,6 @@ With respect to `values.yaml`, parameters `username`, `database` and `password` 
 `persistence` has also been regrouped under the `primary` key.
 Please adjust your `values.yaml` accordingly.
 
-
 ### To 7.0.0
 
 #### Private GPG key configuration for Gitea signing actions
