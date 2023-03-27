@@ -9,4 +9,4 @@ readme: prepare-environment
 
 .PHONY: unittests
 unittests:
-	helm unittest --helm3 --strict -f 'unittests/**/*.yaml' ./
+	helm unittest --strict -f 'unittests/**/*.yaml' ./

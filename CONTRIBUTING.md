@@ -14,6 +14,7 @@ When using Visual Studio Code as IDE, following plugins might be useful:
 - [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)
 - [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
 - [Helm Intellisense](https://marketplace.visualstudio.com/items?itemName=Tim-Koehler.helm-intellisense)
+- [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
 ## Documentation Requirements
 
@@ -55,7 +56,7 @@ be used:
 
 ```bash
 # install the unittest plugin
-$ helm plugin install https://github.com/heyhabito/helm-unittest
+$ helm plugin install https://github.com/helm-unittest/helm-unittest
 
 # run the unittests
 make unittests
