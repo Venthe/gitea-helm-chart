@@ -414,26 +414,20 @@ gitea:
 ## @section Memcached
 #
 ## @param memcached.enabled Memcached is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if enabled in the values. Complete Configuration can be taken from their website.
-## Bitnami Memcached image version
 ## ref: https://hub.docker.com/r/bitnami/memcached/tags/
-## @param memcached.image.registry Memcached image registry
-## @param memcached.image.repository Memcached image repository
-## @param memcached.image.tag Memcached image tag (immutable tags are recommended)
-## @param memcached.image.digest Memcached image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag
-## @param memcached.image.pullPolicy Memcached image pull policy
-## @param memcached.image.pullSecrets Specify docker-registry secret names as an array
-## @param memcached.service.port Port for Memcached
+## @param memcached.service.ports.memcached Port for Memcached
 memcached:
   enabled: true
-  image:
-    registry: docker.io
-    repository: bitnami/memcached
-    tag: 1.6.19-debian-11-r3
-    digest: ""
-    pullPolicy: IfNotPresent
-    pullSecrets: []
+  # image:
+  #   registry: docker.io
+  #   repository: bitnami/memcached
+  #   tag: ""
+  #   digest: ""
+  #   pullPolicy: IfNotPresent
+  #   pullSecrets: []
   service:
-    port: 11211
+    ports:
+      memcached: 11211
 
 ## @section PostgreSQL
 #
