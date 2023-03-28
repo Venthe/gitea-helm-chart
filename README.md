@@ -696,9 +696,12 @@ gitea:
 
 ### Init
 
-| Name            | Description                                                           | Value |
-| --------------- | --------------------------------------------------------------------- | ----- |
-| `initPreScript` | Bash shell script copied verbatim to the start of the init-container. | `""`  |
+| Name                                       | Description                                                                          | Value   |
+| ------------------------------------------ | ------------------------------------------------------------------------------------ | ------- |
+| `initPreScript`                            | Bash shell script copied verbatim to the start of the init-container.                | `""`    |
+| `initContainers.resources.limits`          | initContainers.limits Kubernetes resource limits for init containers                 | `{}`    |
+| `initContainers.resources.requests.cpu`    | initContainers.requests.cpu Kubernetes cpu resource limits for init containers       | `100m`  |
+| `initContainers.resources.requests.memory` | initContainers.requests.memory Kubernetes memory resource limits for init containers | `128Mi` |
 
 ### Signing
 
