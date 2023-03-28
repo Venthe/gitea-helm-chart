@@ -765,10 +765,16 @@ gitea:
 
 ### Memcached
 
-| Name                     | Description                                                                                                                                                                                           | Value   |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| `memcached.enabled`      | Memcached is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if enabled in the values. Complete Configuration can be taken from their website. | `true`  |
-| `memcached.service.port` | Port for Memcached                                                                                                                                                                                    | `11211` |
+| Name                          | Description                                                                                                                                                                                           | Value                 |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| `memcached.enabled`           | Memcached is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if enabled in the values. Complete Configuration can be taken from their website. | `true`                |
+| `memcached.image.registry`    | Memcached image registry                                                                                                                                                                              | `docker.io`           |
+| `memcached.image.repository`  | Memcached image repository                                                                                                                                                                            | `bitnami/memcached`   |
+| `memcached.image.tag`         | Memcached image tag (immutable tags are recommended)                                                                                                                                                  | `1.6.19-debian-11-r3` |
+| `memcached.image.digest`      | Memcached image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag                                                                                             | `""`                  |
+| `memcached.image.pullPolicy`  | Memcached image pull policy                                                                                                                                                                           | `IfNotPresent`        |
+| `memcached.image.pullSecrets` | Specify docker-registry secret names as an array                                                                                                                                                      | `[]`                  |
+| `memcached.service.port`      | Port for Memcached                                                                                                                                                                                    | `11211`               |
 
 ### PostgreSQL
 
