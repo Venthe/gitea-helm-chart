@@ -32,10 +32,10 @@ maintainers:
 # Bitnami charts are served from GitHub CDN - See https://github.com/bitnami/charts/issues/10539 for details
 dependencies:
 # OCI registry: https://blog.bitnami.com/2023/01/bitnami-helm-charts-available-as-oci.html (2023-01)
-# Chart release date: 2023-02
+# Chart release date: 2023-03
 - name: memcached
   repository: oci://registry-1.docker.io/bitnamicharts
-  version: 6.3.7
+  version: 6.3.13
   condition: memcached.enabled
 - name: postgresql
   repository: oci://registry-1.docker.io/bitnamicharts
