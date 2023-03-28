@@ -131,8 +131,6 @@ MD044:
   names:
   - Gitea
   - PostgreSQL
-  - MariaDB
-  - MySQL
   - Memcached
   - Prometheus
   - Git

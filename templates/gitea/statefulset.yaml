@@ -243,6 +243,10 @@ spec:
               value: {{ .Values.gitea.config.server.SSH_LISTEN_PORT | quote }}
             - name: SSH_PORT
               value: {{ .Values.gitea.config.server.SSH_PORT | quote }}
+            {{- if not .Values.image.rootless }}
+            - name: SSH_LOG_LEVEL
+              value: {{ .Values.gitea.ssh.logLevel | quote }}
+            {{- end }}
             - name: GITEA_APP_INI
               value: /data/gitea/conf/app.ini
             - name: GITEA_CUSTOM

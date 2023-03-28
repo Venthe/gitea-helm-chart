@@ -125,7 +125,6 @@ service:
     loadBalancerSourceRanges: []
     annotations: {}
 
-
 ## @section Ingress
 ## @param ingress.enabled Enable ingress
 ## @param ingress.className Ingress class name
@@ -348,6 +347,10 @@ gitea:
   ## @param gitea.podAnnotations Annotations for the Gitea pod
   podAnnotations: {}
 
+  ## @param gitea.ssh.logLevel Configure OpenSSH's log level. Only available for root-based Gitea image.
+  ssh:
+    logLevel: "INFO"
+
   ## @section LivenessProbe
   #
   ## @param gitea.livenessProbe.enabled Enable liveness probe
@@ -420,63 +423,23 @@ memcached:
 ## @section PostgreSQL
 #
 ## @param postgresql.enabled Enable PostgreSQL
-## @param postgresql.global.postgresql.postgresqlDatabase PostgreSQL database (overrides postgresqlDatabase)
-## @param postgresql.global.postgresql.postgresqlUsername PostgreSQL username (overrides postgresqlUsername)
-## @param postgresql.global.postgresql.postgresqlPassword PostgreSQL admin password (overrides postgresqlPassword)
-## @param postgresql.global.postgresql.servicePort PostgreSQL port (overrides service.port)
-## @param postgresql.persistence.size PVC Storage Request for PostgreSQL volume
+## @param postgresql.global.postgresql.auth.password Password for the "gitea" user (overrides `auth.password`)
+## @param postgresql.global.postgresql.auth.database Name for a custom database to create (overrides `auth.database`)
+## @param postgresql.global.postgresql.auth.username Name for a custom user to create (overrides `auth.username`)
+## @param postgresql.global.postgresql.service.ports.postgresql PostgreSQL service port (overrides `service.ports.postgresql`)
+## @param postgresql.primary.persistence.size PVC Storage Request for PostgreSQL volume
 postgresql:
   enabled: true
   global:
     postgresql:
-      postgresqlDatabase: gitea
-      postgresqlUsername: gitea
-      postgresqlPassword: gitea
-      servicePort: 5432
-  persistence:
-    size: 10Gi
-
-## @section MySQL
-#
-## @param mysql.enabled Enable MySQL
-## @param mysql.root.password Password for the root user. Ignored if existing secret is provided
-## @param mysql.db.user Username of new user to create.
-## @param mysql.db.password Password for the new user.Ignored if existing secret is provided
-## @param mysql.db.name Name for new database to create.
-## @param mysql.service.port Port to connect to MySQL service
-## @param mysql.persistence.size PVC Storage Request for MySQL volume
-mysql:
-  enabled: false
-  root:
-    password: gitea
-  db:
-    user: gitea
-    password: gitea
-    name: gitea
-  service:
-    port: 3306
-  persistence:
-    size: 10Gi
-
-## @section MariaDB
-#
-## @param mariadb.enabled Enable MariaDB
-## @param mariadb.auth.database Name of the database to create.
-## @param mariadb.auth.username Username of the new user to create.
-## @param mariadb.auth.password Password for the new user. Ignored if existing secret is provided
-## @param mariadb.auth.rootPassword Password for the root user.
-## @param mariadb.primary.service.port Port to connect to MariaDB service
-## @param mariadb.primary.persistence.size Persistence size for MariaDB
-mariadb:
-  enabled: false
-  auth:
-    database: gitea
-    username: gitea
-    password: gitea
-    rootPassword: gitea
+      auth:
+        password: gitea
+        database: gitea
+        username: gitea
+      service:
+        ports:
+          postgresql: 5432
   primary:
-    service:
-      port: 3306
     persistence:
       size: 10Gi
 
@@ -484,4 +447,12 @@ mariadb:
 # Set it to false to skip this basic validation check.
 ## @section Advanced
 ## @param checkDeprecation Set it to false to skip this basic validation check.
+## @param test.enabled Set it to false to disable test-connection Pod.
+## @param test.image.name Image name for the wget container used in the test-connection Pod.
+## @param test.image.tag Image tag for the wget container used in the test-connection Pod.
 checkDeprecation: true
+test:
+  enabled: true
+  image:
+    name: busybox
+    tag: latest
