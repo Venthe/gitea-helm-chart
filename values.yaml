@@ -448,50 +448,6 @@ postgresql:
     persistence:
       size: 10Gi
 
-## @section MySQL
-#
-## @param mysql.enabled Enable MySQL
-## @param mysql.root.password Password for the root user. Ignored if existing secret is provided
-## @param mysql.db.user Username of new user to create.
-## @param mysql.db.password Password for the new user.Ignored if existing secret is provided
-## @param mysql.db.name Name for new database to create.
-## @param mysql.service.port Port to connect to MySQL service
-## @param mysql.persistence.size PVC Storage Request for MySQL volume
-mysql:
-  enabled: false
-  root:
-    password: gitea
-  db:
-    user: gitea
-    password: gitea
-    name: gitea
-  service:
-    port: 3306
-  persistence:
-    size: 10Gi
-
-## @section MariaDB
-#
-## @param mariadb.enabled Enable MariaDB
-## @param mariadb.auth.database Name of the database to create.
-## @param mariadb.auth.username Username of the new user to create.
-## @param mariadb.auth.password Password for the new user. Ignored if existing secret is provided
-## @param mariadb.auth.rootPassword Password for the root user.
-## @param mariadb.primary.service.port Port to connect to MariaDB service
-## @param mariadb.primary.persistence.size Persistence size for MariaDB
-mariadb:
-  enabled: false
-  auth:
-    database: gitea
-    username: gitea
-    password: gitea
-    rootPassword: gitea
-  primary:
-    service:
-      port: 3306
-    persistence:
-      size: 10Gi
-
 # By default, removed or moved settings that still remain in a user defined values.yaml will cause Helm to fail running the install/update.
 # Set it to false to skip this basic validation check.
 ## @section Advanced

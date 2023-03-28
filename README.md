@@ -37,8 +37,6 @@ Dependencies:
 
 - PostgreSQL ([configuration](#postgresql))
 - Memcached ([configuration](#memcached))
-- MySQL ([configuration](#mysql))
-- MariaDB ([configuration](#mariadb))
 
 ## Installing
 
@@ -235,14 +233,17 @@ Priority (highest to lowest) for defining app.ini variables:
 
 ### External Database
 
-An external Database can be used instead of builtIn PostgreSQL or MySQL.
+Any external Database listed in [https://docs.gitea.io/en-us/database-prep/](https://docs.gitea.io/en-us/database-prep/) can be used instead of the built-in PostgreSQL.
+In fact, it is **highly recommended** to use an external database to ensure a stable Gitea installation longterm.
+
+If an external database is used, no matter which type, make sure to set `postgresql.enabled` to `false` to disable the use of the built-in PostgreSQL.
 
 ```yaml
 gitea:
   config:
     database:
       DB_TYPE: mysql
-      HOST: 127.0.0.1:3306
+      HOST: <mysql HOST>
       NAME: gitea
       USER: root
       PASSWD: gitea
@@ -378,16 +379,6 @@ postgresql:
   persistence:
     enabled: true
     existingClaim: MyAwesomeGiteaPostgresClaim
-```
-
-MySQL also handles persistence the same, even though it is not deployed as a statefulset.
-You can interact with the postgres settings as displayed in the following example:
-
-```yaml
-mysql:
-  persistence:
-    enabled: true
-    existingClaim: MyAwesomeGiteaMysqlClaim
 ```
 
 ### Admin User
@@ -790,30 +781,6 @@ gitea:
 | `postgresql.global.postgresql.service.ports.postgresql` | PostgreSQL service port (overrides `service.ports.postgresql`)   | `5432`  |
 | `postgresql.primary.persistence.size`                   | PVC Storage Request for PostgreSQL volume                        | `10Gi`  |
 
-### MySQL
-
-| Name                     | Description                                                        | Value   |
-| ------------------------ | ------------------------------------------------------------------ | ------- |
-| `mysql.enabled`          | Enable MySQL                                                       | `false` |
-| `mysql.root.password`    | Password for the root user. Ignored if existing secret is provided | `gitea` |
-| `mysql.db.user`          | Username of new user to create.                                    | `gitea` |
-| `mysql.db.password`      | Password for the new user.Ignored if existing secret is provided   | `gitea` |
-| `mysql.db.name`          | Name for new database to create.                                   | `gitea` |
-| `mysql.service.port`     | Port to connect to MySQL service                                   | `3306`  |
-| `mysql.persistence.size` | PVC Storage Request for MySQL volume                               | `10Gi`  |
-
-### MariaDB
-
-| Name                               | Description                                                       | Value   |
-| ---------------------------------- | ----------------------------------------------------------------- | ------- |
-| `mariadb.enabled`                  | Enable MariaDB                                                    | `false` |
-| `mariadb.auth.database`            | Name of the database to create.                                   | `gitea` |
-| `mariadb.auth.username`            | Username of the new user to create.                               | `gitea` |
-| `mariadb.auth.password`            | Password for the new user. Ignored if existing secret is provided | `gitea` |
-| `mariadb.auth.rootPassword`        | Password for the root user.                                       | `gitea` |
-| `mariadb.primary.service.port`     | Port to connect to MariaDB service                                | `3306`  |
-| `mariadb.primary.persistence.size` | Persistence size for MariaDB                                      | `10Gi`  |
-
 ### Advanced
 
 | Name               | Description                                                        | Value     |
@@ -835,6 +802,11 @@ This section lists major and breaking changes of each Helm Chart version.
 Please read them carefully to upgrade successfully.
 
 ### To 8.0.0
+
+#### Removal of MariaDB and MySQL DB chart dependencies
+
+In this version support for DB chart dependencies of MySQL and MariaDB have been removed to simplify the maintenance of the helm chart.
+External MySQL and MariaDB databases are still supported and will be in the future.
 
 #### Postgres Update from v11 to v15
 
@@ -883,7 +855,7 @@ after the upgrade.
 #### Enable Dependencies
 
 The values to enable the dependencies,
-such as PostgreSQL, Memcached, MySQL and MariaDB
+such as PostgreSQL, Memcached, MySQL and MariaDB.
 have been moved from `gitea.database.builtIn.` to the dependency values.
 
 You can now enable the dependencies as followed:
