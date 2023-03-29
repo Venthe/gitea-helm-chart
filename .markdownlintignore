@@ -1,3 +1,4 @@
 .gitea/
 node_modules/
 charts/
+Chart.lock
