@@ -50,6 +50,8 @@ gitea:
 
 ## Memcache DB
 
+The built-in `memcached` dependency should support HA as documented in the [bitnami memcached chart](https://github.com/bitnami/charts/blob/main/bitnami/memcached/README.md#persistence).
+
 Possible options:
 
 - [redis](https://bitnami.com/stack/redis/helm)
@@ -74,6 +76,9 @@ gitea:
 ```
 
 ## Object storage
+
+External apps like `minio`, which support HA, can be used for object storage.
+Though this is not an requirement as long as the underlying PV supports RWX.
 
 Possible options:
 
