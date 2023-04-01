@@ -138,7 +138,8 @@ ingress:
   enabled: false
   # className: nginx
   className:
-  annotations: {}
+  annotations:
+    {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
@@ -157,7 +158,8 @@ ingress:
 ## @section StatefulSet
 #
 ## @param resources Kubernetes resources
-resources: {}
+resources:
+  {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -192,7 +194,8 @@ dnsConfig: {}
 ## @param statefulset.labels Labels for the statefulset
 ## @param statefulset.annotations Annotations for the Gitea StatefulSet to be created
 statefulset:
-  env: []
+  env:
+    []
     # - name: VARIABLE
     #   value: my-value
   terminationGracePeriodSeconds: 60
@@ -287,7 +290,7 @@ gitea:
   ## @param gitea.admin.password Password for the Gitea admin user
   ## @param gitea.admin.email Email for the Gitea admin user
   admin:
-    #existingSecret: gitea-admin-secret
+    # existingSecret: gitea-admin-secret
     existingSecret:
     username: gitea_admin
     password: r8sA8CPHD9!bt6d
@@ -303,7 +306,8 @@ gitea:
       #    prometheus-release: prom1
 
   ## @param gitea.ldap LDAP configuration
-  ldap: []
+  ldap:
+    []
     # - name: "LDAP 1"
     #  existingSecret:
     #  securityProtocol:
@@ -320,7 +324,8 @@ gitea:
 
   # Either specify inline `key` and `secret` or refer to them via `existingSecret`
   ## @param gitea.oauth OAuth configuration
-  oauth: []
+  oauth:
+    []
     # - name: 'OAuth 1'
     #   provider:
     #   key:
@@ -424,11 +429,20 @@ gitea:
 ## @section Memcached
 #
 ## @param memcached.enabled Memcached is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if enabled in the values. Complete Configuration can be taken from their website.
-## @param memcached.service.port Port for Memcached
+## ref: https://hub.docker.com/r/bitnami/memcached/tags/
+## @param memcached.service.ports.memcached Port for Memcached
 memcached:
   enabled: true
+  # image:
+  #   registry: docker.io
+  #   repository: bitnami/memcached
+  #   tag: ""
+  #   digest: ""
+  #   pullPolicy: IfNotPresent
+  #   pullSecrets: []
   service:
-    port: 11211
+    ports:
+      memcached: 11211
 
 ## @section PostgreSQL
 #

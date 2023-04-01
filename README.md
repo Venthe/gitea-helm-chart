@@ -768,10 +768,10 @@ gitea:
 
 ### Memcached
 
-| Name                     | Description                                                                                                                                                                                           | Value   |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| `memcached.enabled`      | Memcached is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if enabled in the values. Complete Configuration can be taken from their website. | `true`  |
-| `memcached.service.port` | Port for Memcached                                                                                                                                                                                    | `11211` |
+| Name                                | Description                                                                                                                                                                                           | Value   |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `memcached.enabled`                 | Memcached is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if enabled in the values. Complete Configuration can be taken from their website. | `true`  |
+| `memcached.service.ports.memcached` | Port for Memcached                                                                                                                                                                                    | `11211` |
 
 ### PostgreSQL
 

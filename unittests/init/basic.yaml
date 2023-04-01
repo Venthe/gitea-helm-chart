@@ -10,6 +10,6 @@ tests:
       - hasDocuments:
           count: 1
       - containsDocument:
-          kind: Secret  
+          kind: Secret
           apiVersion: v1
           name: gitea-unittests-init
