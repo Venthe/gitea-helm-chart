@@ -1,7 +1,10 @@
 # High Availability
 
 HA is currently not supported out-of-the box by the helm chart.
-**Setting `replicas` to a value > 1 will not result in a stable HA setup.**
+
+> **Warning** Setting `replicas` to a value > 1 will not result in a stable HA setup.
+
+Also, the chart must first move from using a statefulset to a deployment to allow for multiple replicas with a shared PV.
 
 Achieving a functional and robust HA setup is possible though it requires additional services and configuration work.
 
@@ -26,8 +29,8 @@ Possible options:
 - [elasticsearch](https://bitnami.com/stack/elasticsearch/helm) (4-8 GB)
 - [opensearch](https://artifacthub.io/packages/helm/opensearch-project-helm-charts/opensearch) (4-8 GB)
 - **not supported yet**: [manticore](https://manticoresearch.com/blog/manticore-alternative-to-elasticsearch/) (faster than `elasticsearch` & friends, lower resource usage)
--  **not supported yet**: [zinc](https://github.com/zinclabs/zinc) (no HA yet, low resource usage)
--  **not supported yet**: [meilisearch](https://github.com/meilisearch/meilisearch)
+- **not supported yet**: [zinc](https://github.com/zinclabs/zinc) (no HA yet, low resource usage)
+- **not supported yet**: [meilisearch](https://github.com/meilisearch/meilisearch)
 
 The main issue with code indexes in a HA setup is their memory requirement.
 
