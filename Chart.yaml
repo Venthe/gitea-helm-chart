@@ -43,3 +43,7 @@ dependencies:
     repository: oci://registry-1.docker.io/bitnamicharts
     version: 12.2.6
     condition: postgresql.enabled
+  - name: redis-cluster
+    repository: oci://registry-1.docker.io/bitnamicharts
+    version: 8.4.3
+    condition: redis-cluster.enabled
