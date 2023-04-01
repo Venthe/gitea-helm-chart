@@ -23,6 +23,12 @@ global:
 ## @param replicaCount number of replicas for the statefulset
 replicaCount: 1
 
+strategy:
+  type: "RollingUpdate"
+  rollingUpdate:
+    maxSurge: "100%"
+    maxUnavailable: 0
+
 ## @param clusterDomain cluster domain
 clusterDomain: cluster.local
 
