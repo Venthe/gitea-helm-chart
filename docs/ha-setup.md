@@ -24,6 +24,9 @@ Note that for each service discussed, possibly other implementations could be us
 
 ## Code indexer
 
+If Gitea should run with multiple replicas, disabling the default `bleve` indexer is required by setting `REPO_INDEXER_ENABLED=false`.
+It can be enabled *if* the indexer is HA-ready, for example when using `elasticsearch` or similar.
+
 Possible options:
 
 - [elasticsearch](https://bitnami.com/stack/elasticsearch/helm) (4-8 GB)
