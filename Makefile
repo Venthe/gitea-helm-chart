@@ -6,3 +6,7 @@ prepare-environment:
 readme: prepare-environment
 	npm run readme:parameters
 	npm run readme:lint
+
+.PHONY: unittests
+unittests:
+	helm unittest --strict -f 'unittests/**/*.yaml' ./
