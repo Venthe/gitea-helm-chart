@@ -2,20 +2,20 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{default (print (include "gitea.fullname" .) "-shared-storage" ) .Values.persistence.existingClaim }}
+  name: {{default (print (include "gitea.fullname" .) "-shared-storage" ) }}
   namespace: {{ $.Release.Namespace }}
   annotations:
 {{ .Values.persistence.annotations | toYaml | indent 4}}
 spec:
   accessModes:
   {{- if gt .Values.replicaCount 1.0 }}
-    ReadWriteMany
+      - ReadWriteMany
   {{- else }}
     {{- .Values.persistence.accessModes | toYaml | nindent 4 }}
   {{- end }}
   volumeMode: Filesystem
   {{- if .Values.persistence.storageClass }}
-  storageClass: {{ .Values.persistence.storageClass }}
+  storageClassName: {{ .Values.persistence.storageClass }}
   {{- end }}
   {{- with .Values.persistence.existingClaim }}
   volumeName: {{ . }}

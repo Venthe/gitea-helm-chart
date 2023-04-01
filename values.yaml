@@ -220,7 +220,7 @@ deployment:
 ## @param persistence.subPath Subdirectory of the volume to mount at
 persistence:
   enabled: true
-  existingClaim: "gitea-data"
+  # existingClaim: "gitea-data"
   size: 10Gi
   accessModes:
     - ReadWriteOnce
