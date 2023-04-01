@@ -189,19 +189,6 @@ affinity: {}
 ## @param dnsConfig dnsConfig for the statefulset
 dnsConfig: {}
 
-## @param statefulset.env  Additional environment variables to pass to containers
-## @param statefulset.terminationGracePeriodSeconds How long to wait until forcefully kill the pod
-## @param statefulset.labels Labels for the statefulset
-## @param statefulset.annotations Annotations for the Gitea StatefulSet to be created
-statefulset:
-  env:
-    []
-    # - name: VARIABLE
-    #   value: my-value
-  terminationGracePeriodSeconds: 60
-  labels: {}
-  annotations: {}
-
 ## @section Persistence
 #
 ## @param persistence.enabled Enable persistent storage
@@ -214,7 +201,7 @@ statefulset:
 ## @param persistence.subPath Subdirectory of the volume to mount at
 persistence:
   enabled: true
-  existingClaim:
+  existingClaim: "gitea-data"
   size: 10Gi
   accessModes:
     - ReadWriteOnce

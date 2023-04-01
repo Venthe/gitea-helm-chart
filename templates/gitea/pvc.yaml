@@ -1,0 +1,26 @@
+{{- if .Values.persistence.enabled }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{default (print (include "gitea.fullname" .) "-shared-storage" ) .Values.persistence.existingClaim }}
+  namespace: {{ $.Release.Namespace }}
+  annotations:
+{{ .Values.persistence.annotations | toYaml | indent 4}}
+spec:
+  accessModes:
+  {{- if .Values.replicaCount > 1 }}
+    ReadWriteMany
+  {{- else }}
+    {{- .Values.persistence.accessModes | toYaml | nindent 4 }}
+  {{- end }}
+  volumeMode: Filesystem
+  {{- if .Values.persistence.storageClass }}
+  storageClass: {{ .Values.persistence.storageClass }}
+  {{- end }}
+  {{- with .Values.persistence.existingClaim }}
+  volumeName: {{ . }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size }}
+---
