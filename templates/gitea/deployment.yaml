@@ -1,10 +1,10 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: deployment
 metadata:
   name: {{ include "gitea.fullname" . }}
   annotations:
-    {{- if .Values.statefulset.annotations }}
-    {{- toYaml .Values.statefulset.annotations | nindent 4 }}
+    {{- if .Values.deployment.annotations }}
+    {{- toYaml .Values.deployment.annotations | nindent 4 }}
     {{- end }}
   labels:
     {{- include "gitea.labels" . | nindent 4 }}
@@ -20,8 +20,8 @@ spec:
   selector:
     matchLabels:
       {{- include "gitea.selectorLabels" . | nindent 6 }}
-      {{- if .Values.statefulset.labels }}
-      {{- toYaml .Values.statefulset.labels | nindent 6 }}
+      {{- if .Values.deployment.labels }}
+      {{- toYaml .Values.deployment.labels | nindent 6 }}
       {{- end }}
   serviceName: {{ include "gitea.fullname" . }}
   template:
@@ -39,8 +39,8 @@ spec:
         {{- end }}
       labels:
         {{- include "gitea.labels" . | nindent 8 }}
-        {{- if .Values.statefulset.labels }}
-        {{- toYaml .Values.statefulset.labels | nindent 8 }}
+        {{- if .Values.deployment.labels }}
+        {{- toYaml .Values.deployment.labels | nindent 8 }}
         {{- end }}
     spec:
       {{- if .Values.schedulerName }}
@@ -63,8 +63,8 @@ spec:
               value: /data
             - name: GITEA_TEMP
               value: /tmp/gitea
-            {{- if .Values.statefulset.env }}
-            {{- toYaml .Values.statefulset.env | nindent 12 }}
+            {{- if .Values.deployment.env }}
+            {{- toYaml .Values.deployment.env | nindent 12 }}
             {{- end }}
             {{- if .Values.signing.enabled }}
             - name: GNUPGHOME
@@ -98,8 +98,8 @@ spec:
               value: /data
             - name: GITEA_TEMP
               value: /tmp/gitea
-            {{- if .Values.statefulset.env }}
-            {{- toYaml .Values.statefulset.env | nindent 12 }}
+            {{- if .Values.deployment.env }}
+            {{- toYaml .Values.deployment.env | nindent 12 }}
             {{- end }}
             {{- if .Values.gitea.additionalConfigFromEnvs }}
             {{- toYaml .Values.gitea.additionalConfigFromEnvs | nindent 12 }}
@@ -231,8 +231,8 @@ spec:
             - name: GITEA_ADMIN_PASSWORD
               value: {{ .Values.gitea.admin.password | quote }}
             {{- end }}
-            {{- if .Values.statefulset.env }}
-            {{- toYaml .Values.statefulset.env | nindent 12 }}
+            {{- if .Values.deployment.env }}
+            {{- toYaml .Values.deployment.env | nindent 12 }}
             {{- end }}
           volumeMounts:
             - name: init
@@ -247,7 +247,7 @@ spec:
             {{- include "gitea.init-additional-mounts" . | nindent 12 }}
           resources:
             {{- toYaml .Values.initContainers.resources | nindent 12 }}
-      terminationGracePeriodSeconds: {{ .Values.statefulset.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.deployment.terminationGracePeriodSeconds }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ include "gitea.image" . }}"
@@ -276,8 +276,8 @@ spec:
             - name: GNUPGHOME
               value: {{ .Values.signing.gpgHome }}
             {{- end }}
-            {{- if .Values.statefulset.env }}
-            {{- toYaml .Values.statefulset.env | nindent 12 }}
+            {{- if .Values.deployment.env }}
+            {{- toYaml .Values.deployment.env | nindent 12 }}
             {{- end }}
           ports:
             - name: ssh
