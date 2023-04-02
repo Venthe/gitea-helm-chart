@@ -593,14 +593,22 @@ gitea:
 
 ### Global
 
-| Name                      | Description                                                               | Value           |
-| ------------------------- | ------------------------------------------------------------------------- | --------------- |
-| `global.imageRegistry`    | global image registry override                                            | `""`            |
-| `global.imagePullSecrets` | global image pull secrets override; can be extended by `imagePullSecrets` | `[]`            |
-| `global.storageClass`     | global storage class override                                             | `""`            |
-| `global.hostAliases`      | global hostAliases which will be added to the pod's hosts files           | `[]`            |
-| `replicaCount`            | number of replicas for the statefulset                                    | `1`             |
-| `clusterDomain`           | cluster domain                                                            | `cluster.local` |
+| Name                      | Description                                                               | Value |
+| ------------------------- | ------------------------------------------------------------------------- | ----- |
+| `global.imageRegistry`    | global image registry override                                            | `""`  |
+| `global.imagePullSecrets` | global image pull secrets override; can be extended by `imagePullSecrets` | `[]`  |
+| `global.storageClass`     | global storage class override                                             | `""`  |
+| `global.hostAliases`      | global hostAliases which will be added to the pod's hosts files           | `[]`  |
+| `replicaCount`            | number of replicas for the statefulset                                    | `1`   |
+
+### strategy
+
+| Name                                    | Description    | Value           |
+| --------------------------------------- | -------------- | --------------- |
+| `strategy.type`                         | strategy type  | `RollingUpdate` |
+| `strategy.rollingUpdate.maxSurge`       | maxSurge       | `100%`          |
+| `strategy.rollingUpdate.maxUnavailable` | maxUnavailable | `0`             |
+| `clusterDomain`                         | cluster domain | `cluster.local` |
 
 ### Image
 
@@ -664,18 +672,18 @@ gitea:
 
 ### StatefulSet
 
-| Name                                        | Description                                            | Value |
-| ------------------------------------------- | ------------------------------------------------------ | ----- |
-| `resources`                                 | Kubernetes resources                                   | `{}`  |
-| `schedulerName`                             | Use an alternate scheduler, e.g. "stork"               | `""`  |
-| `nodeSelector`                              | NodeSelector for the statefulset                       | `{}`  |
-| `tolerations`                               | Tolerations for the statefulset                        | `[]`  |
-| `affinity`                                  | Affinity for the statefulset                           | `{}`  |
-| `dnsConfig`                                 | dnsConfig for the statefulset                          | `{}`  |
-| `statefulset.env`                           | Additional environment variables to pass to containers | `[]`  |
-| `statefulset.terminationGracePeriodSeconds` | How long to wait until forcefully kill the pod         | `60`  |
-| `statefulset.labels`                        | Labels for the statefulset                             | `{}`  |
-| `statefulset.annotations`                   | Annotations for the Gitea StatefulSet to be created    | `{}`  |
+| Name                                       | Description                                            | Value |
+| ------------------------------------------ | ------------------------------------------------------ | ----- |
+| `resources`                                | Kubernetes resources                                   | `{}`  |
+| `schedulerName`                            | Use an alternate scheduler, e.g. "stork"               | `""`  |
+| `nodeSelector`                             | NodeSelector for the statefulset                       | `{}`  |
+| `tolerations`                              | Tolerations for the statefulset                        | `[]`  |
+| `affinity`                                 | Affinity for the statefulset                           | `{}`  |
+| `dnsConfig`                                | dnsConfig for the statefulset                          | `{}`  |
+| `deployment.env`                           | Additional environment variables to pass to containers | `[]`  |
+| `deployment.terminationGracePeriodSeconds` | How long to wait until forcefully kill the pod         | `60`  |
+| `deployment.labels`                        | Labels for the statefulset                             | `{}`  |
+| `deployment.annotations`                   | Annotations for the Gitea StatefulSet to be created    | `{}`  |
 
 ### Persistence
 
@@ -772,6 +780,24 @@ gitea:
 | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
 | `memcached.enabled`                 | Memcached is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if enabled in the values. Complete Configuration can be taken from their website. | `true`  |
 | `memcached.service.ports.memcached` | Port for Memcached                                                                                                                                                                                    | `11211` |
+
+### redis
+
+| Name                          | Description                                               | Value   |
+| ----------------------------- | --------------------------------------------------------- | ------- |
+| `redis.enabled`               | Enable redis                                              | `false` |
+| `redis.global.redis.password` | Password for the "Gitea" user (overrides `auth.password`) | `gitea` |
+| `redis.auth.password`         | Password for the "Gitea" user                             | `gitea` |
+| `redis.replica.replicaCount`  | Number of replicas                                        | `2`     |
+
+### meilisearch
+
+| Name                              | Description                    | Value   |
+| --------------------------------- | ------------------------------ | ------- |
+| `meilisearch.enabled`             | Enable meilisearch             | `false` |
+| `meilisearch.persistence.enabled` | Enable data persistence        | `true`  |
+| `meilisearch.persistence.size`    | Size of persistent data volume | `5Gi`   |
+| `meilisearch.replicaCount`        | Number of replicas             | `2`     |
 
 ### PostgreSQL
 

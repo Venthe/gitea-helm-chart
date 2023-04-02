@@ -43,10 +43,12 @@ dependencies:
     repository: oci://registry-1.docker.io/bitnamicharts
     version: 12.2.6
     condition: postgresql.enabled
+  # Chart release date: 2023-04
   - name: redis
     repository: https://charts.bitnami.com/bitnami
     version: 17.9.3
     condition: redis.enabled
+  # Chart release date: 2023-02
   - name: meilisearch
     repository: https://meilisearch.github.io/meilisearch-kubernetes
     version: 0.1.49
