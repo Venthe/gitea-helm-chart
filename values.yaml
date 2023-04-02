@@ -450,6 +450,20 @@ memcached:
     ports:
       memcached: 11211
 
+redis:
+  enabled: false
+  global:
+    redis:
+      password: gitea
+  auth:
+    password: gitea
+  master:
+    service:
+      ports:
+        redis: 6379
+  replica:
+    replicaCount: 2
+
 ## @section PostgreSQL
 #
 ## @param postgresql.enabled Enable PostgreSQL
