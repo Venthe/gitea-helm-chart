@@ -11,5 +11,8 @@ dependencies:
 - name: meilisearch
   repository: https://meilisearch.github.io/meilisearch-kubernetes
   version: 0.1.49
-digest: sha256:2f85eb6635374e337a2c04dc7392551bfeb5572856154b42ec48a7c3fde73740
-generated: "2023-04-02T14:15:58.295246+02:00"
+- name: minio
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 12.2.4
+digest: sha256:4e0c5f357330198477a30f16857b66b86902b590d65b0511c5c6c57d5a7a8d26
+generated: "2023-04-02T22:21:48.088698+01:00"

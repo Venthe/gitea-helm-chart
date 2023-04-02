@@ -482,6 +482,18 @@ meilisearch:
     size: 5Gi
   replicaCount: 2
 
+## @section minio
+## @param minio.enabled Enable minio
+## @param minio.persistence.enabled Enable data persistence
+## @param minio.persistence.size Size of persistent data volume
+## @param minio.replicaCount Number of replicas
+minio:
+  enabled: false
+  persistence:
+    enabled: true
+    size: 5Gi
+  replicaCount: 2
+
 ## @section PostgreSQL
 #
 ## @param postgresql.enabled Enable PostgreSQL
