@@ -792,12 +792,22 @@ gitea:
 
 ### meilisearch
 
-| Name                              | Description                    | Value   |
-| --------------------------------- | ------------------------------ | ------- |
-| `meilisearch.enabled`             | Enable meilisearch             | `false` |
-| `meilisearch.persistence.enabled` | Enable data persistence        | `true`  |
-| `meilisearch.persistence.size`    | Size of persistent data volume | `5Gi`   |
-| `meilisearch.replicaCount`        | Number of replicas             | `2`     |
+| Name                                 | Description                           | Value               |
+| ------------------------------------ | ------------------------------------- | ------------------- |
+| `meilisearch.enabled`                | Enable meilisearch                    | `false`             |
+| `meilisearch.persistence.enabled`    | Enable data persistence               | `true`              |
+| `meilisearch.persistence.size`       | Size of persistent data volume        | `5Gi`               |
+| `meilisearch.replicaCount`           | Number of replicas                    | `2`                 |
+| `meilisearch.persistence.accessMode` | Access mode for the persistent volume | `["ReadWriteMany"]` |
+
+### minio
+
+| Name                        | Description                    | Value   |
+| --------------------------- | ------------------------------ | ------- |
+| `minio.enabled`             | Enable minio                   | `false` |
+| `minio.persistence.enabled` | Enable data persistence        | `true`  |
+| `minio.persistence.size`    | Size of persistent data volume | `5Gi`   |
+| `minio.replicaCount`        | Number of replicas             | `2`     |
 
 ### PostgreSQL
 

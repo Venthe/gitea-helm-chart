@@ -475,10 +475,13 @@ redis:
 ## @param meilisearch.persistence.enabled Enable data persistence
 ## @param meilisearch.persistence.size Size of persistent data volume
 ## @param meilisearch.replicaCount Number of replicas
+## @param meilisearch.persistence.accessMode Access mode for the persistent volume
 meilisearch:
   enabled: false
   persistence:
     enabled: true
+    accessMode: 
+      - ReadWriteMany
     size: 5Gi
   replicaCount: 2
 
