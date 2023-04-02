@@ -464,6 +464,13 @@ redis:
   replica:
     replicaCount: 2
 
+meilisearch:
+  enabled: false
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 5Gi
+    
 ## @section PostgreSQL
 #
 ## @param postgresql.enabled Enable PostgreSQL

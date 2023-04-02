@@ -99,6 +99,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- printf "%s-memcached.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.memcached.service.ports.memcached | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{- define "meilisearch.dns" -}}
+{{- printf "%s-meilisearch.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.meilisearch.service.port | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
 {{- define "redis.dns" -}}
 {{- if .Values.redis.enabled -}}
 {{- printf "redis://:%s@%s-redis-master.%s.svc.%s:%g/0?pool_size=100&idle_timeout=180s" .Values.redis.global.redis.password .Release.Name .Release.Namespace .Values.clusterDomain .Values.redis.master.service.ports.redis -}}

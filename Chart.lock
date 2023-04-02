@@ -8,5 +8,8 @@ dependencies:
 - name: redis
   repository: https://charts.bitnami.com/bitnami
   version: 17.9.3
-digest: sha256:8be3ead5b6aa32a0160dace1e0661b329028a75182a893a7caf96b3f920e3b27
-generated: "2023-04-02T09:37:21.513878+02:00"
+- name: meilisearch
+  repository: https://meilisearch.github.io/meilisearch-kubernetes
+  version: 0.1.49
+digest: sha256:2f85eb6635374e337a2c04dc7392551bfeb5572856154b42ec48a7c3fde73740
+generated: "2023-04-02T14:15:58.295246+02:00"
