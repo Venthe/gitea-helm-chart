@@ -267,12 +267,17 @@ https
   {{- if .Values.redis.enabled -}}
     {{- $_ := set .Values.gitea.config.queue "TYPE" "redis" -}}
     {{- $_ := set .Values.gitea.config.queue "CONN_STR" (include "redis.dns" .) -}}
-    {{- $_ := set (index .Values.gitea.config "queue.issue_indexer") "TYPE" "redis" -}}
   {{- end -}}
   {{- /* multiple replicas */ -}}
   {{- if gt .Values.replicaCount 1.0 -}}
-    {{- $_ := set .Values.gitea.config.session  "PROVIDER" "redis" -}}
-    {{- $_ := set .Values.gitea.config.session  "PROVIDER_CONFIG" (include "redis.dns" .) -}}
+    {{- $_ := set .Values.gitea.config.session "PROVIDER" "redis" -}}
+    {{- $_ := set .Values.gitea.config.session "PROVIDER_CONFIG" (include "redis.dns" .) -}}
+    {{- if (ne (get .Values.gitea.config.indexer "REPO_INDEXER_TYPE") "elasticsearch") -}}
+      {{- $_ := set .Values.gitea.config.indexer "REPO_INDEXER_ENABLED" "false" -}}
+    {{- end -}}
+  {{- if not (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE") -}}
+   {{- $_ := set .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE" "db" -}}
+  {{- end -}}
   {{- end -}}
 {{- end -}}
 
