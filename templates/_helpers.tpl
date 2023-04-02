@@ -279,8 +279,10 @@ https
     {{- if (ne (get .Values.gitea.config.indexer "REPO_INDEXER_TYPE") "elasticsearch") -}}
       {{- $_ := set .Values.gitea.config.indexer "REPO_INDEXER_ENABLED" "false" -}}
     {{- end -}}
-  {{- if not (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE") -}}
+  {{- if and (not (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE")) (not .Values.meilisearch.enabled) -}}
    {{- $_ := set .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE" "db" -}}
+  {{- else if and (not (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE")) (.Values.meilisearch.enabled) -}}
+   {{- $_ := set .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE" "meilisearch" -}}
   {{- end -}}
   {{- if and (not (get .Values.gitea.config.indexer "ISSUE_INDEXER_CONN_STR")) (eq (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE") "meilisearch") -}}
     {{- $_ := set .Values.gitea.config.indexer "ISSUE_INDEXER_CONN_STR" (include "meilisearch.dns" .) -}}
