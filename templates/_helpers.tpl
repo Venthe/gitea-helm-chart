@@ -100,7 +100,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "meilisearch.dns" -}}
-{{- printf "%s-meilisearch.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.meilisearch.service.port | trunc 63 | trimSuffix "-" -}}
+{{- printf "http://%s-meilisearch.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.meilisearch.service.port | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{- define "redis.dns" -}}
@@ -281,6 +281,9 @@ https
     {{- end -}}
   {{- if not (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE") -}}
    {{- $_ := set .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE" "db" -}}
+  {{- end -}}
+  {{- if and (not (get .Values.gitea.config.indexer "ISSUE_INDEXER_CONN_STR")) (eq (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE") "meilisearch") -}}
+    {{- $_ := set .Values.gitea.config.indexer "ISSUE_INDEXER_CONN_STR" (include "meilisearch.dns" .) -}}
   {{- end -}}
   {{- end -}}
 {{- end -}}
