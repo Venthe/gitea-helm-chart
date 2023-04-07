@@ -470,6 +470,16 @@ redis:
   replica:
     replicaCount: 2
 
+redis-cluster:
+  enabled: false
+  password: gitea
+  global:
+    redis:
+      password: gitea
+  cluster:
+    nodes: 3
+    replicas: 1
+
 ## @section meilisearch
 ## @param meilisearch.enabled Enable meilisearch
 ## @param meilisearch.persistence.enabled Enable data persistence

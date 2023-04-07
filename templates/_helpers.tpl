@@ -110,18 +110,40 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- define "redis.dns" -}}
 {{- if .Values.redis.enabled -}}
 {{- printf "redis://:%s@%s-redis-master.%s.svc.%s:%g/0?pool_size=100&idle_timeout=180s" .Values.redis.global.redis.password .Release.Name .Release.Namespace .Values.clusterDomain .Values.redis.master.service.ports.redis -}}
+{{- else if (index .Values "redis-cluster").enabled -}}
+{{- printf "redis://:%s@%s-redis-master.%s.svc.%s:%g/0?pool_size=100&idle_timeout=180s" .Values.redis.global.redis.password .Release.Name .Release.Namespace .Values.clusterDomain .Values.redis.service.ports.redis -}}
 {{- end -}}
 {{- end -}}
 
 {{- define "redis.port" -}}
 {{- if .Values.redis.enabled -}}
 {{ .Values.redis.master.service.ports.redis }}
+{{- else if (index .Values "redis-cluster").enabled -}}
+{{ (index .Values "redis-cluster").service.ports.redis }}
+{{- end -}}
+{{- end -}}
+
+{{- define "redis.password" -}}
+{{- if .Values.redis.enabled -}}
+{{ .Values.redis.global.redis.password }}
+{{- else if (index .Values "redis-cluster").enabled -}}
+{{ (index .Values "redis-cluster").global.redis.password }}
+{{- end -}}
+{{- end -}}
+
+{{- define "redis.host" -}}
+{{- if .Values.redis.enabled -}}
+{{- printf "%s-redis-master.%s.svc.%s" .Release.Name .Release.Namespace .Values.clusterDomain -}}
+{{- else if (index .Values "redis-cluster").enabled -}}
+{{- printf "%s-redis-master.%s.svc.%s" .Release.Name .Release.Namespace .Values.clusterDomain  -}}
 {{- end -}}
 {{- end -}}
 
 {{- define "redis.servicename" -}}
 {{- if .Values.redis.enabled -}}
 {{- printf "%s-redis-master.%s.svc.%s" .Release.Name .Release.Namespace .Values.clusterDomain -}}
+{{- else if (index .Values "redis-cluster").enabled -}}
+{{- printf "%s-redis-cluster-headless.%s.svc.%s" .Release.Name .Release.Namespace .Values.clusterDomain -}}
 {{- end -}}
 {{- end -}}
 
@@ -264,7 +286,7 @@ https
   {{- if not (hasKey .Values.gitea.config.metrics "ENABLED") -}}
     {{- $_ := set .Values.gitea.config.metrics "ENABLED" .Values.gitea.metrics.enabled -}}
   {{- end -}}
- {{- if or .Values.memcached.enabled .Values.redis.enabled -}}
+ {{- if or .Values.memcached.enabled .Values.redis.enabled (index .Values "redis-cluster").enabled -}}
     {{- $_ := set .Values.gitea.config.cache "ENABLED" "true" -}}
     {{- $_ := set .Values.gitea.config.cache "ADAPTER" (ternary "memcache" "redis" .Values.memcached.enabled) -}}
     {{- if not (.Values.gitea.config.cache.HOST) -}}
@@ -272,14 +294,18 @@ https
     {{- end -}}
   {{- end -}}
   {{- /* redis queue */ -}}
-  {{- if .Values.redis.enabled -}}
+  {{- if or (index .Values "redis-cluster").enabled .Values.redis.enabled -}}
     {{- $_ := set .Values.gitea.config.queue "TYPE" "redis" -}}
     {{- $_ := set .Values.gitea.config.queue "CONN_STR" (include "redis.dns" .) -}}
   {{- end -}}
   {{- /* multiple replicas */ -}}
   {{- if gt .Values.replicaCount 1.0 -}}
+    {{- if not (get .Values.gitea.config.session "PROVIDER") -}}
     {{- $_ := set .Values.gitea.config.session "PROVIDER" "redis" -}}
+    {{- end -}}
+    {{- if not (get .Values.gitea.config.session "PROVIDER_CONFIG") -}}
     {{- $_ := set .Values.gitea.config.session "PROVIDER_CONFIG" (include "redis.dns" .) -}}
+    {{- end -}}
     {{- if (ne (get .Values.gitea.config.indexer "REPO_INDEXER_TYPE") "elasticsearch") -}}
       {{- $_ := set .Values.gitea.config.indexer "REPO_INDEXER_ENABLED" "false" -}}
     {{- end -}}
