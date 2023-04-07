@@ -480,8 +480,7 @@ meilisearch:
   enabled: false
   persistence:
     enabled: true
-    accessMode: 
-      - ReadWriteMany
+    accessMode: ReadWriteMany
     size: 5Gi
   replicaCount: 2
 
