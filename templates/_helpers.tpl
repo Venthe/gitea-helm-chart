@@ -108,41 +108,25 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "redis.dns" -}}
-{{- if (eq (get .Values.redis "ENABLED") "true") -}}
+{{- if .Values.redis.enabled -}}
 {{- printf "redis://:%s@%s-redis-master.%s.svc.%s:%g/0?pool_size=100&idle_timeout=180s" .Values.redis.global.redis.password .Release.Name .Release.Namespace .Values.clusterDomain .Values.redis.master.service.ports.redis -}}
-{{- else if (eq (get (index .Values "redis-cluster") "ENABLED") "true") -}}
-{{- printf "redis://:%s@%s-redis-master.%s.svc.%s:%g/0?pool_size=100&idle_timeout=180s" (index .Values "redis-cluster").global.redis.password .Release.Name .Release.Namespace .Values.clusterDomain (index .Values "redis-cluster").service.ports.redis -}}
+{{- else if (index .Values "redis-cluster").enabled -}}
+{{- printf "redis+cluster://:%s@%s-redis-cluster-headless.%s.svc.%s:%g/0?pool_size=100&idle_timeout=180s&" (index .Values "redis-cluster").global.redis.password .Release.Name .Release.Namespace .Values.clusterDomain (index .Values "redis-cluster").service.ports.redis -}}
 {{- end -}}
 {{- end -}}
 
 {{- define "redis.port" -}}
-{{- if (eq (get .Values.redis "ENABLED") "true") -}}
+{{- if .Values.redis.enabled -}}
 {{ .Values.redis.master.service.ports.redis }}
-{{- else if (eq (get (index .Values "redis-cluster") "ENABLED") "true") -}}
+{{- else if (index .Values "redis-cluster").enabled -}}
 {{ (index .Values "redis-cluster").service.ports.redis }}
 {{- end -}}
 {{- end -}}
 
-{{- define "redis.password" -}}
-{{- if .Values.redis.enabled -}}
-{{ .Values.redis.global.redis.password }}
-{{- else if (index .Values "redis-cluster").enabled -}}
-{{ (index .Values "redis-cluster").global.redis.password }}
-{{- end -}}
-{{- end -}}
-
-{{- define "redis.host" -}}
-{{- if (eq (get .Values.redis "ENABLED") "true") -}}
-{{- printf "%s-redis-master.%s.svc.%s" .Release.Name .Release.Namespace .Values.clusterDomain -}}
-{{- else if (eq (get (index .Values "redis-cluster") "ENABLED") "true") -}}
-{{- printf "%s-redis-master.%s.svc.%s" .Release.Name .Release.Namespace .Values.clusterDomain  -}}
-{{- end -}}
-{{- end -}}
-
 {{- define "redis.servicename" -}}
-{{- if (eq (get .Values.redis "ENABLED") "true") -}}
+{{- if .Values.redis.enabled -}}
 {{- printf "%s-redis-master.%s.svc.%s" .Release.Name .Release.Namespace .Values.clusterDomain -}}
-{{- else if (eq (get (index .Values "redis-cluster") "ENABLED") "true") -}}
+{{- else if (index .Values "redis-cluster").enabled -}}
 {{- printf "%s-redis-cluster-headless.%s.svc.%s" .Release.Name .Release.Namespace .Values.clusterDomain -}}
 {{- end -}}
 {{- end -}}
