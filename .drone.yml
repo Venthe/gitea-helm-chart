@@ -46,19 +46,6 @@ steps:
     commands:
       - yamllint -f colored .
 
-  - name: discord
-    pull: always
-    image: appleboy/drone-discord:1.2.4
-    environment:
-      DISCORD_WEBHOOK_ID:
-        from_secret: discord_webhook_id
-      DISCORD_WEBHOOK_TOKEN:
-        from_secret: discord_webhook_token
-    when:
-      status:
-        - changed
-        - failure
-
 ---
 kind: pipeline
 type: docker
