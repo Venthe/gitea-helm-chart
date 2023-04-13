@@ -1,0 +1,38 @@
+name: generate-chart
+
+on: 
+  push:
+    tags:
+      - '*'
+
+jobs:
+  generate-chart-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: install tools
+        run: |
+          apt update -y
+          apt install -y curl helm python python3-pip
+          pip install awscli
+      - name: package chart
+        run: |
+          helm dependency update
+          helm package --version "${GITHUB_REF#refs/tags/v}" ./
+          mkdir gitea
+          mv gitea*.tgz gitea/
+          curl -L -o gitea/index.yaml https://dl.gitea.com/charts/index.yaml
+          helm repo index gitea/ --url https://dl.gitea.io/charts --merge gitea/index.yaml
+      - name: aws credential configure
+        uses: https://github.com/aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: install aws cli
+        run: |
+          apt update -y && 
+          pip install awscli
+      - name: Copy files to S3 and clear cache
+        run: |
+          aws s3 sync gitea/ s3://${{ secrets.AWS_S3_BUCKET}}/charts/
