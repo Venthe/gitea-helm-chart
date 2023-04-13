@@ -8,6 +8,7 @@ tests:
   - it: runs gpg in batch mode
     set:
       signing.enabled: true
+      signing.privateKey: /raw/private.asc
     asserts:
       - equal:
           path: stringData["configure_gpg_environment.sh"]
@@ -38,6 +39,7 @@ tests:
   - it: adds gpg script block for enabled signing
     set:
       signing.enabled: true
+      signing.privateKey: /raw/private.asc
     asserts:
       - equal:
           path: stringData["init_directory_structure.sh"]

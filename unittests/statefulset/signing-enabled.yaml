@@ -42,6 +42,7 @@ tests:
     template: templates/gitea/statefulset.yaml
     set:
       signing.enabled: true
+      signing.existingSecret: "custom-gpg-secret"
     asserts:
       - contains:
           path: spec.template.spec.initContainers[0].env
@@ -52,6 +53,7 @@ tests:
     template: templates/gitea/statefulset.yaml
     set:
       signing.enabled: true
+      signing.existingSecret: "custom-gpg-secret"
     asserts:
       - contains:
           path: spec.template.spec.containers[0].env
@@ -63,6 +65,7 @@ tests:
     set:
       signing:
         enabled: true
+        existingSecret: "gitea-unittests-gpg-key"
     asserts:
       - contains:
           path: spec.template.spec.volumes
