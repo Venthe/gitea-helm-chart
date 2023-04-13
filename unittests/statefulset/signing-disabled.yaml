@@ -17,8 +17,7 @@ tests:
   - it: skips gpg env in `init-directories` init container
     template: templates/gitea/statefulset.yaml
     set:
-      signing.enabled: true
-      signing.existingSecret: "custom-gpg-secret"
+      signing.enabled: false
     asserts:
       - contains:
           path: spec.template.spec.initContainers[0].env
