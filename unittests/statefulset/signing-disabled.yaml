@@ -19,7 +19,7 @@ tests:
     set:
       signing.enabled: false
     asserts:
-      - contains:
+      - notContains:
           path: spec.template.spec.initContainers[0].env
           content:
             name: GNUPGHOME
