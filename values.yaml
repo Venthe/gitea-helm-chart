@@ -457,7 +457,6 @@ memcached:
 ## @section redis
 ## @param redis.enabled Enable redis
 ## @param redis.global.redis.password Password for the "gitea" user (overrides `auth.password`)
-## @param redis.auth.password Password for the "gitea" user
 ## @param redis.replica.replicaCount Number of replicas
 
 redis:
@@ -465,14 +464,16 @@ redis:
   global:
     redis:
       password: gitea
-  auth:
-    password: gitea
   replica:
     replicaCount: 2
 
+## @section redis-cluster
+## @param redis-cluster.enabled Enable redis
+## @param redis-cluster.global.redis.password Password for the "gitea" user (overrides `password`)
+## @param redis-cluster.cluster.nodes Node count
+## @param redis-cluster.cluster.replicas CLuster replica count
 redis-cluster:
   enabled: false
-  password: gitea
   global:
     redis:
       password: gitea

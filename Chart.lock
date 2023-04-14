@@ -6,13 +6,16 @@ dependencies:
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 12.2.6
 - name: redis
-  repository: https://charts.bitnami.com/bitnami
+  repository: oci://registry-1.docker.io/bitnamicharts
   version: 17.9.3
+- name: redis-cluster
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 8.4.3
 - name: meilisearch
   repository: https://meilisearch.github.io/meilisearch-kubernetes
   version: 0.1.49
 - name: minio
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 12.2.4
-digest: sha256:4e0c5f357330198477a30f16857b66b86902b590d65b0511c5c6c57d5a7a8d26
-generated: "2023-04-02T22:21:48.088698+01:00"
+digest: sha256:c31a8f61bfb377c8692a1e592131a1c68f79ab877fa65cfa88fb7d468ebd012d
+generated: "2023-04-14T09:21:09.464076+02:00"
