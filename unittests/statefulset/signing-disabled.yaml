@@ -17,9 +17,9 @@ tests:
   - it: skips gpg env in `init-directories` init container
     template: templates/gitea/statefulset.yaml
     set:
-      signing.enabled: true
+      signing.enabled: false
     asserts:
-      - contains:
+      - notContains:
           path: spec.template.spec.initContainers[0].env
           content:
             name: GNUPGHOME
