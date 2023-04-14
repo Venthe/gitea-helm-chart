@@ -351,13 +351,14 @@ gitea:
     #   customProfileUrl:
     #   customEmailUrl:
 
-  ## @param gitea.config  Configuration for the Gitea server,ref: [config-cheat-sheet](https://docs.gitea.io/en-us/config-cheat-sheet/)
-  config: {}
-  #  APP_NAME: "Gitea: Git with a cup of tea"
-  #  RUN_MODE: dev
-  #
-  #  server:
-  #    SSH_PORT: 22
+  ## @param gitea.config.server.SSH_PORT SSH port for rootlful Gitea image
+  ## @param gitea.config.server.SSH_LISTEN_PORT SSH port for rootless Gitea image
+  config:
+    #  APP_NAME: "Gitea: Git with a cup of tea"
+    #  RUN_MODE: dev
+    server:
+      SSH_PORT: 22 # rootful image
+      SSH_LISTEN_PORT: 2222 # rootless image
   #
   #  security:
   #    PASSWORD_COMPLEXITY: spec

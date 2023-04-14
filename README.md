@@ -723,21 +723,22 @@ gitea:
 
 ### Gitea
 
-| Name                                   | Description                                                                                                   | Value                |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------- |
-| `gitea.admin.username`                 | Username for the Gitea admin user                                                                             | `gitea_admin`        |
-| `gitea.admin.existingSecret`           | Use an existing secret to store admin user credentials                                                        | `nil`                |
-| `gitea.admin.password`                 | Password for the Gitea admin user                                                                             | `r8sA8CPHD9!bt6d`    |
-| `gitea.admin.email`                    | Email for the Gitea admin user                                                                                | `gitea@local.domain` |
-| `gitea.metrics.enabled`                | Enable Gitea metrics                                                                                          | `false`              |
-| `gitea.metrics.serviceMonitor.enabled` | Enable Gitea metrics service monitor                                                                          | `false`              |
-| `gitea.ldap`                           | LDAP configuration                                                                                            | `[]`                 |
-| `gitea.oauth`                          | OAuth configuration                                                                                           | `[]`                 |
-| `gitea.config`                         | Configuration for the Gitea server,ref: [config-cheat-sheet](https://docs.gitea.io/en-us/config-cheat-sheet/) | `{}`                 |
-| `gitea.additionalConfigSources`        | Additional configuration from secret or configmap                                                             | `[]`                 |
-| `gitea.additionalConfigFromEnvs`       | Additional configuration sources from environment variables                                                   | `[]`                 |
-| `gitea.podAnnotations`                 | Annotations for the Gitea pod                                                                                 | `{}`                 |
-| `gitea.ssh.logLevel`                   | Configure OpenSSH's log level. Only available for root-based Gitea image.                                     | `INFO`               |
+| Name                                   | Description                                                               | Value                |
+| -------------------------------------- | ------------------------------------------------------------------------- | -------------------- |
+| `gitea.admin.username`                 | Username for the Gitea admin user                                         | `gitea_admin`        |
+| `gitea.admin.existingSecret`           | Use an existing secret to store admin user credentials                    | `nil`                |
+| `gitea.admin.password`                 | Password for the Gitea admin user                                         | `r8sA8CPHD9!bt6d`    |
+| `gitea.admin.email`                    | Email for the Gitea admin user                                            | `gitea@local.domain` |
+| `gitea.metrics.enabled`                | Enable Gitea metrics                                                      | `false`              |
+| `gitea.metrics.serviceMonitor.enabled` | Enable Gitea metrics service monitor                                      | `false`              |
+| `gitea.ldap`                           | LDAP configuration                                                        | `[]`                 |
+| `gitea.oauth`                          | OAuth configuration                                                       | `[]`                 |
+| `gitea.config.server.SSH_PORT`         | SSH port for rootlful Gitea image                                         | `22`                 |
+| `gitea.config.server.SSH_LISTEN_PORT`  | SSH port for rootless Gitea image                                         | `2222`               |
+| `gitea.additionalConfigSources`        | Additional configuration from secret or configmap                         | `[]`                 |
+| `gitea.additionalConfigFromEnvs`       | Additional configuration sources from environment variables               | `[]`                 |
+| `gitea.podAnnotations`                 | Annotations for the Gitea pod                                             | `{}`                 |
+| `gitea.ssh.logLevel`                   | Configure OpenSSH's log level. Only available for root-based Gitea image. | `INFO`               |
 
 ### LivenessProbe
 
