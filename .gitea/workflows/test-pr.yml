@@ -16,7 +16,7 @@ jobs:
           curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | tee /usr/share/keyrings/helm.gpg > /dev/null
           echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list
           apt update -y
-          apt install -y python helm python-pip
+          apt install -y helm python3-pip
           pip install yamllint
       - name: lint
         run: helm lint
