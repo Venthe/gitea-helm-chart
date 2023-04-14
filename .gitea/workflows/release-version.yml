@@ -31,7 +31,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
       - name: install aws cli
         run: |
-          apt update -y && 
+          apt update -y &&
           pip install awscli
       - name: Copy files to S3 and clear cache
         run: |
