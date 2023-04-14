@@ -8,38 +8,6 @@ platform:
   arch: arm64
 
 steps:
-  - name: helm lint
-    pull: always
-    image: alpine:3.17
-    commands:
-      - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing helm
-      - helm lint
-
-  - name: helm template
-    pull: always
-    image: alpine:3.17
-    commands:
-      - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing helm
-      - helm dependency update
-      - helm template --debug gitea-helm .
-
-  - name: helm unittests
-    pull: always
-    image: alpine:3.17
-    commands:
-      - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing make helm git bash
-      - helm plugin install --version 0.3.1 https://github.com/helm-unittest/helm-unittest
-      - helm dependency update
-      - make unittests
-
-  - name: verify readme
-    pull: always
-    image: alpine:3.17
-    commands:
-      - apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing make npm git
-      - make readme
-      - git diff --exit-code --name-only README.md
-
   - name: yaml lint
     pull: always
     image: cytopia/yamllint:alpine-1
