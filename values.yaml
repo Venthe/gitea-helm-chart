@@ -20,7 +20,7 @@ global:
   #   hostnames:
   #   - example.com
 
-## @param replicaCount number of replicas for the statefulset
+## @param replicaCount number of replicas for the deployment
 replicaCount: 1
 
 ## @section strategy
@@ -88,7 +88,7 @@ securityContext: {}
 service:
   ## @param service.http.type Kubernetes service type for web traffic
   ## @param service.http.port Port number for web traffic
-  ## @param service.http.clusterIP ClusterIP setting for http autosetup for statefulset is None
+  ## @param service.http.clusterIP ClusterIP setting for http autosetup for deployment is None
   ## @param service.http.loadBalancerIP LoadBalancer IP setting
   ## @param service.http.nodePort NodePort for http service
   ## @param service.http.externalTrafficPolicy If `service.http.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation
@@ -111,7 +111,7 @@ service:
     annotations: {}
   ## @param service.ssh.type Kubernetes service type for ssh traffic
   ## @param service.ssh.port Port number for ssh traffic
-  ## @param service.ssh.clusterIP ClusterIP setting for ssh autosetup for statefulset is None
+  ## @param service.ssh.clusterIP ClusterIP setting for ssh autosetup for deployment is None
   ## @param service.ssh.loadBalancerIP LoadBalancer IP setting
   ## @param service.ssh.nodePort NodePort for ssh service
   ## @param service.ssh.externalTrafficPolicy If `service.ssh.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation
@@ -165,7 +165,7 @@ ingress:
   # If helm doesn't correctly detect your ingress API version you can set it here.
   # apiVersion: networking.k8s.io/v1
 
-## @section StatefulSet
+## @section deployment
 #
 ## @param resources Kubernetes resources
 resources:
@@ -187,22 +187,25 @@ resources:
 ## @param schedulerName Use an alternate scheduler, e.g. "stork"
 schedulerName: ""
 
-## @param nodeSelector NodeSelector for the statefulset
+## @param nodeSelector NodeSelector for the deployment
 nodeSelector: {}
 
-## @param tolerations Tolerations for the statefulset
+## @param tolerations Tolerations for the deployment
 tolerations: []
 
-## @param affinity Affinity for the statefulset
+## @param affinity Affinity for the deployment
 affinity: {}
 
-## @param dnsConfig dnsConfig for the statefulset
+## @param dnsConfig dnsConfig for the deployment
 dnsConfig: {}
+
+## @param priorityClassName priorityClassName for the deployment
+priorityClassName: ""
 
 ## @param deployment.env  Additional environment variables to pass to containers
 ## @param deployment.terminationGracePeriodSeconds How long to wait until forcefully kill the pod
-## @param deployment.labels Labels for the statefulset
-## @param deployment.annotations Annotations for the Gitea StatefulSet to be created
+## @param deployment.labels Labels for the deployment
+## @param deployment.annotations Annotations for the Gitea deployment to be created
 deployment:
   env:
     []
@@ -233,7 +236,7 @@ persistence:
   storageClass:
   subPath:
 
-## @param extraVolumes Additional volumes to mount to the Gitea statefulset
+## @param extraVolumes Additional volumes to mount to the Gitea deployment
 extraVolumes: []
 # - name: postgres-ssl-vol
 #   secret:

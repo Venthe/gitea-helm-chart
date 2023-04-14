@@ -599,7 +599,7 @@ gitea:
 | `global.imagePullSecrets` | global image pull secrets override; can be extended by `imagePullSecrets` | `[]`  |
 | `global.storageClass`     | global storage class override                                             | `""`  |
 | `global.hostAliases`      | global hostAliases which will be added to the pod's hosts files           | `[]`  |
-| `replicaCount`            | number of replicas for the statefulset                                    | `1`   |
+| `replicaCount`            | number of replicas for the deployment                                     | `1`   |
 
 ### strategy
 
@@ -635,7 +635,7 @@ gitea:
 | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | `service.http.type`                     | Kubernetes service type for web traffic                                                                                                                                                              | `ClusterIP` |
 | `service.http.port`                     | Port number for web traffic                                                                                                                                                                          | `3000`      |
-| `service.http.clusterIP`                | ClusterIP setting for http autosetup for statefulset is None                                                                                                                                         | `None`      |
+| `service.http.clusterIP`                | ClusterIP setting for http autosetup for deployment is None                                                                                                                                          | `None`      |
 | `service.http.loadBalancerIP`           | LoadBalancer IP setting                                                                                                                                                                              | `nil`       |
 | `service.http.nodePort`                 | NodePort for http service                                                                                                                                                                            | `nil`       |
 | `service.http.externalTrafficPolicy`    | If `service.http.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation                                                                                         | `nil`       |
@@ -646,7 +646,7 @@ gitea:
 | `service.http.annotations`              | HTTP service annotations                                                                                                                                                                             | `{}`        |
 | `service.ssh.type`                      | Kubernetes service type for ssh traffic                                                                                                                                                              | `ClusterIP` |
 | `service.ssh.port`                      | Port number for ssh traffic                                                                                                                                                                          | `22`        |
-| `service.ssh.clusterIP`                 | ClusterIP setting for ssh autosetup for statefulset is None                                                                                                                                          | `None`      |
+| `service.ssh.clusterIP`                 | ClusterIP setting for ssh autosetup for deployment is None                                                                                                                                           | `None`      |
 | `service.ssh.loadBalancerIP`            | LoadBalancer IP setting                                                                                                                                                                              | `nil`       |
 | `service.ssh.nodePort`                  | NodePort for ssh service                                                                                                                                                                             | `nil`       |
 | `service.ssh.externalTrafficPolicy`     | If `service.ssh.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation                                                                                          | `nil`       |
@@ -670,20 +670,21 @@ gitea:
 | `ingress.tls`                        | Ingress tls settings                                                        | `[]`              |
 | `ingress.apiVersion`                 | Specify APIVersion of ingress object. Mostly would only be used for argocd. |                   |
 
-### StatefulSet
+### deployment
 
 | Name                                       | Description                                            | Value |
 | ------------------------------------------ | ------------------------------------------------------ | ----- |
 | `resources`                                | Kubernetes resources                                   | `{}`  |
 | `schedulerName`                            | Use an alternate scheduler, e.g. "stork"               | `""`  |
-| `nodeSelector`                             | NodeSelector for the statefulset                       | `{}`  |
-| `tolerations`                              | Tolerations for the statefulset                        | `[]`  |
-| `affinity`                                 | Affinity for the statefulset                           | `{}`  |
-| `dnsConfig`                                | dnsConfig for the statefulset                          | `{}`  |
+| `nodeSelector`                             | NodeSelector for the deployment                        | `{}`  |
+| `tolerations`                              | Tolerations for the deployment                         | `[]`  |
+| `affinity`                                 | Affinity for the deployment                            | `{}`  |
+| `dnsConfig`                                | dnsConfig for the deployment                           | `{}`  |
+| `priorityClassName`                        | priorityClassName for the deployment                   | `""`  |
 | `deployment.env`                           | Additional environment variables to pass to containers | `[]`  |
 | `deployment.terminationGracePeriodSeconds` | How long to wait until forcefully kill the pod         | `60`  |
-| `deployment.labels`                        | Labels for the statefulset                             | `{}`  |
-| `deployment.annotations`                   | Annotations for the Gitea StatefulSet to be created    | `{}`  |
+| `deployment.labels`                        | Labels for the deployment                              | `{}`  |
+| `deployment.annotations`                   | Annotations for the Gitea deployment to be created     | `{}`  |
 
 ### Persistence
 
@@ -697,7 +698,7 @@ gitea:
 | `persistence.annotations`    | Annotations for the persistence volume claim to be created                                            | `{}`                |
 | `persistence.storageClass`   | Name of the storage class to use                                                                      | `nil`               |
 | `persistence.subPath`        | Subdirectory of the volume to mount at                                                                | `nil`               |
-| `extraVolumes`               | Additional volumes to mount to the Gitea statefulset                                                  | `[]`                |
+| `extraVolumes`               | Additional volumes to mount to the Gitea deployment                                                   | `[]`                |
 | `extraContainerVolumeMounts` | Mounts that are only mapped into the Gitea runtime/main container, to e.g. override custom templates. | `[]`                |
 | `extraInitVolumeMounts`      | Mounts that are only mapped into the init-containers. Can be used for additional preconfiguration.    | `[]`                |
 | `extraVolumeMounts`          | **DEPRECATED** Additional volume mounts for init containers and the Gitea main container              | `[]`                |
