@@ -18,16 +18,16 @@ jobs:
           apt update -y
           apt install -y helm python3-pip
           pip install yamllint
+      - name: dependency update
+        run: helm dependency update
       - name: lint
         run: helm lint
       - name: template
         run: |
-          helm dependency update
           helm template --debug gitea-helm .
       - name: unit tests
         run: |
           helm plugin install --version 0.3.1 https://github.com/helm-unittest/helm-unittest
-          helm dependency update
           make unittests
       - name: verify readme
         run: |
