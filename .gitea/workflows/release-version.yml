@@ -1,9 +1,9 @@
 name: generate-chart
 
-on: 
+on:
   push:
     tags:
-      - '*'
+      - "*"
 
 jobs:
   generate-chart-publish:
