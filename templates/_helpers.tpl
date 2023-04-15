@@ -104,7 +104,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "minio.dns" -}}
-{{- printf "http://%s-minio.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.minio.service.ports.api | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-minio-headless.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.minio.service.ports.api -}}
 {{- end -}}
 
 {{- define "redis.dns" -}}
@@ -300,6 +300,26 @@ https
   {{- end -}}
   {{- if and (not (get .Values.gitea.config.indexer "ISSUE_INDEXER_CONN_STR")) (eq (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE") "meilisearch") -}}
     {{- $_ := set .Values.gitea.config.indexer "ISSUE_INDEXER_CONN_STR" (include "meilisearch.dns" .) -}}
+  {{- end -}}
+  {{- if .Values.gitea.config.attachment -}}
+    {{- if and (not .Values.gitea.config.attachment.STORAGE_TYPE) ( .Values.minio.enabled) -}}
+      {{- $_ := set .Values.gitea.config.attachment "STORAGE_TYPE" "minio" -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if .Values.gitea.config.lfs -}}
+    {{- if and (not (hasKey .Values.gitea.config.lfs "STORAGE_TYPE")) ( .Values.minio.enabled) -}}
+      {{- $_ := set .Values.gitea.config.lfs "STORAGE_TYPE" "minio" -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if .Values.gitea.config.picture -}}
+    {{- if and (not (hasKey .Values.gitea.config.picture "AVATAR_STORAGE_TYPE")) ( .Values.minio.enabled) -}}
+      {{- $_ := set .Values.gitea.config.picture "AVATAR_STORAGE_TYPE" "minio" -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if .Values.gitea.config.storage -}}
+    {{- if and (not (hasKey .Values.gitea.config.storage "MINIO_ENDPOINT")) ( .Values.minio.enabled) -}}
+      {{- $_ := set .Values.gitea.config.storage "MINIO_ENDPOINT" (include "minio.dns" .) -}}
+    {{- end -}}
   {{- end -}}
   {{- end -}}
 {{- end -}}

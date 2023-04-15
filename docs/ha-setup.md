@@ -77,7 +77,10 @@ Otherwise, these would go to your RWX file-system and would quickly fill it up a
 
 Apps like [`minio`](https://min.io/), which support HA, can be used for object storage.
 You can use the built-in chart dependency via `minio.enabled` or configure an external `minio` instance.
-If you use an external instance, make sure to configure all required settings as documented in the [Gitea documentation](https://docs.gitea.io/en-us/config-cheat-sheet/#issue-and-pull-request-attachments-attachment):
+
+If you use the built-in `minio` dependency, you need to provide `gitea.config.storage.MINIO_BUCKET`, `gitea.config.storage.MINIO_LOCATION` and `gitea.config.storage.MINIO_ACCESS_KEY_ID`.
+
+If you use an external instance, you need to define `gitea.config.storage.MINIO_ENDPOINT` and `gitea.config.storage.MINIO_USE_SSL` additionally.
 
 ```yml
 gitea:
