@@ -8,7 +8,14 @@ Before diving into the individual components, it is important to understand the 
 - One should evaluate upfront whether a HA-deployment is required as switching between HA/non-HA comes with some effort
 - If your Gitea instance is of medium to large size, a HA setup is recommended as both load handling and storage scaling can be handled in a more robust way
 
-The helm chart tries to help as much as possible by implementing smart conditionals if `replicaCount` is set to a value > 1.
+A general comment about chart dependencies and external services: 
+Instead of relying on many Gitea-specific components bootstrapped by this helm chart, it is often better to rely on an external, (managed) instances of in-memory databases, storage providers, etc..
+Many cloud providers offer such services, at least for databases or in-memory databases.
+They might cost a bit more than using a self-hosted k8s variant but are usually easier to maintain and scale, if needed.
+Also they can be centrally managed and are not linked to the Gitea helm chart or namespace.
+Consider using external services before you start off with your Gitea HA setup.
+
+The helm chart tries to help as much as possible to simplify the provisioning of a HA-ready Gitea instance by implementing smart conditionals if `replicaCount` is set to a value > 1.
 Nevertheless, we cannot guarantee for every possible combination of dependencies to work together perfectly with different Gitea versions.
 Also the HA setup is still early days and not battle-tested yet.
 It is *highly recommended* to have a test environment aside on which to test possible changes/upgrades before applying these to a production installation.
@@ -72,13 +79,21 @@ To do so, you need to set the following configuration values yourself:
 ## Object and asset storage
 
 Object/asset storage refers to the storage of attachments, avatars, LFS files, etc.
-While most of these can be stored on the RWX file-system, it is recommended to use an external object storage for these if you plan to use the "Packages" feature and upload docker images or similar.
-Otherwise, these would go to your RWX file-system and would quickly fill it up and/or incur high costs.
+While most of these can be stored on the RWX file-system, it is recommended to use an external S3-compatible object storage for such, mainly for performance reasons.
 
-Apps like [`minio`](https://min.io/), which support HA, can be used for object storage.
-You can use the built-in chart dependency via `minio.enabled` or configure an external `minio` instance.
+By default the chart provisions a single RWO volume to store everything (repos, avatars, packages, etc.).
+This volume cannot be mounted by multiple pods.
+Hence, either a RWX volume is required or an external object storage (or both: storing the repositories on the RWX volume and the rest on the external object storage).
 
-If you use the built-in `minio` dependency, you need to provide `gitea.config.storage.MINIO_BUCKET`, `gitea.config.storage.MINIO_LOCATION` and `gitea.config.storage.MINIO_ACCESS_KEY_ID`.
+You can use the built-in chart dependency `minio` via `minio.enabled` or configure an external `minio` instance yourself.
+
+If you use the built-in `minio` dependency, you need to provide `gitea.config.storage.MINIO_BUCKET`, `gitea.config.storage.MINIO_LOCATION`, `gitea.config.storage.MINIO_ACCESS_KEY_ID` and `gitea.config.storage.MINIO_SECRET_ACCESS_KEY`.
+If you start out with a recent `minio`, be aware that "access key" and "secret acces key" have been renamed to "rootUser" and "rootPassword", respectively.
+
+To store packages in `minio`, you need to explicitly define `gitea.config."storage.packages".STORAGE_TYPE` as shown below.
+
+Note that `MINIO_BUCKET` here is just a name and does not refer to a S3 bucket.
+It's the root access point for all objects belonging to the respective application, i.e., to Gitea in this case.
 
 If you use an external instance, you need to define `gitea.config.storage.MINIO_ENDPOINT` and `gitea.config.storage.MINIO_USE_SSL` additionally.
 
@@ -91,13 +106,16 @@ gitea:
       STORAGE_TYPE: minio
     picture:
       AVATAR_STORAGE_TYPE: minio
+    "storage.packages":
+      STORAGE_TYPE: minio
 
     storage:
       MINIO_ENDPOINT: <s3 endpoint>
       MINIO_LOCATION: <location>
       MINIO_ACCESS_KEY_ID: <access key>
+      MINIO_SECRET_ACCESS_KEY: <secret key>
       MINIO_BUCKET: <bucket name>
-      MINIO_USE_SSL: true
+      MINIO_USE_SSL: false
 ```
 
 ## Database
