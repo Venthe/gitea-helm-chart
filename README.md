@@ -55,6 +55,11 @@ of this document for major and breaking changes.
 - Helm 3.0+
 - PV provisioner for persistent data support
 
+## High Availability
+
+Deploying a HA-ready Gitea instance requires quite some effort including additional dependencies.
+See the [HA Setup](docs/ha-setup.md) document for more details.
+
 ## Examples
 
 ### Gitea Configuration
