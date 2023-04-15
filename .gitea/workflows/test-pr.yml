@@ -1,0 +1,36 @@
+name: check-and-test
+
+on:
+  - pull_request
+
+jobs:
+  check-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: install tools
+        run: |
+          apt update -y
+          apt install -y curl make
+          curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | tee /usr/share/keyrings/helm.gpg > /dev/null
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list
+          apt update -y
+          apt install -y helm python3-pip
+          pip install yamllint
+      - name: dependency update
+        run: helm dependency update
+      - name: lint
+        run: helm lint
+      - name: template
+        run: |
+          helm template --debug gitea-helm .
+      - name: unit tests
+        run: |
+          helm plugin install --version 0.3.1 https://github.com/helm-unittest/helm-unittest
+          make unittests
+      - name: verify readme
+        run: |
+          make readme
+          git diff --exit-code --name-only README.md
+      - name: yaml lint
+        uses: https://github.com/ibiqlik/action-yamllint@v3
