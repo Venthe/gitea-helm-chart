@@ -27,11 +27,11 @@ In addition, the following components are required for HA-readiness:
 
 - A HA-ready code indexer (`elasticsearch` or `meilisearch`)
 - A HA-ready external object/asset storage (`minio`) (optional, assets can also be stored on the RWX file-system)
-- A HA-ready memcache (`redis` or `redis-cluster`)
+- A HA-ready cache (`redis` or `redis-cluster`)
 - DB: a HA-ready DB (the built-in sqlite and postgres chart dependency will not work)
 
-Settings `memcached.enabled` and `postgres.enabled`, which default to `true`, must be set to `false` for a HA setup.
-The default `postgres` chart dependency is not HA-ready (there's a dedicated `postgres-ha` chart) and the built-in `memcached` dependency cannot work with connection requests from multiple replicas.
+`postgres.enabled`, which default to `true`, must be set to `false` for a HA setup.
+The default `postgres` chart dependency is not HA-ready (there's a dedicated `postgres-ha` chart).
 
 The following sections discuss each of the components in more detail.
 Note that for each component discussed, the shown configurations only provides a (working) starting point, not necessarily the most optimal setup.
@@ -53,7 +53,6 @@ When enabling `meilisearch`, make sure to also enable `persistence` using a RWX 
 
 ## In-memory cache
 
-The built-in `memcached` dependency can itself run in HA yet it does not work when getting requests from multiple Gitea replicas.
 Hence, a `redis` instance is required for the in-memory cache.
 Two options exist:
 

@@ -95,10 +95,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- printf "%s-postgresql.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.postgresql.global.postgresql.service.ports.postgresql -}}
 {{- end -}}
 
-{{- define "memcached.dns" -}}
-{{- printf "%s-memcached.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.memcached.service.ports.memcached | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
 {{- define "meilisearch.dns" -}}
 {{- printf "http://%s-meilisearch.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.meilisearch.service.port | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
@@ -270,11 +266,11 @@ https
   {{- if not (hasKey .Values.gitea.config.metrics "ENABLED") -}}
     {{- $_ := set .Values.gitea.config.metrics "ENABLED" .Values.gitea.metrics.enabled -}}
   {{- end -}}
- {{- if or .Values.memcached.enabled .Values.redis.enabled (index .Values "redis-cluster").enabled -}}
+ {{- if or .Values.redis.enabled (index .Values "redis-cluster").enabled -}}
     {{- $_ := set .Values.gitea.config.cache "ENABLED" "true" -}}
-    {{- $_ := set .Values.gitea.config.cache "ADAPTER" (ternary "memcache" "redis" .Values.memcached.enabled) -}}
+    {{- $_ := set .Values.gitea.config.cache "ADAPTER" "redis" -}}
     {{- if not (.Values.gitea.config.cache.HOST) -}}
-      {{- $_ := set .Values.gitea.config.cache "HOST" (ternary (include "memcached.dns" .) (include "redis.dns" .) .Values.memcached.enabled) -}}
+      {{- $_ := set .Values.gitea.config.cache "HOST" (include "redis.dns" .) -}}
     {{- end -}}
   {{- end -}}
   {{- /* redis queue */ -}}

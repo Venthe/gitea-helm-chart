@@ -36,7 +36,6 @@ configuration.
 Dependencies:
 
 - PostgreSQL ([configuration](#postgresql))
-- Memcached ([configuration](#memcached))
 
 ## Installing
 
@@ -99,18 +98,6 @@ HOST = RELEASE-NAME-postgresql.default.svc.cluster.local:5432
 NAME = gitea
 PASSWD = gitea
 USER = gitea
-```
-
-#### Memcached defaults
-
-Memcached is handled the exact same way as database builtIn. Once Memcached
-builtIn is enabled, this chart will generate the following part in the `app.ini`:
-
-```ini
-[cache]
-ADAPTER = memcache
-ENABLED = true
-HOST = RELEASE-NAME-memcached.default.svc.cluster.local:11211
 ```
 
 #### Server defaults
@@ -325,10 +312,10 @@ More about this issue [here](https://gitea.com/gitea/helm-chart/issues/161).
 
 ### Cache
 
-This helm chart can use a built in cache. The default is Memcached from bitnami.
+This helm chart can use a built in cache. The default is redis from bitnami.
 
 ```yaml
-memcached:
+redis:
   enabled: true
 ```
 
@@ -781,13 +768,6 @@ gitea:
 | `gitea.startupProbe.successThreshold`    | Success threshold for startup probe             | `1`     |
 | `gitea.startupProbe.failureThreshold`    | Failure threshold for startup probe             | `10`    |
 
-### Memcached
-
-| Name                                | Description                                                                                                                                                                                           | Value   |
-| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| `memcached.enabled`                 | Memcached is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if enabled in the values. Complete Configuration can be taken from their website. | `true`  |
-| `memcached.service.ports.memcached` | Port for Memcached                                                                                                                                                                                    | `11211` |
-
 ### redis
 
 | Name                          | Description                                               | Value   |
@@ -909,13 +889,13 @@ after the upgrade.
 #### Enable Dependencies
 
 The values to enable the dependencies,
-such as PostgreSQL, Memcached, MySQL and MariaDB.
+such as PostgreSQL, Redis, MySQL and MariaDB.
 have been moved from `gitea.database.builtIn.` to the dependency values.
 
 You can now enable the dependencies as followed:
 
 ```yaml
-memcached:
+redis:
   enabled: true
 
 postgresql:
