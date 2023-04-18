@@ -79,7 +79,7 @@ _All default settings are made directly in the generated app.ini, not in the Val
 
 #### Database defaults
 
-If a builtIn database is enabled the database configuration is set automatically. 
+If a builtIn database is enabled the database configuration is set automatically.
 For example, PostgreSQL builtIn will appear in the app.ini as:
 
 ```ini
@@ -93,7 +93,7 @@ USER = gitea
 
 #### Memcached defaults
 
-Memcached is handled the exact same way as database builtIn. 
+Memcached is handled the exact same way as database builtIn.
 Once Memcached builtIn is enabled, this chart will generate the following part in the `app.ini`:
 
 ```ini
@@ -106,7 +106,7 @@ HOST = RELEASE-NAME-memcached.default.svc.cluster.local:11211
 #### Server defaults
 
 The server defaults are a bit more complex.
-If ingress is `enabled`, the `ROOT_URL`, `DOMAIN` and `SSH_DOMAIN` will be set accordingly. 
+If ingress is `enabled`, the `ROOT_URL`, `DOMAIN` and `SSH_DOMAIN` will be set accordingly.
 `HTTP_PORT` always defaults to `3000` as well as `SSH_PORT` to `22`.
 
 ```ini
@@ -242,7 +242,7 @@ postgresql:
 
 ### Ports and external url
 
-By default port `3000` is used for web traffic and `22` for ssh. 
+By default port `3000` is used for web traffic and `22` for ssh.
 Those can be changed:
 
 ```yaml
@@ -885,7 +885,7 @@ gitea:
 
 #### Multiple OAuth and LDAP authentication sources
 
-With `5.0.0` of this Chart it is now possible to configure Gitea with multiple OAuth and LDAP sources. 
+With `5.0.0` of this Chart it is now possible to configure Gitea with multiple OAuth and LDAP sources.
 As a result, you need to update an existing OAuth/LDAP configuration in your customized `values.yaml` by replacing the object with settings to a list
 of settings objects.
 See [OAuth2 Settings](#oauth2-settings) and [LDAP Settings](#ldap-settings) section for details.
