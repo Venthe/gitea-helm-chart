@@ -458,7 +458,7 @@ Affected options:
 
 Like the admin user, OAuth2 settings can be updated and disabled but not deleted.
 Deleting OAuth2 settings has to be done in the ui.
-All OAuth2 values, fwhich are documented [here](https://docs.gitea.io/en-us/command-line/#admin), are
+All OAuth2 values, which are documented [here](https://docs.gitea.io/en-us/command-line/#admin), are
 available.
 
 Multiple OAuth2 sources can be configured with additional OAuth list items.
