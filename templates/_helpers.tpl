@@ -95,10 +95,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- printf "%s-postgresql.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.postgresql.global.postgresql.service.ports.postgresql -}}
 {{- end -}}
 
-{{- define "minio.dns" -}}
-{{- printf "%s-minio-headless.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.minio.service.ports.api -}}
-{{- end -}}
-
 {{- define "redis.dns" -}}
 {{- if (index .Values "redis-cluster").enabled -}}
 {{- printf "redis+cluster://:%s@%s-redis-cluster-headless.%s.svc.%s:%g/0?pool_size=100&idle_timeout=180s&" (index .Values "redis-cluster").global.redis.password .Release.Name .Release.Namespace .Values.clusterDomain (index .Values "redis-cluster").service.ports.redis -}}
@@ -286,26 +282,6 @@ https
   {{- end -}}
   {{- if and (not (get .Values.gitea.config.indexer "ISSUE_INDEXER_CONN_STR")) (eq (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE") "meilisearch") -}}
     {{- $_ := set .Values.gitea.config.indexer "ISSUE_INDEXER_CONN_STR" (include "meilisearch.dns" .) -}}
-  {{- end -}}
-  {{- if .Values.gitea.config.attachment -}}
-    {{- if and (not .Values.gitea.config.attachment.STORAGE_TYPE) ( .Values.minio.enabled) -}}
-      {{- $_ := set .Values.gitea.config.attachment "STORAGE_TYPE" "minio" -}}
-    {{- end -}}
-  {{- end -}}
-  {{- if .Values.gitea.config.lfs -}}
-    {{- if and (not (hasKey .Values.gitea.config.lfs "STORAGE_TYPE")) ( .Values.minio.enabled) -}}
-      {{- $_ := set .Values.gitea.config.lfs "STORAGE_TYPE" "minio" -}}
-    {{- end -}}
-  {{- end -}}
-  {{- if .Values.gitea.config.picture -}}
-    {{- if and (not (hasKey .Values.gitea.config.picture "AVATAR_STORAGE_TYPE")) ( .Values.minio.enabled) -}}
-      {{- $_ := set .Values.gitea.config.picture "AVATAR_STORAGE_TYPE" "minio" -}}
-    {{- end -}}
-  {{- end -}}
-  {{- if .Values.gitea.config.storage -}}
-    {{- if and (not (hasKey .Values.gitea.config.storage "MINIO_ENDPOINT")) ( .Values.minio.enabled) -}}
-      {{- $_ := set .Values.gitea.config.storage "MINIO_ENDPOINT" (include "minio.dns" .) -}}
-    {{- end -}}
   {{- end -}}
   {{- end -}}
 {{- end -}}

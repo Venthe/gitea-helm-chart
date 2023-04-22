@@ -43,8 +43,3 @@ dependencies:
     repository: oci://registry-1.docker.io/bitnamicharts
     version: 8.4.3
     condition: redis-cluster.enabled
-  # Chart release date: 2023-04
-  - name: minio
-    repository: oci://registry-1.docker.io/bitnamicharts
-    version: 12.2.4
-    condition: minio.enabled

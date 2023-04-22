@@ -5,8 +5,5 @@ dependencies:
 - name: redis-cluster
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 8.4.3
-- name: minio
-  repository: oci://registry-1.docker.io/bitnamicharts
-  version: 12.2.4
-digest: sha256:4ffd3a3056bae016a14de7c31a5065dc5995649d55c1db24145418178782f5f0
-generated: "2023-04-22T09:36:09.291724+02:00"
+digest: sha256:bd72112c31f7acffc7ff28505688fc0a4689f5e6b6f64de068c5dad51f99abf0
+generated: "2023-04-22T09:56:40.701452+02:00"

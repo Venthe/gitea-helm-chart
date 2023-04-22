@@ -8,7 +8,7 @@ Before diving into the individual components, it is important to understand the 
 - One should evaluate upfront whether a HA-deployment is required as switching between HA/non-HA comes with some effort
 - If your Gitea instance is of medium to large size, a HA setup is recommended as both load handling and storage scaling can be handled in a more robust way
 
-A general comment about chart dependencies and external services: 
+A general comment about chart dependencies and external services:
 Instead of relying on many Gitea-specific components bootstrapped by this helm chart, it is often better to rely on an external, (managed) instances of in-memory databases, storage providers, etc..
 Many cloud providers offer such services, at least for databases or in-memory databases.
 They might cost a bit more than using a self-hosted k8s variant but are usually easier to maintain and scale, if needed.
@@ -18,7 +18,7 @@ Consider using external services before you start off with your Gitea HA setup.
 The helm chart tries to help as much as possible to simplify the provisioning of a HA-ready Gitea instance by implementing smart conditionals if `replicaCount` is set to a value > 1.
 Nevertheless, we cannot guarantee for every possible combination of dependencies to work together perfectly with different Gitea versions.
 Also the HA setup is still early days and not battle-tested yet.
-It is *highly recommended* to have a test environment aside on which to test possible changes/upgrades before applying these to a production installation.
+It is _highly recommended_ to have a test environment aside on which to test possible changes/upgrades before applying these to a production installation.
 
 ## Requirements for HA
 
@@ -104,18 +104,15 @@ While most of these can be stored on the RWX file-system, it is recommended to u
 
 By default the chart provisions a single RWO volume to store everything (repos, avatars, packages, etc.).
 This volume cannot be mounted by multiple pods.
-Hence, either a RWX volume is required or an external object storage (or both: storing the repositories on the RWX volume and the rest on the external object storage).
+Hence, a RWX volume is required and (optionally) an external HA-ready object storage.
 
 To use `minio` you need to deploy and configure an external `minio` instance yourself.
-
 To store packages in `minio`, you need to explicitly define `gitea.config."storage.packages".STORAGE_TYPE` as shown below.
 
 Note that `MINIO_BUCKET` here is just a name and does not refer to a S3 bucket.
 It's the root access point for all objects belonging to the respective application, i.e., to Gitea in this case.
 
-If you use an external instance, you need to define `gitea.config.storage.MINIO_ENDPOINT` and `gitea.config.storage.MINIO_USE_SSL` additionally.
-
-```yml
+```yaml
 gitea:
   config:
     attachment:

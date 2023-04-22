@@ -753,15 +753,6 @@ gitea:
 | `redis-cluster.cluster.nodes`         | Node count                                           | `3`     |
 | `redis-cluster.cluster.replicas`      | CLuster replica count                                | `1`     |
 
-### minio
-
-| Name                        | Description                    | Value   |
-| --------------------------- | ------------------------------ | ------- |
-| `minio.enabled`             | Enable minio                   | `false` |
-| `minio.persistence.enabled` | Enable data persistence        | `true`  |
-| `minio.persistence.size`    | Size of persistent data volume | `5Gi`   |
-| `minio.replicaCount`        | Number of replicas             | `2`     |
-
 ### PostgreSQL
 
 | Name                                                    | Description                                                      | Value   |
