@@ -312,10 +312,10 @@ More about this issue [here](https://gitea.com/gitea/helm-chart/issues/161).
 
 ### Cache
 
-This helm chart can use a built in cache. The default is redis from bitnami.
+This helm chart can use a built in cache. The default is `redis-cluster` from bitnami.
 
 ```yaml
-redis:
+redis-cluster:
   enabled: true
 ```
 
@@ -767,14 +767,6 @@ gitea:
 | `gitea.startupProbe.periodSeconds`       | Period for startup probe                        | `10`    |
 | `gitea.startupProbe.successThreshold`    | Success threshold for startup probe             | `1`     |
 | `gitea.startupProbe.failureThreshold`    | Failure threshold for startup probe             | `10`    |
-
-### redis
-
-| Name                          | Description                                               | Value   |
-| ----------------------------- | --------------------------------------------------------- | ------- |
-| `redis.enabled`               | Enable redis                                              | `false` |
-| `redis.global.redis.password` | Password for the "Gitea" user (overrides `auth.password`) | `gitea` |
-| `redis.replica.replicaCount`  | Number of replicas                                        | `2`     |
 
 ### redis-cluster
 

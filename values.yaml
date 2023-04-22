@@ -440,19 +440,6 @@ gitea:
     successThreshold: 1
     failureThreshold: 10
 
-## @section redis
-## @param redis.enabled Enable redis
-## @param redis.global.redis.password Password for the "gitea" user (overrides `auth.password`)
-## @param redis.replica.replicaCount Number of replicas
-
-redis:
-  enabled: false
-  global:
-    redis:
-      password: gitea
-  replica:
-    replicaCount: 2
-
 ## @section redis-cluster
 ## @param redis-cluster.enabled Enable redis
 ## @param redis-cluster.global.redis.password Password for the "gitea" user (overrides `password`)
