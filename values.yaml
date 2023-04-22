@@ -450,9 +450,9 @@ redis-cluster:
   global:
     redis:
       password: gitea
-  cluster:
-    nodes: 3
-    replicas: 1
+  # cluster:
+  #   nodes: 3
+  #   replicas: 1
 
 ## @section PostgreSQL
 #
