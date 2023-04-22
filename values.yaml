@@ -454,20 +454,6 @@ redis-cluster:
     nodes: 3
     replicas: 1
 
-## @section meilisearch
-## @param meilisearch.enabled Enable meilisearch
-## @param meilisearch.persistence.enabled Enable data persistence
-## @param meilisearch.persistence.size Size of persistent data volume
-## @param meilisearch.replicaCount Number of replicas
-## @param meilisearch.persistence.accessMode Access mode for the persistent volume
-meilisearch:
-  enabled: false
-  persistence:
-    enabled: true
-    accessMode: ReadWriteMany
-    size: 5Gi
-  replicaCount: 2
-
 ## @section minio
 ## @param minio.enabled Enable minio
 ## @param minio.persistence.enabled Enable data persistence

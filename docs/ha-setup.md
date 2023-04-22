@@ -43,13 +43,34 @@ The default code indexer `bleve` is not able to allow multiple connections and h
 Alternatives are `elasticsearch` and `meilisearch` (as of >= 1.20).
 Unless you have an existing `elasticsearch` cluster, we recommend using `meilisearch` as it is faster and requires way less resources.
 
-Unfortunately, `meilisearch` does only support the `ISSUE_INDEXER` and not the `REPO_INDEXER` yet.
+Unfortunately, `meilisearch` does only support the `ISSUE_INDEXER` and not the `REPO_INDEXER` yet ([tracking issue](https://github.com/go-gitea/gitea/pull/24149)).
 This means that the `REPO_INDEXER` must still be disabled for a HA setup right now.
 An alternative to the two options above for the `ISSUE_INDEXER` is `"db"`, however we recommend to just go with `meilisearch` in this case and to not bother the DB with indexing.
 
-Once you set `meilisearch.enabled`, the chart will automatically configure the `ISSUE_INDEXER` to use `meilisearch` for you and also disable the `REPO_INDEXER` unless you manually set it to `"elasticsearch"`.
+To configure `meilisearch within Gitea, do the following:
+
+```yml
+gitea:
+  config:
+    indexer:
+      ISSUE_INDEXER_CONN_STR: <http://meilisearch.<namespace>.svc.cluster.local:7700)>
+      ISSUE_INDEXER_ENABLED: true
+      ISSUE_INDEXER_TYPE: meilisearch
+      REPO_INDEXER_ENABLED: false
+      # REPO_INDEXER_TYPE: meilisearch # not yet working
+```
 
 When enabling `meilisearch`, make sure to also enable `persistence` using a RWX file-system.
+
+Exemplary configuration for the [meilisearch-kubernetes](https://github.com/meilisearch/meilisearch-kubernetes/tree/main/charts/meilisearch) chart:
+
+```yaml
+persistence:
+  enabled: true
+  accessMode: ReadWriteMany
+  size: 5Gi
+replicaCount: 2
+```
 
 ## In-memory cache
 
@@ -85,10 +106,7 @@ By default the chart provisions a single RWO volume to store everything (repos, 
 This volume cannot be mounted by multiple pods.
 Hence, either a RWX volume is required or an external object storage (or both: storing the repositories on the RWX volume and the rest on the external object storage).
 
-You can use the built-in chart dependency `minio` via `minio.enabled` or configure an external `minio` instance yourself.
-
-If you use the built-in `minio` dependency, you need to provide `gitea.config.storage.MINIO_BUCKET`, `gitea.config.storage.MINIO_LOCATION`, `gitea.config.storage.MINIO_ACCESS_KEY_ID` and `gitea.config.storage.MINIO_SECRET_ACCESS_KEY`.
-If you start out with a recent `minio`, be aware that "access key" and "secret acces key" have been renamed to "rootUser" and "rootPassword", respectively.
+To use `minio` you need to deploy and configure an external `minio` instance yourself.
 
 To store packages in `minio`, you need to explicitly define `gitea.config."storage.packages".STORAGE_TYPE` as shown below.
 
@@ -110,12 +128,26 @@ gitea:
       STORAGE_TYPE: minio
 
     storage:
-      MINIO_ENDPOINT: <s3 endpoint>
+      MINIO_ENDPOINT: <minio-headless.<namespace>.svc.cluster.local:9000>
       MINIO_LOCATION: <location>
       MINIO_ACCESS_KEY_ID: <access key>
       MINIO_SECRET_ACCESS_KEY: <secret key>
       MINIO_BUCKET: <bucket name>
       MINIO_USE_SSL: false
+```
+
+Exemplary configuration for the [bitnami minio](https://github.com/bitnami/charts/blob/main/bitnami/minio) chart:
+
+```yaml
+auth:
+  rootUser: minio
+mode: distributed
+replicaCount: 4
+persistence:
+  enabled: true
+  size: 20Gi
+  accessModes:
+    - ReadWriteOnce
 ```
 
 ## Database

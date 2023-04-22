@@ -753,16 +753,6 @@ gitea:
 | `redis-cluster.cluster.nodes`         | Node count                                           | `3`     |
 | `redis-cluster.cluster.replicas`      | CLuster replica count                                | `1`     |
 
-### meilisearch
-
-| Name                                 | Description                           | Value           |
-| ------------------------------------ | ------------------------------------- | --------------- |
-| `meilisearch.enabled`                | Enable meilisearch                    | `false`         |
-| `meilisearch.persistence.enabled`    | Enable data persistence               | `true`          |
-| `meilisearch.persistence.size`       | Size of persistent data volume        | `5Gi`           |
-| `meilisearch.replicaCount`           | Number of replicas                    | `2`             |
-| `meilisearch.persistence.accessMode` | Access mode for the persistent volume | `ReadWriteMany` |
-
 ### minio
 
 | Name                        | Description                    | Value   |

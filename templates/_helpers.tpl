@@ -95,10 +95,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- printf "%s-postgresql.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.postgresql.global.postgresql.service.ports.postgresql -}}
 {{- end -}}
 
-{{- define "meilisearch.dns" -}}
-{{- printf "http://%s-meilisearch.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.meilisearch.service.port | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
 {{- define "minio.dns" -}}
 {{- printf "%s-minio-headless.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.minio.service.ports.api -}}
 {{- end -}}
