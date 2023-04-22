@@ -106,8 +106,7 @@ By default the chart provisions a single RWO volume to store everything (repos, 
 This volume cannot be mounted by multiple pods.
 Hence, a RWX volume is required and (optionally) an external HA-ready object storage.
 
-To use `minio` you need to deploy and configure an external `minio` instance yourself.
-To store packages in `minio`, you need to explicitly define `gitea.config."storage.packages".STORAGE_TYPE` as shown below.
+To use `minio` you need to deploy and configure an external `minio` instance yourself and explicitly define the `STORAGE_TYPE` values as shown below.
 
 Note that `MINIO_BUCKET` here is just a name and does not refer to a S3 bucket.
 It's the root access point for all objects belonging to the respective application, i.e., to Gitea in this case.
