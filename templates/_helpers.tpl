@@ -294,9 +294,6 @@ https
     {{- if not (get .Values.gitea.config.session "PROVIDER_CONFIG") -}}
     {{- $_ := set .Values.gitea.config.session "PROVIDER_CONFIG" (include "redis.dns" .) -}}
     {{- end -}}
-    {{- if (ne (get .Values.gitea.config.indexer "REPO_INDEXER_TYPE") "elasticsearch") -}}
-      {{- $_ := set .Values.gitea.config.indexer "REPO_INDEXER_ENABLED" "false" -}}
-    {{- end -}}
   {{- if and (not (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE")) (not .Values.meilisearch.enabled) -}}
    {{- $_ := set .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE" "db" -}}
   {{- else if and (not (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE")) (.Values.meilisearch.enabled) -}}
