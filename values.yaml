@@ -446,13 +446,10 @@ gitea:
 ## @param redis-cluster.cluster.nodes Node count
 ## @param redis-cluster.cluster.replicas CLuster replica count
 redis-cluster:
-  enabled: false
+  enabled: true
   global:
     redis:
       password: gitea
-  # cluster:
-  #   nodes: 3
-  #   replicas: 1
 
 ## @section PostgreSQL
 #
