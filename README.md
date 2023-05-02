@@ -6,8 +6,8 @@ It is published under the MIT license.
 ## Introduction
 
 This helm chart has taken some inspiration from [jfelten's helm chart](https://github.com/jfelten/gitea-helm-chart).
-But takes a completely different approach in providing a database and cache with dependencies.
-Additionally, this chart provides LDAP and admin user configuration with values, as well as being deployed as a statefulset to retain stored repositories.
+Yet it takes a completely different approach in providing a database and cache with dependencies.
+Additionally, this chart allows to provide LDAP and admin user configuration with values.
 
 ## Update and versioning policy
 
@@ -33,6 +33,7 @@ This chart provides those dependencies, which can be enabled, or disabled via co
 Dependencies:
 
 - PostgreSQL ([configuration](#postgresql))
+- Redis Cluster ([configuration](#cache))
 
 ## Installing
 
@@ -43,12 +44,6 @@ helm install gitea gitea-charts/gitea
 ```
 
 When upgrading, please refer to the [Upgrading](#upgrading) section at the bottom of this document for major and breaking changes.
-
-## Prerequisites
-
-- Kubernetes 1.12+
-- Helm 3.0+
-- PV provisioner for persistent data support
 
 ## High Availability
 
@@ -79,12 +74,12 @@ All defaults can be overwritten in `gitea.config`.
 
 INSTALL_LOCK is always set to true, since we want to configure Gitea with this helm chart and everything is taken care of.
 
-_All default settings are made directly in the generated app.ini, not in the Values._
+_All default settings are made directly in the generated `app.ini`, not in the Values._
 
 #### Database defaults
 
 If a builtIn database is enabled the database configuration is set automatically.
-For example, PostgreSQL builtIn will appear in the app.ini as:
+For example, PostgreSQL builtIn will appear in the `app.ini` as:
 
 ```ini
 [database]
@@ -143,8 +138,7 @@ gitea:
         name: gitea-app-ini-plaintext
 ```
 
-This would mount the two additional volumes (`oauth` and `some-additionals`)
-from different sources to the init containerwhere the _app.ini_ gets updated.
+This would mount the two additional volumes (`oauth` and `some-additionals`) from different sources to the init container where the _app.ini_ gets updated.
 All files mounted that way will be read and converted to environment variables and then added to the _app.ini_ using [environment-to-ini](https://github.com/go-gitea/gitea/tree/main/contrib/environment-to-ini).
 
 The key of such additional source represents the section inside the _app.ini_.
@@ -212,7 +206,7 @@ Priority (highest to lowest) for defining app.ini variables:
 
 ### External Database
 
-Any external Database listed in [https://docs.gitea.io/en-us/database-prep/](https://docs.gitea.io/en-us/database-prep/) can be used instead of the built-in PostgreSQL.
+Any external database listed in [https://docs.gitea.io/en-us/database-prep/](https://docs.gitea.io/en-us/database-prep/) can be used instead of the built-in PostgreSQL.
 In fact, it is **highly recommended** to use an external database to ensure a stable Gitea installation longterm.
 
 If an external database is used, no matter which type, make sure to set `postgresql.enabled` to `false` to disable the use of the built-in PostgreSQL.
@@ -298,33 +292,23 @@ More about this issue [here](https://gitea.com/gitea/helm-chart/issues/161).
 
 ### Cache
 
-This helm chart can use a built in cache. The default is `redis-cluster` from bitnami.
+The cache handling is done via `redis-cluster` (via the `bitnami` chart) by default.
+This deployment is HA-ready but can also be used for single-pod deployments.
+By default, 6 replicas are deployed for a working `redis-cluster` deployment.
+Many cloud providers offer a managed redis service, which can be used instead of the built-in `redis-cluster`.
 
 ```yaml
 redis-cluster:
   enabled: true
 ```
 
-If the built in cache should not be used simply configure the cache in `gitea.config`.
-
-```yaml
-gitea:
-  config:
-    cache:
-      ENABLED: true
-      ADAPTER: memory
-      INTERVAL: 60
-      HOST: 127.0.0.1:9090
-```
-
 ### Persistence
 
-Gitea will be deployed as a statefulset.
+Gitea will be deployed as a deployment.
 By simply enabling the persistence and setting the storage class according to your cluster everything else will be taken care of.
-The following example will create a PVC as a part of the statefulset.
-This PVC will not be deleted even if you uninstall the chart.
+The following example will create a PVC as a part of the deployment.
 
-Please note, that an empty storageClass in the persistence will result in kubernetes using your default storage class.
+Please note, that an empty `storageClass` in the persistence will result in kubernetes using your default storage class.
 
 If you want to use your own storage class define it as follows:
 
@@ -333,8 +317,6 @@ persistence:
   enabled: true
   storageClass: myOwnStorageClass
 ```
-
-When using PostgreSQL as dependency, this will also be deployed as a statefulset by default.
 
 If you want to manage your own PVC you can simply pass the PVC name to the chart.
 
@@ -359,7 +341,7 @@ postgresql:
 ### Admin User
 
 This chart enables you to create a default admin user.
-It is also possible to update the password for this user by upgrading or redeloying the chart.
+It is also possible to update the password for this user by upgrading or redeploying the chart.
 It is not possible to delete an admin user after it has been created.
 This has to be done in the ui.
 You cannot use `admin` as username.
