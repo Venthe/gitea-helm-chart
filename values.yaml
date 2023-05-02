@@ -443,8 +443,6 @@ gitea:
 ## @section redis-cluster
 ## @param redis-cluster.enabled Enable redis
 ## @param redis-cluster.global.redis.password Password for the "gitea" user (overrides `password`)
-## @param redis-cluster.cluster.nodes Node count
-## @param redis-cluster.cluster.replicas CLuster replica count
 redis-cluster:
   enabled: true
   global:

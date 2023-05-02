@@ -730,10 +730,8 @@ gitea:
 
 | Name                                  | Description                                          | Value   |
 | ------------------------------------- | ---------------------------------------------------- | ------- |
-| `redis-cluster.enabled`               | Enable redis                                         | `false` |
+| `redis-cluster.enabled`               | Enable redis                                         | `true`  |
 | `redis-cluster.global.redis.password` | Password for the "Gitea" user (overrides `password`) | `gitea` |
-| `redis-cluster.cluster.nodes`         | Node count                                           | `3`     |
-| `redis-cluster.cluster.replicas`      | CLuster replica count                                | `1`     |
 
 ### PostgreSQL
 
