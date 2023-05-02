@@ -1,34 +1,32 @@
 # High Availability
 
-Most components (in-memory DB, volume/asset storage, code indexer) used by Gitea are not HA-ready by default.
-The following document explains how to achieve a HA-ready Gitea deployment.
-Before diving into the individual components, it is important to understand the following:
+All components (in-memory DB, volume/asset storage, code indexer) used by Gitea must be deployed in a HA-ready fashion to achieve a full HA-ready Gitea deployment.
+The following document explains how to achieve this for all individual components.
 
-- The resulting Gitea deployment will consist of ~ 10 pods (depending on the chosen components and their replicas)
-- One should evaluate upfront whether a HA-deployment is required as switching between HA/non-HA comes with some effort
-- If your Gitea instance is of medium to large size, a HA setup is recommended as both load handling and storage scaling can be handled in a more robust way
+The resulting Gitea deployment will consist of ~ 10 pods (depending on the chosen components and their replicas).
+One should evaluate upfront whether a HA-deployment is required as switching between HA/non-HA comes with some effort.
+For production instances, HA is always recommended to increase uptime and have a frictionless update process.
 
 A general comment about chart dependencies and external services:
-Instead of relying on many Gitea-specific components bootstrapped by this helm chart, it is often better to rely on an external, (managed) instances of in-memory databases, storage providers, etc..
+Instead of relying on chart dependencies, it is often better to rely on an external, (managed) instances (in-memory database, asset storage provider, database, etc.).
 Many cloud providers offer such services, at least for databases or in-memory databases.
 They might cost a bit more than using a self-hosted k8s variant but are usually easier to maintain and scale, if needed.
 Also they can be centrally managed and are not linked to the Gitea helm chart or namespace.
-Consider using external services before you start off with your Gitea HA setup.
+Please consider using external services before you start with your Gitea HA setup, it will make your life (and the life of the Gitea maintainers) easier.
 
-The helm chart tries to help as much as possible to simplify the provisioning of a HA-ready Gitea instance by implementing smart conditionals if `replicaCount` is set to a value > 1.
-Nevertheless, we cannot guarantee for every possible combination of dependencies to work together perfectly with different Gitea versions.
-Also the HA setup is still early days and not battle-tested yet.
-It is _highly recommended_ to have a test environment aside on which to test possible changes/upgrades before applying these to a production installation.
+This helm chart tries to help as much as possible to simplify and assert the provisioning of a HA-ready Gitea instance by implementing smart conditionals if `replicaCount` is set to a value > 1.
+Nevertheless, we cannot guarantee for every possible combination of Gitea settings to work together perfectly in a HA setup.
+As a general advice, we recommend to have a test environment aside on which to test possible changes/upgrades before applying these to a production installation.
 
 ## Requirements for HA
 
 Storage-wise, the HA-Gitea setup requires a RWX file-system which can be shared among the deployment-based replica pods.
-In addition, the following components are required for HA-readiness:
+In addition, the following components are required for full HA-readiness:
 
-- A HA-ready code indexer (`elasticsearch` or `meilisearch`)
+- A HA-ready issue (and optionally code) indexer: `elasticsearch` or `meilisearch`
 - A HA-ready external object/asset storage (`minio`) (optional, assets can also be stored on the RWX file-system)
 - A HA-ready cache (`redis-cluster`)
-- DB: a HA-ready DB (the built-in sqlite and postgres chart dependency will not work)
+- A HA-ready DB 
 
 `postgres.enabled`, which default to `true`, must be set to `false` for a HA setup.
 The default `postgres` chart dependency is not HA-ready (there's a dedicated `postgres-ha` chart).
@@ -40,14 +38,14 @@ We try to optimize this document over time as we have gained more experience wit
 ## Indexers (Issues and code/repo)
 
 The default code indexer `bleve` is not able to allow multiple connections and hence cannot be used in a HA setup.
-Alternatives are `elasticsearch` and `meilisearch` (as of >= 1.20).
+Alternatives are `elasticsearch` and `meilisearch` (as of >= 1.19.2).
 Unless you have an existing `elasticsearch` cluster, we recommend using `meilisearch` as it is faster and requires way less resources.
 
 Unfortunately, `meilisearch` does only support the `ISSUE_INDEXER` and not the `REPO_INDEXER` yet ([tracking issue](https://github.com/go-gitea/gitea/pull/24149)).
 This means that the `REPO_INDEXER` must still be disabled for a HA setup right now.
 An alternative to the two options above for the `ISSUE_INDEXER` is `"db"`, however we recommend to just go with `meilisearch` in this case and to not bother the DB with indexing.
 
-To configure `meilisearch within Gitea, do the following:
+To configure `meilisearch` within Gitea, do the following:
 
 ```yml
 gitea:
@@ -60,19 +58,19 @@ gitea:
       # REPO_INDEXER_TYPE: meilisearch # not yet working
 ```
 
-When enabling `meilisearch`, make sure to also enable `persistence` using a RWX file-system.
+Unfortunately `meilisearch` cannot be deployed in HA as of now.
+Nevertheless it allows for multiple Gitea requests at the same time and is therefore required in a HA setup.
 
 Exemplary configuration for the [meilisearch-kubernetes](https://github.com/meilisearch/meilisearch-kubernetes/tree/main/charts/meilisearch) chart:
 
 ```yaml
 persistence:
   enabled: true
-  accessMode: ReadWriteMany
+  accessMode: ReadWriteOnce
   size: 5Gi
-replicaCount: 2
 ```
 
-## In-memory cache
+## Cache, session and queue
 
 A `redis` instance is required for the in-memory cache.
 Two options exist:
@@ -80,7 +78,7 @@ Two options exist:
 - `redis`
 - `redis-cluster`
 
-The chart only provides `redis-cluster` as a dependency as this one can be used for both HA and non-HA setups.
+The chart provides `redis-cluster` as a dependency as this one can be used for both HA and non-HA setups.
 You're also welcome to go with `redis` if you prefer or already have a running instance.
 
 It should be noted that `redis-cluster` support is only available starting with Gitea 1.19.2.
