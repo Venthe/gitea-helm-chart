@@ -454,7 +454,7 @@ redis-cluster:
 ## @section PostgreSQL
 #
 ## @param postgresql.enabled Enable PostgreSQL
-## @param postgresql.global.postgresql.auth.password Password for the "gitea" user (overrides `auth.password`)
+## @param postgresql.global.postgresql.auth.password Password for the `gitea` user (overrides `auth.password`)
 ## @param postgresql.global.postgresql.auth.database Name for a custom database to create (overrides `auth.database`)
 ## @param postgresql.global.postgresql.auth.username Name for a custom user to create (overrides `auth.username`)
 ## @param postgresql.global.postgresql.service.ports.postgresql PostgreSQL service port (overrides `service.ports.postgresql`)
@@ -487,3 +487,7 @@ test:
   image:
     name: busybox
     tag: latest
+
+## @param extraDeploy Array of extra objects to deploy with the release
+##
+extraDeploy: []

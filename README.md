@@ -740,7 +740,7 @@ gitea:
 | Name                                                    | Description                                                      | Value   |
 | ------------------------------------------------------- | ---------------------------------------------------------------- | ------- |
 | `postgresql.enabled`                                    | Enable PostgreSQL                                                | `true`  |
-| `postgresql.global.postgresql.auth.password`            | Password for the "Gitea" user (overrides `auth.password`)        | `gitea` |
+| `postgresql.global.postgresql.auth.password`            | Password for the `gitea` user (overrides `auth.password`)        | `gitea` |
 | `postgresql.global.postgresql.auth.database`            | Name for a custom database to create (overrides `auth.database`) | `gitea` |
 | `postgresql.global.postgresql.auth.username`            | Name for a custom user to create (overrides `auth.username`)     | `gitea` |
 | `postgresql.global.postgresql.service.ports.postgresql` | PostgreSQL service port (overrides `service.ports.postgresql`)   | `5432`  |
@@ -754,6 +754,7 @@ gitea:
 | `test.enabled`     | Set it to false to disable test-connection Pod.                    | `true`    |
 | `test.image.name`  | Image name for the wget container used in the test-connection Pod. | `busybox` |
 | `test.image.tag`   | Image tag for the wget container used in the test-connection Pod.  | `latest`  |
+| `extraDeploy`      | Array of extra objects to deploy with the release                  | `[]`      |
 
 ## Contributing
 
