@@ -37,21 +37,17 @@ Create image name and tag used by the deployment.
 {{- define "gitea.image" -}}
 {{- $registry := .Values.global.imageRegistry | default .Values.image.registry -}}
 {{- $repository := .Values.image.repository -}}
+{{- $separator := ":" -}}
 {{- $tag := .Values.image.tag | default .Chart.AppVersion -}}
+{{- if .Values.image.digest -}}
+    {{- $separator = "@" -}}
+    {{- $tag = .Values.image.digest | toString -}}
+{{- end -}}
 {{- $rootless := ternary "-rootless" "" (.Values.image.rootless) -}}
-{{- $digest := .Values.image.digest -}}
 {{- if $registry -}}
-  {{- if $digest -}}
-    {{- printf "%s/%s@sha256:%s%s" $registry $repository $digest $rootless -}}
-  {{- else -}}
-    {{- printf "%s/%s:%s%s" $registry $repository $tag $rootless -}}
-  {{- end -}}
+    {{- printf "%s/%s%s%s%s" $registry $repository $separator $tag $rootless -}}
 {{- else -}}
-  {{- if $digest -}}
-    {{- printf "%s@sha256:%s%s" $repository $digest $rootless -}}
-  {{- else -}}
-    {{- printf "%s:%s%s" $repository $tag $rootless -}}
-  {{- end -}}
+    {{- printf "%s%s%s%s" $repository$separator $tag $rootless -}}
 {{- end -}}
 {{- end -}}
 
@@ -87,8 +83,13 @@ Common labels
 helm.sh/chart: {{ include "gitea.chart" . }}
 app: {{ include "gitea.name" . }}
 {{ include "gitea.selectorLabels" . }}
-app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
-version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
+{{- if .Values.image.digest -}}
+  app.kubernetes.io/version: {{ .Values.image.digest | default .Chart.AppVersion | quote }}
+  version: {{ .Values.image.digest | default .Chart.AppVersion | quote }}
+{{- else -}}
+  app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
+  version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
+{{- end -}}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
