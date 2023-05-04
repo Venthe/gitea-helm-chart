@@ -47,7 +47,7 @@ Create image name and tag used by the deployment.
 {{- if $registry -}}
     {{- printf "%s/%s%s%s%s" $registry $repository $separator $tag $rootless -}}
 {{- else -}}
-    {{- printf "%s%s%s%s" $repository$separator $tag $rootless -}}
+    {{- printf "%s%s%s%s" $repository $separator $tag $rootless -}}
 {{- end -}}
 {{- end -}}
 
