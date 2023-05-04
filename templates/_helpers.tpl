@@ -84,12 +84,12 @@ helm.sh/chart: {{ include "gitea.chart" . }}
 app: {{ include "gitea.name" . }}
 {{ include "gitea.selectorLabels" . }}
 {{- if .Values.image.digest }}
-  app.kubernetes.io/version: {{ .Values.image.digest | default .Chart.AppVersion | quote }}
-  version: {{ .Values.image.digest | default .Chart.AppVersion | quote }}
-{{- else -}}
-  app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
-  version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
-{{- end -}}
+app.kubernetes.io/version: {{ .Values.image.digest | default .Chart.AppVersion | quote }}
+version: {{ .Values.image.digest | default .Chart.AppVersion | quote }}
+{{- else }}
+app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
+version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
+{{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
