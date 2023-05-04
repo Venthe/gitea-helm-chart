@@ -36,13 +36,22 @@ Create image name and tag used by the deployment.
 */}}
 {{- define "gitea.image" -}}
 {{- $registry := .Values.global.imageRegistry | default .Values.image.registry -}}
-{{- $name := .Values.image.repository -}}
+{{- $repository := .Values.image.repository -}}
 {{- $tag := .Values.image.tag | default .Chart.AppVersion -}}
 {{- $rootless := ternary "-rootless" "" (.Values.image.rootless) -}}
+{{- $digest := .Values.image.digest -}}
 {{- if $registry -}}
-  {{- printf "%s/%s:%s%s" $registry $name $tag $rootless -}}
+  {{- if $digest -}}
+    {{- printf "%s/%s@sha256:%s%s" $registry $repository $digest $rootless -}}
+  {{- else -}}
+    {{- printf "%s/%s:%s%s" $registry $repository $tag $rootless -}}
+  {{- end -}}
 {{- else -}}
-  {{- printf "%s:%s%s" $name $tag $rootless -}}
+  {{- if $digest -}}
+    {{- printf "%s@sha256:%s%s" $repository $digest $rootless -}}
+  {{- else -}}
+    {{- printf "%s:%s%s" $repository $tag $rootless -}}
+  {{- end -}}
 {{- end -}}
 {{- end -}}
 
