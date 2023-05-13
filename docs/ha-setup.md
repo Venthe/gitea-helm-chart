@@ -51,7 +51,7 @@ To configure `meilisearch` within Gitea, do the following:
 gitea:
   config:
     indexer:
-      ISSUE_INDEXER_CONN_STR: <http://meilisearch.<namespace>.svc.cluster.local:7700)>
+      ISSUE_INDEXER_CONN_STR: <http://meilisearch.<namespace>.svc.cluster.local:7700>
       ISSUE_INDEXER_ENABLED: true
       ISSUE_INDEXER_TYPE: meilisearch
       REPO_INDEXER_ENABLED: false
