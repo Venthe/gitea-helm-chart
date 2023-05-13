@@ -766,6 +766,27 @@ See [CONTRIBUTORS GUIDE](CONTRIBUTING.md) for details.
 This section lists major and breaking changes of each Helm Chart version.
 Please read them carefully to upgrade successfully.
 
+### To 9.0.0
+
+This chart release comes with many breaking changes while aiming for a HA-ready setup:
+
+- Switch from `Statefulset` to `Deployment`
+- Switch from `Memcached` to `redis-cluster` as the default session and queue provider
+- Switch from `postgres` to `postgres-ha` as the default database provider
+- A chart-internal PVC definition
+
+While not required, we recommend to start with a RWX PV for new installations.
+A RWX volume is required for installation aiming for HA.
+
+#### Transitioning from previous versions
+
+- If you want to stay with a RWO PV and haven't used `persistence.existingClaim` before, you need to define it now with the name of your existing PVC.
+  Otherwise the chart will create a new PVC with an empty volume.
+- If you want to switch to a RWX volume and go for HA, you need to backup the data stored under `/data`, let the chart create a new RWX PV and restore it to this location.
+  This can be done via
+- If you are running with a non-HA PG DB from a previous chart release, you need to set `postgresql-ha.enabled=false` and `postgresql.enabled=true`.
+  This is needed to stay with your existing single-instance DB (as the HA-variant is the new default).
+
 ### To 8.0.0
 
 #### Removal of MariaDB and MySQL DB chart dependencies
