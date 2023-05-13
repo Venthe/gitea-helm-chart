@@ -452,6 +452,29 @@ redis-cluster:
     redis:
       password: gitea
 
+## @section postgresql-ha
+#
+## @param postgresql-ha.enabled Enable postgresql-ha
+## @param postgresql-ha.global.postgresql-ha.auth.password Password for the `gitea` user (overrides `auth.password`)
+## @param postgresql-ha.global.postgresql-ha.auth.database Name for a custom database to create (overrides `auth.database`)
+## @param postgresql-ha.global.postgresql-ha.auth.username Name for a custom user to create (overrides `auth.username`)
+## @param postgresql-ha.global.postgresql-ha.service.ports.postgresql-ha postgresql-ha service port (overrides `service.ports.postgresql-ha`)
+## @param postgresql-ha.primary.persistence.size PVC Storage Request for postgresql-ha volume
+postgresql-ha:
+  enabled: true
+  global:
+    postgresql-ha:
+      auth:
+        password: gitea
+        database: gitea
+        username: gitea
+      service:
+        ports:
+          postgresql-ha: 5432
+  primary:
+    persistence:
+      size: 10Gi
+
 ## @section PostgreSQL
 #
 ## @param postgresql.enabled Enable PostgreSQL
@@ -461,7 +484,7 @@ redis-cluster:
 ## @param postgresql.global.postgresql.service.ports.postgresql PostgreSQL service port (overrides `service.ports.postgresql`)
 ## @param postgresql.primary.persistence.size PVC Storage Request for PostgreSQL volume
 postgresql:
-  enabled: true
+  enabled: false
   global:
     postgresql:
       auth:

@@ -38,6 +38,11 @@ dependencies:
     repository: oci://registry-1.docker.io/bitnamicharts
     version: 12.4.1
     condition: postgresql.enabled
+  # Chart release date: 2023-05
+  - name: postgresql-ha
+    repository: oci://registry-1.docker.io/bitnamicharts
+    version: 11.6.1
+    condition: postgresql-ha.enabled
   # Chart release date: 2023-04
   - name: redis-cluster
     repository: oci://registry-1.docker.io/bitnamicharts

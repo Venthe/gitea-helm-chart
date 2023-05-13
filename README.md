@@ -734,11 +734,22 @@ gitea:
 | `redis-cluster.enabled`               | Enable redis                                         | `true`  |
 | `redis-cluster.global.redis.password` | Password for the "Gitea" user (overrides `password`) | `gitea` |
 
+### PostgreSQL-ha
+
+| Name                                                             | Description                                                          | Value   |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------- | ------- |
+| `postgresql-ha.enabled`                                          | Enable PostgreSQL-ha                                                 | `true`  |
+| `postgresql-ha.global.postgresql-ha.auth.password`               | Password for the `gitea` user (overrides `auth.password`)            | `gitea` |
+| `postgresql-ha.global.postgresql-ha.auth.database`               | Name for a custom database to create (overrides `auth.database`)     | `gitea` |
+| `postgresql-ha.global.postgresql-ha.auth.username`               | Name for a custom user to create (overrides `auth.username`)         | `gitea` |
+| `postgresql-ha.global.postgresql-ha.service.ports.postgresql-ha` | PostgreSQL-ha service port (overrides `service.ports.postgresql-ha`) | `5432`  |
+| `postgresql-ha.primary.persistence.size`                         | PVC Storage Request for PostgreSQL-ha volume                         | `10Gi`  |
+
 ### PostgreSQL
 
 | Name                                                    | Description                                                      | Value   |
 | ------------------------------------------------------- | ---------------------------------------------------------------- | ------- |
-| `postgresql.enabled`                                    | Enable PostgreSQL                                                | `true`  |
+| `postgresql.enabled`                                    | Enable PostgreSQL                                                | `false` |
 | `postgresql.global.postgresql.auth.password`            | Password for the `gitea` user (overrides `auth.password`)        | `gitea` |
 | `postgresql.global.postgresql.auth.database`            | Name for a custom database to create (overrides `auth.database`) | `gitea` |
 | `postgresql.global.postgresql.auth.username`            | Name for a custom user to create (overrides `auth.username`)     | `gitea` |
