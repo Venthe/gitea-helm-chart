@@ -629,6 +629,7 @@ gitea:
 | `nodeSelector`                             | NodeSelector for the deployment                        | `{}`  |
 | `tolerations`                              | Tolerations for the deployment                         | `[]`  |
 | `affinity`                                 | Affinity for the deployment                            | `{}`  |
+| `topologySpreadConstraints`                | TopologySpreadConstraints for the deployment           | `[]`  |
 | `dnsConfig`                                | dnsConfig for the deployment                           | `{}`  |
 | `priorityClassName`                        | priorityClassName for the deployment                   | `""`  |
 | `deployment.env`                           | Additional environment variables to pass to containers | `[]`  |

@@ -196,6 +196,9 @@ tolerations: []
 ## @param affinity Affinity for the deployment
 affinity: {}
 
+## @param topologySpreadConstraints TopologySpreadConstraints for the deployment
+topologySpreadConstraints: []
+
 ## @param dnsConfig dnsConfig for the deployment
 dnsConfig: {}
 
