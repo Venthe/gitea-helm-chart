@@ -578,6 +578,7 @@ gitea:
 | `podSecurityContext.fsGroup` | Set the shared file system group for all containers in the pod. | `1000` |
 | `containerSecurityContext`   | Security context                                                | `{}`   |
 | `securityContext`            | Run init and Gitea containers as a specific securityContext     | `{}`   |
+| `podDisruptionBudget`        | Pod disruption budget                                           | `{}`   |
 
 ### Service
 

@@ -84,6 +84,11 @@ containerSecurityContext: {}
 ## @param securityContext Run init and Gitea containers as a specific securityContext
 securityContext: {}
 
+## @param podDisruptionBudget Pod disruption budget
+podDisruptionBudget: {}
+#  maxUnavailable: 1
+#  minAvailable: 1
+
 ## @section Service
 service:
   ## @param service.http.type Kubernetes service type for web traffic
