@@ -32,7 +32,7 @@ This chart provides those dependencies, which can be enabled, or disabled via co
 
 Dependencies:
 
-- PostgreSQL ([configuration](#postgresql))
+- PostgreSQL HA ([configuration](#postgresql))
 - Redis Cluster ([configuration](#cache))
 
 ## Installing
@@ -846,12 +846,12 @@ Otherwise, your defined probe won't be considered after the upgrade.
 
 #### Enable Dependencies
 
-The values to enable the dependencies, such as PostgreSQL, Redis, MySQL and MariaDB have been moved from `gitea.database.builtIn.` to the dependency values.
+The values to enable the dependencies, such as PostgreSQL, Memcached, MySQL and MariaDB have been moved from `gitea.database.builtIn.` to the dependency values.
 
 You can now enable the dependencies as followed:
 
 ```yaml
-redis:
+memcached:
   enabled: true
 
 postgresql:
