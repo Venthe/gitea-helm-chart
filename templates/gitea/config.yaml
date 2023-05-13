@@ -24,7 +24,7 @@ stringData:
   {{- end }}
   
   {{- if eq (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE") "bleve" -}}
-    {{- fail "When using multiple replicas, the issue indexer (gitea.config.indexer.ISSUE_INDEXER_TYPE) must be set to a HA-ready provider such as 'meilisearch' or 'elasticsearch'." -}}
+    {{- fail "When using multiple replicas, the issue indexer (gitea.config.indexer.ISSUE_INDEXER_TYPE) must be set to a HA-ready provider such as 'meilisearch', 'elasticsearch' or 'db' (if the DB is HA-ready)." -}}
   {{- end }}
   {{- if .Values.gitea.config.indexer.REPO_INDEXER_TYPE -}}
     {{- if eq (get .Values.gitea.config.indexer "REPO_INDEXER_TYPE") "bleve" -}}
