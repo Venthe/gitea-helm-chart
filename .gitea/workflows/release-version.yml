@@ -19,24 +19,35 @@ jobs:
           apt update -y
           apt install -y python helm python3-pip apt-transport-https
           pip install awscli
+
+      - name: Import GPG key
+        id: import_gpg
+        uses: https://github.com/crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.GPGSIGN_KEY }}
+          passphrase: ${{ secrets.GPGSIGN_PASSPHRASE }}
+          fingerprint: CC64B1DB67ABBEECAB24B6455FC346329753F4B0
+
+      # Using helm gpg plugin as 'helm package --sign' has issues with gpg2: https://github.com/helm/helm/issues/2843
       - name: package chart
         run: |
+          # FIXME: use upstream after https://github.com/technosophos/helm-gpg/issues/1 is solved
+          helm plugin install https://github.com/pat-s/helm-gpg
           helm dependency update
           helm package --version "${GITHUB_REF#refs/tags/v}" ./
+          helm gpg sign "gitea-${GITHUB_REF#refs/tags/v}.tgz"
           mkdir gitea
           mv gitea*.tgz gitea/
           curl -L -o gitea/index.yaml https://dl.gitea.com/charts/index.yaml
           helm repo index gitea/ --url https://dl.gitea.io/charts --merge gitea/index.yaml
+
       - name: aws credential configure
         uses: https://github.com/aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-      - name: install aws cli
-        run: |
-          apt update -y &&
-          pip install awscli
+
       - name: Copy files to S3 and clear cache
         run: |
           aws s3 sync gitea/ s3://${{ secrets.AWS_S3_BUCKET}}/charts/
