@@ -294,13 +294,8 @@ https
     {{- if not (get .Values.gitea.config.session "PROVIDER_CONFIG") -}}
     {{- $_ := set .Values.gitea.config.session "PROVIDER_CONFIG" (include "redis.dns" .) -}}
     {{- end -}}
-  {{- if and (not (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE")) (not .Values.meilisearch.enabled) -}}
+  {{- if and (not (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE")) (not (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE") "meilisearch") -}}
    {{- $_ := set .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE" "db" -}}
-  {{- else if and (not (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE")) (.Values.meilisearch.enabled) -}}
-   {{- $_ := set .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE" "meilisearch" -}}
-  {{- end -}}
-  {{- if and (not (get .Values.gitea.config.indexer "ISSUE_INDEXER_CONN_STR")) (eq (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE") "meilisearch") -}}
-    {{- $_ := set .Values.gitea.config.indexer "ISSUE_INDEXER_CONN_STR" (include "meilisearch.dns" .) -}}
   {{- end -}}
   {{- end -}}
 {{- end -}}
