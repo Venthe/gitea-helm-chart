@@ -173,6 +173,8 @@ spec:
               value: /data
             - name: GITEA_TEMP
               value: /tmp/gitea
+            - name: HOME
+              value: /data/gitea/git
             {{- if .Values.gitea.ldap }}
             {{- range $idx, $value := .Values.gitea.ldap }}
             {{- if $value.existingSecret }}
@@ -268,6 +270,8 @@ spec:
               value: /tmp/gitea
             - name: TMPDIR
               value: /tmp/gitea
+            - name: HOME
+              value: /data/gitea/git
             {{- if .Values.signing.enabled }}
             - name: GNUPGHOME
               value: {{ .Values.signing.gpgHome }}
