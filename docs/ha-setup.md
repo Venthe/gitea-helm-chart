@@ -26,7 +26,7 @@ In addition, the following components are required for full HA-readiness:
 - A HA-ready issue (and optionally code) indexer: `elasticsearch` or `meilisearch`
 - A HA-ready external object/asset storage (`minio`) (optional, assets can also be stored on the RWX file-system)
 - A HA-ready cache (`redis-cluster`)
-- A HA-ready DB 
+- A HA-ready DB
 
 `postgres.enabled`, which default to `true`, must be set to `false` for a HA setup.
 The default `postgres` chart dependency is not HA-ready (there's a dedicated `postgres-ha` chart).
@@ -103,6 +103,8 @@ While most of these can be stored on the RWX file-system, it is recommended to u
 By default the chart provisions a single RWO volume to store everything (repos, avatars, packages, etc.).
 This volume cannot be mounted by multiple pods.
 Hence, a RWX volume is required and (optionally) an external HA-ready object storage.
+
+> **Note:** Double-check that the file permissions are set correctly on the RWX volume! That is everything should be owned by the `git` user which usually has `uid=1000` and `gid=1000`.
 
 To use `minio` you need to deploy and configure an external `minio` instance yourself and explicitly define the `STORAGE_TYPE` values as shown below.
 
