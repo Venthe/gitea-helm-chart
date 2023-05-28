@@ -38,8 +38,8 @@ image:
   repository: gitea/gitea
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
-  # Overrides the image tag if set
-  digest: ""
+  # Overrides the image tag if set (Example: sha256:b28e8f3089b52ebe6693295df142f8c12eff354e9a4a5bfbb5c10f296c3a537a)
+  digest: "" 
   pullPolicy: Always
   rootless: false # only possible when running 1.14 or later
 
