@@ -1,0 +1,15 @@
+suite: Statefulset template (image configuration)
+release:
+  name: gitea-unittests
+  namespace: testing
+templates:
+  - templates/gitea/statefulset.yaml
+tests:
+  - it: proper image.digest parsing
+    template: templates/gitea/statefulset.yaml
+    set:
+      image.digest: sha256:b28e8f3089b52ebe6693295df142f8c12eff354e9a4a5bfbb5c10f296c3a537a
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: "gitea/gitea@sha256:b28e8f3089b52ebe6693295df142f8c12eff354e9a4a5bfbb5c10f296c3a537a"
