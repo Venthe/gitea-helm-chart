@@ -7,7 +7,6 @@ templates:
 tests:
   - it: runs gpg in batch mode
     set:
-      image.rootless: false
       signing.enabled: true
       signing.privateKey: |-
         -----BEGIN PGP PRIVATE KEY BLOCK-----
@@ -22,8 +21,6 @@ tests:
 
             gpg --batch --import /raw/private.asc
   - it: skips gpg script block for disabled signing
-    set:
-      image.rootless: false
     asserts:
       - equal:
           path: stringData["init_directory_structure.sh"]
@@ -33,18 +30,15 @@ tests:
             set -euo pipefail
 
             set -x
-            chown 1000:1000 /data
             mkdir -p /data/git/.ssh
             chmod -R 700 /data/git/.ssh
             [ ! -d /data/gitea/conf ] && mkdir -p /data/gitea/conf
 
             # prepare temp directory structure
             mkdir -p "${GITEA_TEMP}"
-            chown 1000:1000 "${GITEA_TEMP}"
             chmod ug+rwx "${GITEA_TEMP}"
   - it: adds gpg script block for enabled signing
     set:
-      image.rootless: false
       signing.enabled: true
       signing.privateKey: |-
         -----BEGIN PGP PRIVATE KEY BLOCK-----
@@ -59,14 +53,12 @@ tests:
             set -euo pipefail
 
             set -x
-            chown 1000:1000 /data
             mkdir -p /data/git/.ssh
             chmod -R 700 /data/git/.ssh
             [ ! -d /data/gitea/conf ] && mkdir -p /data/gitea/conf
 
             # prepare temp directory structure
             mkdir -p "${GITEA_TEMP}"
-            chown 1000:1000 "${GITEA_TEMP}"
             chmod ug+rwx "${GITEA_TEMP}"
 
             if [ ! -d "${GNUPGHOME}" ]; then
