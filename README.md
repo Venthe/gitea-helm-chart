@@ -655,6 +655,17 @@ gitea:
 | `statefulset.labels`                        | Labels for the statefulset                             | `{}`  |
 | `statefulset.annotations`                   | Annotations for the Gitea StatefulSet to be created    | `{}`  |
 
+### ServiceAccount
+
+| Name                                          | Description                                                                                                                               | Value   |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `serviceAccount.create`                       | Enable the creation of a ServiceAccount                                                                                                   | `false` |
+| `serviceAccount.name`                         | Name of the created ServiceAccount, defaults to release name. Can also link to an externally provided ServiceAccount that should be used. | `""`    |
+| `serviceAccount.automountServiceAccountToken` | Enable/disable auto mounting of the service account token                                                                                 | `false` |
+| `serviceAccount.imagePullSecrets`             | Image pull secrets, available to the ServiceAccount                                                                                       | `[]`    |
+| `serviceAccount.annotations`                  | Custom annotations for the ServiceAccount                                                                                                 | `{}`    |
+| `serviceAccount.labels`                       | Custom labels for the ServiceAccount                                                                                                      | `{}`    |
+
 ### Persistence
 
 | Name                         | Description                                                                                           | Value               |

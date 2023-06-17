@@ -1,0 +1,32 @@
+suite: ServiceAccount template (reference)
+release:
+  name: gitea-unittests
+  namespace: testing
+templates:
+  - templates/gitea/serviceaccount.yaml
+  - templates/gitea/statefulset.yaml
+  - templates/gitea/config.yaml
+tests:
+  - it: does not modify the StatefulSet by default
+    template: templates/gitea/statefulset.yaml
+    asserts:
+      - notExists:
+          path: spec.serviceAccountName
+  - it: adds the reference to the StatefulSet with serviceAccount.create=true
+    template: templates/gitea/statefulset.yaml
+    set:
+      serviceAccount.create: true
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: gitea-unittests
+  - it: allows referencing an externally created ServiceAccount to the StatefulSet
+    template: templates/gitea/statefulset.yaml
+    set:
+      serviceAccount:
+        create: false # explicitly set to define rendering behavior
+        name: "externally-existing-serviceaccount"
+    asserts:
+      - equal:
+          path: spec.template.spec.serviceAccountName
+          value: externally-existing-serviceaccount

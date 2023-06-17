@@ -61,3 +61,5 @@ $ helm plugin install https://github.com/helm-unittest/helm-unittest
 # run the unittests
 make unittests
 ```
+
+See [plugin documentation](https://github.com/helm-unittest/helm-unittest/blob/v0.3.3/DOCUMENT.md) for usage instructions.
