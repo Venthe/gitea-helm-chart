@@ -809,6 +809,9 @@ With respect to `values.yaml`, parameters `username`, `database` and `password` 
 `persistence` has also been regrouped under the `primary` key.
 Please adjust your `values.yaml` accordingly.
 
+**Attention**: The Postgres upgrade is not automatically handled by the chart and must be done by yourself. See [this comment](https://gitea.com/gitea/helm-chart/issues/452#issuecomment-740885) for an extensive walkthrough.
+We again highly encourage users to use an external (managed) database for production instances.
+
 ### To 7.0.0
 
 #### Private GPG key configuration for Gitea signing actions
