@@ -19,6 +19,9 @@ stringData:
   assertions: |
 {{- /* multiple replicas assertions */ -}}
 {{- if gt .Values.replicaCount 1.0 -}}
+  {{- if .Values.gitea.config.cron.git_gc_repos.enabled -}}
+    {{- fail "Invoking the garbage collector via CRON is not yet supported when running with multiple replicas. Please set 'git_gc_repos.enabled = false'." -}}
+  {{- end }}
   {{- if eq (first .Values.persistence.accessModes) "ReadWriteOnce" -}}
     {{- fail "When using multiple replicas, a RWX file system is required and gitea.persistence.accessModes[0] must be set to ReadWriteMany." -}}
   {{- end }}
