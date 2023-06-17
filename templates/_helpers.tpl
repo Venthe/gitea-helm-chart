@@ -376,3 +376,7 @@ https
 {{- define "gitea.gpg-key-secret-name" -}}
 {{ default (printf "%s-gpg-key" (include "gitea.fullname" .)) .Values.signing.existingSecret }}
 {{- end -}}
+
+{{- define "gitea.serviceAccountName" -}}
+{{ .Values.serviceAccount.name | default (include "gitea.fullname" .) }}
+{{- end -}}

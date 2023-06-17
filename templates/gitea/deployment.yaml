@@ -46,6 +46,9 @@ spec:
       {{- if .Values.schedulerName }}
       schedulerName: "{{ .Values.schedulerName }}"
       {{- end }}
+      {{- if (or .Values.serviceAccount.create .Values.serviceAccount.name) }}
+      serviceAccountName: {{ include "gitea.serviceAccountName" . }}
+      {{- end }}
       {{- if .Values.priorityClassName }}
       priorityClassName: "{{ .Values.priorityClassName }}"
       {{- end }}
@@ -180,6 +183,10 @@ spec:
               value: /data
             - name: GITEA_TEMP
               value: /tmp/gitea
+            {{- if .Values.image.rootless }}
+            - name: HOME
+              value: /data/gitea/git
+            {{- end }}
             {{- if .Values.gitea.ldap }}
             {{- range $idx, $value := .Values.gitea.ldap }}
             {{- if $value.existingSecret }}
@@ -275,6 +282,10 @@ spec:
               value: /tmp/gitea
             - name: TMPDIR
               value: /tmp/gitea
+            {{- if .Values.image.rootless }}
+            - name: HOME
+              value: /data/gitea/git
+            {{- end }}
             {{- if .Values.signing.enabled }}
             - name: GNUPGHOME
               value: {{ .Values.signing.gpgHome }}
