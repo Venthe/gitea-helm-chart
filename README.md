@@ -1009,7 +1009,7 @@ See [OAuth2 Settings](#oauth2-settings) and [LDAP Settings](#ldap-settings) sect
 
 <summary>To 4.0.0</summary>
 
-**Ingress changes**
+#### Ingress changes
 
 To provide a more flexible Ingress configuration we now support not only host settings but also provide configuration for the path and pathType.
 So this change changes the hosts from a simple string list, to a list containing a more complex object for more configuration.
@@ -1041,12 +1041,12 @@ paths:
     pathType: Prefix
 ```
 
-**Dropped kebab-case support**
+#### Dropped kebab-case support
 
 In 3.x.x it was possible to provide an ldap configuration via kebab-case, this support has now been dropped and only camel case is supported.
 See [LDAP section](#ldap-settings) for more information.
 
-##### Dependency update**
+#### Dependency update
 
 The chart comes with multiple databases and Memcached as dependency, the latest release updated the dependencies.
 
@@ -1056,7 +1056,7 @@ The chart comes with multiple databases and Memcached as dependency, the latest 
 
 If you're using the builtin databases you will most likely redeploy the chart in order to update the database correctly.
 
-##### Execution of initPreScript**
+#### Execution of initPreScript
 
 Generally spoken, this might not be a breaking change, but it is worth to be mentioned.
 
