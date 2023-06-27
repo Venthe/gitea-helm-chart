@@ -21,7 +21,6 @@
 - [Configure commit signing](#configure-commit-signing)
 - [Metrics and profiling](#metrics-and-profiling)
 - [Pod annotations](#pod-annotations)
-- [Themes](#themes)
 - [Chart parameters](#chart-parameters)
   - [Global](#global)
   - [Image](#image)
@@ -605,48 +604,6 @@ Annotations can be added to the Gitea pod.
 ```yaml
 gitea:
   podAnnotations: {}
-```
-
-## Themes
-
-Custom themes can be added via k8s secrets and referencing them in `values.yaml`.
-
-```yaml
-extraVolumes:
-  - name: gitea-themes
-    secret:
-      secretName: gitea-themes
-
-extraVolumeMounts:
-  - name: gitea-themes
-    readOnly: true
-    mountPath: "/data/gitea/public/css"
-```
-
-The secret can be created via `terraform`:
-
-```hcl
-resource "kubernetes_secret" "gitea-themes" {
-  metadata {
-    name      = "gitea-themes"
-    namespace = "gitea"
-  }
-
-  data = {
-    "theme-custom.css"      = "${file("FULL-PATH-TO-CSS")}"
-    "theme-custom-dark.css" = "${file("FULL-PATH-TO-CSS")}"
-  }
-
-  type = "Opaque"
-
-  depends_on = [kubernetes_namespace.gitea]
-}
-```
-
-or natively via `kubectl`:
-
-```bash
-kubectl create secret generic gitea-themes --from-file={{FULL-PATH-TO-CSS}} --namespace gitea
 ```
 
 ## Chart parameters
