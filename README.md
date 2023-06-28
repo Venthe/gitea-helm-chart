@@ -21,6 +21,7 @@
 - [Configure commit signing](#configure-commit-signing)
 - [Metrics and profiling](#metrics-and-profiling)
 - [Pod annotations](#pod-annotations)
+- [Themes](#themes)
 - [Parameters](#parameters)
   - [Global](#global)
   - [Image](#image)
@@ -606,7 +607,7 @@ gitea:
   podAnnotations: {}
 ```
 
-### Themes
+## Themes
 
 Custom themes can be added via k8s secrets and referencing them in `values.yaml`.
 
