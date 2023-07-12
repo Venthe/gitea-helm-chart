@@ -2,11 +2,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  {{- if .Values.persistence.claimName }}
   name: {{ .Values.persistence.claimName }}
-  {{- else }}
-  name: {{default (print (include "gitea.fullname" .) "-shared-storage" ) }}
-  {{- end }}
   namespace: {{ $.Release.Namespace }}
   annotations:
 {{ .Values.persistence.annotations | toYaml | indent 4}}
