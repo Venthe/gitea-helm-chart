@@ -236,13 +236,15 @@ serviceAccount:
   name: ""
   automountServiceAccountToken: false
   imagePullSecrets: []
-    # - name: private-registry-access
+  # - name: private-registry-access
   annotations: {}
   labels: {}
 
 ## @section Persistence
 #
 ## @param persistence.enabled Enable persistent storage
+## @param persistence.create Whether to create the persistentVolumeClaim for shared storage
+## @param persistence.mount Whether the persistentVolumeClaim should be mounted (even if not created)
 ## @param persistence.existingClaim Use an existing claim to store repository information
 ## @param persistence.size Size for persistence to store repo information
 ## @param persistence.accessModes AccessMode for persistence
@@ -252,6 +254,8 @@ serviceAccount:
 ## @param persistence.subPath Subdirectory of the volume to mount at
 persistence:
   enabled: true
+  create: true
+  mount: true
   existingClaim:
   size: 10Gi
   accessModes:

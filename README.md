@@ -44,6 +44,7 @@
   - [Advanced](#advanced)
 - [Contributing](#contributing)
 - [Upgrading](#upgrading)
+  - [Transitioning from previous versions](#transitioning-from-previous-versions)
 
 [Gitea](https://gitea.io/en-us/) is a community managed lightweight code hosting solution written in Go.
 It is published under the MIT license.
@@ -739,6 +740,8 @@ kubectl create secret generic gitea-themes --from-file={{FULL-PATH-TO-CSS}} --na
 | Name                         | Description                                                                                           | Value               |
 | ---------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------- |
 | `persistence.enabled`        | Enable persistent storage                                                                             | `true`              |
+| `persistence.create`         | Whether to create the persistentVolumeClaim for shared storage                                        | `true`              |
+| `persistence.mount`          | Whether the persistentVolumeClaim should be mounted (even if not created)                             | `true`              |
 | `persistence.existingClaim`  | Use an existing claim to store repository information                                                 | `nil`               |
 | `persistence.size`           | Size for persistence to store repo information                                                        | `10Gi`              |
 | `persistence.accessModes`    | AccessMode for persistence                                                                            | `["ReadWriteOnce"]` |
@@ -883,12 +886,14 @@ This chart release comes with many breaking changes while aiming for a HA-ready 
 - Switch from `Statefulset` to `Deployment`
 - Switch from `Memcached` to `redis-cluster` as the default session and queue provider
 - Switch from `postgres` to `postgres-ha` as the default database provider
-- A chart-internal PVC definition
+- A chart-internal PVC bootstrapping logic
+  - New `persistence.mount`: whether to mount an existent PVC (even if not creating it)
+  - New `persistence.create`: whether to create a new PVC
 
 While not required, we recommend to start with a RWX PV for new installations.
 A RWX volume is required for installation aiming for HA.
 
-#### Transitioning from previous versions
+### Transitioning from previous versions
 
 - If you want to stay with a RWO PV and haven't used `persistence.existingClaim` before, you need to define it now with the name of your existing PVC.
   Otherwise the chart will create a new PVC with an empty volume.
