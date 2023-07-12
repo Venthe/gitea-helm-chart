@@ -48,7 +48,7 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
   pullPolicy: Always
-  rootless: false # only possible when running 1.14 or later
+  rootless: true
 
 ## @param imagePullSecrets Secret to use for pulling the image
 imagePullSecrets: []
