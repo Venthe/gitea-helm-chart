@@ -245,7 +245,7 @@ serviceAccount:
 ## @param persistence.enabled Enable persistent storage
 ## @param persistence.create Whether to create the persistentVolumeClaim for shared storage
 ## @param persistence.mount Whether the persistentVolumeClaim should be mounted (even if not created)
-## @param persistence.existingClaim Use an existing claim to store repository information
+## @param persistence.claimName Use an existing claim to store repository information
 ## @param persistence.size Size for persistence to store repo information
 ## @param persistence.accessModes AccessMode for persistence
 ## @param persistence.labels Labels for the persistence volume claim to be created
@@ -256,7 +256,7 @@ persistence:
   enabled: true
   create: true
   mount: true
-  existingClaim:
+  claimName:
   size: 10Gi
   accessModes:
     - ReadWriteOnce

@@ -367,7 +367,7 @@ If you want to manage your own PVC you can simply pass the PVC name to the chart
 ```yaml
 persistence:
   enabled: true
-  existingClaim: MyAwesomeGiteaClaim
+  claimName: MyAwesomeGiteaClaim
 ```
 
 In case that persistence has been disabled it will simply use an empty dir volume.
@@ -379,7 +379,7 @@ You can interact with the postgres settings as displayed in the following exampl
 postgresql:
   persistence:
     enabled: true
-    existingClaim: MyAwesomeGiteaPostgresClaim
+    claimName: MyAwesomeGiteaPostgresClaim
 ```
 
 ### Admin User
@@ -742,7 +742,7 @@ kubectl create secret generic gitea-themes --from-file={{FULL-PATH-TO-CSS}} --na
 | `persistence.enabled`        | Enable persistent storage                                                                             | `true`              |
 | `persistence.create`         | Whether to create the persistentVolumeClaim for shared storage                                        | `true`              |
 | `persistence.mount`          | Whether the persistentVolumeClaim should be mounted (even if not created)                             | `true`              |
-| `persistence.existingClaim`  | Use an existing claim to store repository information                                                 | `nil`               |
+| `persistence.claimName`  | Use an existing claim to store repository information                                                 | `nil`               |
 | `persistence.size`           | Size for persistence to store repo information                                                        | `10Gi`              |
 | `persistence.accessModes`    | AccessMode for persistence                                                                            | `["ReadWriteOnce"]` |
 | `persistence.labels`         | Labels for the persistence volume claim to be created                                                 | `{}`                |
@@ -895,7 +895,7 @@ A RWX volume is required for installation aiming for HA.
 
 ### Transitioning from previous versions
 
-- If you want to stay with a RWO PV and haven't used `persistence.existingClaim` before, you need to define it now with the name of your existing PVC.
+- If you want to stay with a RWO PV and haven't used `persistence.claimName` before, you need to define it now with the name of your existing PVC.
   Otherwise the chart will create a new PVC with an empty volume.
 - If you want to switch to a RWX volume and go for HA, you need to backup the data stored under `/data`, let the chart create a new RWX PV and restore it to this location.
   This can be done via

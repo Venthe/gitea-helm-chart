@@ -393,8 +393,8 @@ spec:
     {{- if .Values.persistence.mount }}
         - name: data
           persistentVolumeClaim:
-      {{- if .Values.persistence.existingClaim }}
-            claimName: {{ .Values.persistence.existingClaim }}
+      {{- if .Values.persistence.claimName }}
+            claimName: {{ .Values.persistence.claimName }}
       {{- else }}
             claimName: {{default (print (include "gitea.fullname" .) "-shared-storage" ) }}
       {{- end }}
