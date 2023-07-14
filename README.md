@@ -226,16 +226,16 @@ We also support to directly interact with the generated _app.ini_.
 To inject self defined variables into the _app.ini_ a certain format needs to be honored.
 This is described in detail on the [env-to-ini](https://github.com/go-gitea/gitea/tree/main/contrib/environment-to-ini) page.
 
-Note that the Prefix on this helm chart is `ENV_TO_INI`.
+Note that the Prefix on this helm chart is `GITEA`.
 
 For example a database setting needs to have the following format:
 
 ```yaml
 gitea:
   additionalConfigFromEnvs:
-    - name: ENV_TO_INI__DATABASE__HOST
+    - name: GITEA__DATABASE__HOST
       value: my.own.host
-    - name: ENV_TO_INI__DATABASE__PASSWD
+    - name: GITEA__DATABASE__PASSWD
       valueFrom:
         secretKeyRef:
           name: postgres-secret
@@ -244,7 +244,7 @@ gitea:
 
 Priority (highest to lowest) for defining app.ini variables:
 
-1. Environment variables prefixed with `ENV_TO_INI`
+1. Environment variables prefixed with `GITEA`
 1. Additional config sources
 1. Values defined in `gitea.config`
 
