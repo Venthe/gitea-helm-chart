@@ -237,8 +237,6 @@ We also support to directly interact with the generated _app.ini_.
 To inject self defined variables into the _app.ini_ a certain format needs to be honored.
 This is described in detail on the [env-to-ini](https://github.com/go-gitea/gitea/tree/main/contrib/environment-to-ini) page.
 
-Note that the Prefix on this helm chart is `GITEA`.
-
 For example a database setting needs to have the following format:
 
 ```yaml
