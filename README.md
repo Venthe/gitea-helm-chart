@@ -44,7 +44,6 @@
   - [Advanced](#advanced)
 - [Contributing](#contributing)
 - [Upgrading](#upgrading)
-  - [Transitioning from previous versions](#transitioning-from-previous-versions)
 
 [Gitea](https://gitea.io/en-us/) is a community managed lightweight code hosting solution written in Go.
 It is published under the MIT license.
@@ -879,13 +878,15 @@ See [CONTRIBUTORS GUIDE](CONTRIBUTING.md) for details.
 ## Upgrading
 
 This section lists major and breaking changes of each Helm Chart version.
-Please read them carefully to upgrade successfully.
+Please read them carefully to upgrade successfully, especially the change of the **default database backend**!
+If you miss this, blindly upgrading may delete your Postgres instance and you may lose your data!
 
 <details>
 
 <summary>To 9.0.0</summary>
 
-This chart release comes with many breaking changes while aiming for a HA-ready setup:
+This chart release comes with many breaking changes while aiming for a HA-ready setup.
+Please go through all of them carefully to perform a successful upgrade.
 
 - Switch from `Statefulset` to `Deployment`
 - Switch from `Memcached` to `redis-cluster` as the default session and queue provider
@@ -898,14 +899,40 @@ This chart release comes with many breaking changes while aiming for a HA-ready 
 While not required, we recommend to start with a RWX PV for new installations.
 A RWX volume is required for installation aiming for HA.
 
-### Transitioning from previous versions
+If you want to stay with a pre-existing RWO PV, you need to set
 
-- If you want to stay with a RWO PV and haven't used `persistence.claimName` before, you need to define it now with the name of your existing PVC.
-  Otherwise the chart will create a new PVC with an empty volume.
-- If you want to switch to a RWX volume and go for HA, you need to backup the data stored under `/data`, let the chart create a new RWX PV and restore it to this location.
-  This can be done via
-- If you are running with a non-HA PG DB from a previous chart release, you need to set `postgresql-ha.enabled=false` and `postgresql.enabled=true`.
-  This is needed to stay with your existing single-instance DB (as the HA-variant is the new default).
+- `persistence.mount=true`
+- `persistence.create=false`
+- `persistence.claimName` to the name of your existing PVC.
+
+If you do not, Gitea will create a new PVC which will create a new PV.
+If this happened to you by accident, you can still recover your data by setting using the settings from above.
+
+If you want to stay with a `memcache` instead of `redis-cluster`, you need to deploy `memcache` manually (e.g. from [bitnami](https://github.com/bitnami/charts/tree/main/bitnami/memcached)) and set
+
+- `cache.HOST = "<memcache connection string>"`
+- `cache.ADAPTER = "memcache"`
+- `session.PROVIDER = "memcache"`
+- `session.PROVIDER_CONFIG = "<memcache connection string>"`
+- `queue.TYPE = "memcache"`
+- `queue.CONN_STR = "<memcache connection string>"`
+
+The `memcache` connection string has the schema `memcache://<memcache service name>:<memcache service port>`, e.g. `gitea-memcached.gitea.svc.cluster.local:11211`.
+The first item here (`<memcache service name>`) will be different compared to the example if you deploy `memcache` yourself.
+
+The above changes are motivated by the idea to slimily dependencies but also have HA-ready ones.
+The previous `memcache` default was not HA-ready, hence we decided to switch to `redis-cluster` by default.
+
+<!-- markdownlint-disable-next-line -->
+**Transitioning from a RWO to RWX Persistent Volume**
+
+If you want to switch to a RWX volume and go for HA, you need to backup the data stored under `/data`, let the chart create a new RWX PV and restore it to this location.
+
+<!-- markdownlint-disable-next-line -->
+**Transitioning from Postgres to Postgres HA**
+
+If you are running with a non-HA PG DB from a previous chart release, you need to set `postgresql-ha.enabled=false` and `postgresql.enabled=true`.
+This is needed to stay with your existing single-instance DB (as the HA-variant is the new default).
 
 </details>
 
