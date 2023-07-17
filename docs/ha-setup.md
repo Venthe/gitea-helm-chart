@@ -1,5 +1,7 @@
 # High Availability
 
+**Experimental**
+
 All components (in-memory DB, volume/asset storage, code indexer) used by Gitea must be deployed in a HA-ready fashion to achieve a full HA-ready Gitea deployment.
 The following document explains how to achieve this for all individual components.
 
@@ -167,5 +169,7 @@ gitea:
 
 ## Known issues
 
-Currently Cron jobs are run on all replicas as no leader election is implemented.
-See [https://github.com/go-gitea/gitea/issues/13791](https://github.com/go-gitea/gitea/issues/13791) for a discussion and possible solution.
+- Currently Cron jobs are run on all replicas as no leader election is implemented.
+  See [https://github.com/go-gitea/gitea/issues/13791](https://github.com/go-gitea/gitea/issues/13791) for a discussion and possible solution.
+
+- Running with multiple replicas slows down Gitea a bit, i.e. page loading time increases. 

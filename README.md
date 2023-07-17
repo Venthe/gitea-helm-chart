@@ -93,7 +93,10 @@ When upgrading, please refer to the [Upgrading](#upgrading) section at the botto
 
 ## High Availability
 
-Deploying a HA-ready Gitea instance requires quite some effort including additional dependencies.
+Since version 9.0.0 this chart has experimental support for running Gitea and it's dependencies in a HA setup.
+The setup is still experimental and care must be taken for production use as Gitea core is not yet officially HA-ready.
+
+Deploying a HA-ready Gitea instance requires some effort including using HA-ready dependencies.
 See the [HA Setup](docs/ha-setup.md) document for more details.
 
 ## Configuration
