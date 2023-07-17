@@ -887,6 +887,7 @@ If you miss this, blindly upgrading may delete your Postgres instance and you ma
 
 This chart release comes with many breaking changes while aiming for a HA-ready setup.
 Please go through all of them carefully to perform a successful upgrade.
+Here's a brief summary again, followed by more detailed migration instructions:
 
 - Switch from `Statefulset` to `Deployment`
 - Switch from `Memcached` to `redis-cluster` as the default session and queue provider
@@ -905,8 +906,8 @@ If you want to stay with a pre-existing RWO PV, you need to set
 - `persistence.create=false`
 - `persistence.claimName` to the name of your existing PVC.
 
-If you do not, Gitea will create a new PVC which will create a new PV.
-If this happened to you by accident, you can still recover your data by setting using the settings from above.
+If you do not, Gitea will create a new PVC which will in turn create a new PV.
+If this happened to you by accident, you can still recover your data by setting using the settings from above in a subsequent run.
 
 If you want to stay with a `memcache` instead of `redis-cluster`, you need to deploy `memcache` manually (e.g. from [bitnami](https://github.com/bitnami/charts/tree/main/bitnami/memcached)) and set
 
@@ -917,10 +918,10 @@ If you want to stay with a `memcache` instead of `redis-cluster`, you need to de
 - `queue.TYPE = "memcache"`
 - `queue.CONN_STR = "<memcache connection string>"`
 
-The `memcache` connection string has the schema `memcache://<memcache service name>:<memcache service port>`, e.g. `gitea-memcached.gitea.svc.cluster.local:11211`.
+The `memcache` connection string has the scheme `memcache://<memcache service name>:<memcache service port>`, e.g. `gitea-memcached.gitea.svc.cluster.local:11211`.
 The first item here (`<memcache service name>`) will be different compared to the example if you deploy `memcache` yourself.
 
-The above changes are motivated by the idea to slimily dependencies but also have HA-ready ones.
+The above changes are motivated by the idea to tidy dependencies but also have HA-ready ones at the same time.
 The previous `memcache` default was not HA-ready, hence we decided to switch to `redis-cluster` by default.
 
 <!-- markdownlint-disable-next-line -->
