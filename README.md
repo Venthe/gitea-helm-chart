@@ -893,6 +893,7 @@ This chart release comes with many breaking changes while aiming for a HA-ready 
 - A chart-internal PVC bootstrapping logic
   - New `persistence.mount`: whether to mount an existent PVC (even if not creating it)
   - New `persistence.create`: whether to create a new PVC
+  - Renamed `persistence.existingClaim` to `persistence.claimName`
 
 While not required, we recommend to start with a RWX PV for new installations.
 A RWX volume is required for installation aiming for HA.
