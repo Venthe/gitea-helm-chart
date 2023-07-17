@@ -927,12 +927,20 @@ The previous `memcache` default was not HA-ready, hence we decided to switch to 
 <!-- markdownlint-disable-next-line -->
 **Transitioning from a RWO to RWX Persistent Volume**
 
-If you want to switch to a RWX volume and go for HA, you need to backup the data stored under `/data`, let the chart create a new RWX PV and restore it to this location.
+If you want to switch to a RWX volume and go for HA, you need to
+
+1. Backup the data stored under `/data`
+2. Let the chart create a new RWX PV (or do it statically yourself)
+3. Restore the backup to the same location in the new PV
 
 <!-- markdownlint-disable-next-line -->
 **Transitioning from Postgres to Postgres HA**
 
-If you are running with a non-HA PG DB from a previous chart release, you need to set `postgresql-ha.enabled=false` and `postgresql.enabled=true`.
+If you are running with a non-HA PG DB from a previous chart release, you need to set
+
+- `postgresql-ha.enabled=false`
+- `postgresql.enabled=true`
+
 This is needed to stay with your existing single-instance DB (as the HA-variant is the new default).
 
 </details>
