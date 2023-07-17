@@ -167,7 +167,8 @@ stringData:
 
       env2ini::log "...Initial secrets generated\n"
     }
-
+    
+    # save existing envs prior to script execution. Necessary to keep order of preexisting and custom envs
     env | (grep GITEA || [[ $? == 1 ]]) > /tmp/existing-envs
     
     # MUST BE CALLED BEFORE OTHER CONFIGURATION
@@ -195,4 +196,4 @@ stringData:
       unset GITEA__SERVER__LFS_JWT_SECRET
     fi
 
-    environment-to-ini -o $GITEA_APP_INI 
+    environment-to-ini -o $GITEA_APP_INI
