@@ -23,7 +23,6 @@ spec:
       {{- if .Values.deployment.labels }}
       {{- toYaml .Values.deployment.labels | nindent 6 }}
       {{- end }}
-  serviceName: {{ include "gitea.fullname" . }}
   template:
     metadata:
       annotations:
