@@ -754,6 +754,7 @@ kubectl create secret generic gitea-themes --from-file={{FULL-PATH-TO-CSS}} --na
 | `persistence.annotations`    | Annotations for the persistence volume claim to be created                                            | `{}`                   |
 | `persistence.storageClass`   | Name of the storage class to use                                                                      | `nil`                  |
 | `persistence.subPath`        | Subdirectory of the volume to mount at                                                                | `nil`                  |
+| `persistence.volumeName`     | Name of persistent volume in PVC                                                                      | `""`                   |
 | `extraVolumes`               | Additional volumes to mount to the Gitea deployment                                                   | `[]`                   |
 | `extraContainerVolumeMounts` | Mounts that are only mapped into the Gitea runtime/main container, to e.g. override custom templates. | `[]`                   |
 | `extraInitVolumeMounts`      | Mounts that are only mapped into the init-containers. Can be used for additional preconfiguration.    | `[]`                   |
