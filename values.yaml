@@ -498,9 +498,9 @@ postgresql-ha:
       database: gitea
       username: gitea
       # FIXME: https://github.com/bitnami/charts/issues/17052
-      postgresPassword: changeme 
+      postgresPassword: changeme
       # FIXME: https://github.com/bitnami/charts/issues/17052
-      repmgrPassword: changeme 
+      repmgrPassword: changeme
   service:
     ports:
       postgresql: 5432
