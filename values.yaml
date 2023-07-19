@@ -252,6 +252,7 @@ serviceAccount:
 ## @param persistence.annotations Annotations for the persistence volume claim to be created
 ## @param persistence.storageClass Name of the storage class to use
 ## @param persistence.subPath Subdirectory of the volume to mount at
+## @param persistence.volumeName Name of persistent volume in PVC
 persistence:
   enabled: true
   create: true
@@ -264,6 +265,7 @@ persistence:
   annotations: {}
   storageClass:
   subPath:
+  volumeName: ""
 
 ## @param extraVolumes Additional volumes to mount to the Gitea deployment
 extraVolumes: []
