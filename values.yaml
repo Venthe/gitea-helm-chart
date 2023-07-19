@@ -484,15 +484,14 @@ redis-cluster:
 ## @param postgresql-ha.global.postgresql.password Password for the `gitea` user (overrides `auth.password`)
 ## @param postgresql-ha.global.postgresql.database Name for a custom database to create (overrides `auth.database`)
 ## @param postgresql-ha.global.postgresql.username Name for a custom user to create (overrides `auth.username`)
-## @param postgresql-ha.postgresql.password Postgres Password
 ## @param postgresql-ha.postgresql.repmgrPassword Repmgr Password
+## @param postgresql-ha.postgresql.postgresPassword postgres Password
 ## @param postgresql-ha.pgpool.adminPassword pgpool adminPassword
 ## @param postgresql-ha.service.ports.postgresql postgresql service port (overrides `service.ports.postgresql`)
 ## @param postgresql-ha.primary.persistence.size PVC Storage Request for postgresql-ha volume
 postgresql-ha:
   global:
     postgresql:
-      repmgrPassword: changeme2
       password: changeme4
       database: gitea
       username: gitea
