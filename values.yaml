@@ -249,7 +249,7 @@ serviceAccount:
 ## @param persistence.size Size for persistence to store repo information
 ## @param persistence.accessModes AccessMode for persistence
 ## @param persistence.labels Labels for the persistence volume claim to be created
-## @param persistence.annotations Annotations for the persistence volume claim to be created
+## @param persistence.annotations.helm.sh/resource-policy Resource policy for the persistence volume claim
 ## @param persistence.storageClass Name of the storage class to use
 ## @param persistence.subPath Subdirectory of the volume to mount at
 ## @param persistence.volumeName Name of persistent volume in PVC
@@ -262,10 +262,11 @@ persistence:
   accessModes:
     - ReadWriteOnce
   labels: {}
-  annotations: {}
   storageClass:
   subPath:
   volumeName: ""
+  annotations:
+    helm.sh/resource-policy: keep
 
 ## @param extraVolumes Additional volumes to mount to the Gitea deployment
 extraVolumes: []
