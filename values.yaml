@@ -476,9 +476,7 @@ gitea:
 ## @param redis-cluster.global.redis.password Password for the "gitea" user (overrides `password`)
 redis-cluster:
   enabled: true
-  global:
-    redis:
-      password: gitea
+  usePassword: false
 
 ## @section postgresql-ha
 #
