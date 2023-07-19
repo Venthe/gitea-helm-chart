@@ -471,12 +471,10 @@ gitea:
 
 ## @section redis-cluster
 ## @param redis-cluster.enabled Enable redis
-## @param redis-cluster.global.redis.password Password for the "gitea" user (overrides `password`)
+## @param redis-cluster.usePassword Whether to use password authentication
 redis-cluster:
   enabled: true
-  global:
-    redis:
-      password: gitea
+  usePassword: false
 
 ## @section postgresql-ha
 #
@@ -484,21 +482,23 @@ redis-cluster:
 ## @param postgresql-ha.global.postgresql.password Password for the `gitea` user (overrides `auth.password`)
 ## @param postgresql-ha.global.postgresql.database Name for a custom database to create (overrides `auth.database`)
 ## @param postgresql-ha.global.postgresql.username Name for a custom user to create (overrides `auth.username`)
-## @param postgresql-ha.global.postgresql.postgresPassword Postgres Password
-## @param postgresql-ha.global.postgresql.repmgrPassword Repmgr Password
+## @param postgresql-ha.postgresql.password Postgres Password
+## @param postgresql-ha.postgresql.repmgrPassword Repmgr Password
+## @param postgresql-ha.pgpool.adminPassword pgpool adminPassword
 ## @param postgresql-ha.service.ports.postgresql postgresql service port (overrides `service.ports.postgresql`)
 ## @param postgresql-ha.primary.persistence.size PVC Storage Request for postgresql-ha volume
 postgresql-ha:
   enabled: true
+  postgresql:
+    repmgrPassword: changeme2
+    password: changeme1
+  pgpool:
+    adminPassword: changeme3
   global:
     postgresql:
-      password: gitea
+      password: changeme4
       database: gitea
       username: gitea
-      # FIXME: https://github.com/bitnami/charts/issues/17052
-      postgresPassword: changeme 
-      # FIXME: https://github.com/bitnami/charts/issues/17052
-      repmgrPassword: changeme 
   service:
     ports:
       postgresql: 5432
