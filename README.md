@@ -845,7 +845,7 @@ kubectl create secret generic gitea-themes --from-file={{FULL-PATH-TO-CSS}} --na
 | Name                                        | Description                                                      | Value       |
 | ------------------------------------------- | ---------------------------------------------------------------- | ----------- |
 | `postgresql-ha.enabled`                     | Enable PostgreSQL-ha                                             | `true`      |
-| `postgresql-ha.global.postgresql.password`  | Password for the `gitea` user (overrides `auth.password`)        | `changeme4` |
+| `postgresql-ha.postgresql.password`         | Password for the `gitea` user (overrides `auth.password`)        | `changeme4` |
 | `postgresql-ha.global.postgresql.database`  | Name for a custom database to create (overrides `auth.database`) | `gitea`     |
 | `postgresql-ha.global.postgresql.username`  | Name for a custom user to create (overrides `auth.username`)     | `gitea`     |
 | `postgresql-ha.postgresql.repmgrPassword`   | Repmgr Password                                                  | `changeme2` |
