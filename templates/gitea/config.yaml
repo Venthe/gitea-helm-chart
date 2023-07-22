@@ -19,7 +19,7 @@ stringData:
   assertions: |
 
 {{- /*assert that only one PG dep is enabled */ -}}
-{{- if and (.Values.gitea.postgresql.enabled) (index (.Values.gitea "postgresql-ha" "enabled")) -}}
+{{- if and (.Values.postgresql.enabled) (index .Values "postgresql-ha" "enabled") -}}
   {{- fail "Only one of postgresql or postgresql-ha can be enabled at the same time." -}}
 {{- end }}
 
