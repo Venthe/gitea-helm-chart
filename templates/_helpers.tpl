@@ -112,8 +112,16 @@ app.kubernetes.io/name: {{ include "gitea.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
-{{- define "postgresql.dns" -}}
-{{- printf "%s-postgresql-ha-postgresql.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain (index .Values "postgresql-ha" "service" "ports" "postgresql") -}}
+{{- if (index .Values "postgresql-ha").enabled -}}
+  {{- define "postgresql.dns" -}}
+  {{- printf "%s-postgresql-ha-postgresql.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain (index .Values "postgresql-ha" "service" "ports" "postgresql") -}}
+  {{- end -}}
+{{- end -}}
+
+{{- if (index .Values "postgresql").enabled -}}
+  {{- define "postgresql.dns" -}}
+  {{- printf "%s-postgresql.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.postgresql.global.postgresql.service.ports.postgresql -}}
+  {{- end -}}
 {{- end -}}
 
 {{- define "redis.dns" -}}
