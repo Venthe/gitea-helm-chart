@@ -7,8 +7,12 @@
 - [High Availability](#high-availability)
 - [Configuration](#configuration)
   - [Default Configuration](#default-configuration)
+    - [Database defaults](#database-defaults)
+    - [Server defaults](#server-defaults)
+    - [Metrics defaults](#metrics-defaults)
   - [Minimal Configuration](#minimal-configuration)
   - [Additional _app.ini_ settings](#additional-appini-settings)
+    - [User defined environment variables in app.ini](#user-defined-environment-variables-in-appini)
   - [External Database](#external-database)
   - [Ports and external url](#ports-and-external-url)
   - [ClusterIP](#clusterip)
@@ -46,7 +50,7 @@
 - [Contributing](#contributing)
 - [Upgrading](#upgrading)
 
-[Gitea](https://gitea.io/en-us/) is a community managed lightweight code hosting solution written in Go.
+[Gitea](https://gitea.com) is a community managed lightweight code hosting solution written in Go.
 It is published under the MIT license.
 
 ## Introduction
@@ -84,7 +88,7 @@ Dependencies:
 ## Installing
 
 ```sh
-helm repo add gitea-charts https://dl.gitea.io/charts/
+helm repo add gitea-charts https://dl.gitea.com/charts/
 helm repo update
 helm install gitea gitea-charts/gitea
 ```
@@ -104,7 +108,7 @@ See the [HA Setup](docs/ha-setup.md) document for more details.
 ## Configuration
 
 Gitea offers lots of configuration options.
-This is fully described in the [Gitea Cheat Sheet](https://docs.gitea.io/en-us/config-cheat-sheet/).
+This is fully described in the [Gitea Cheat Sheet](https://docs.gitea.com/administration/config-cheat-sheet).
 
 ```yaml
 gitea:
@@ -199,7 +203,7 @@ Do not use this configuration for production use.
 
 ### Additional _app.ini_ settings
 
-> **The [generic](https://docs.gitea.io/en-us/config-cheat-sheet/#overall-default)
+> **The [generic](https://docs.gitea.com/administration/config-cheat-sheet#overall-default)
 > section cannot be defined that way.**
 
 Some settings inside _app.ini_ (like passwords or whole authentication configurations) must be considered sensitive and therefore should not be passed via plain text inside the _values.yaml_ file.
@@ -286,7 +290,7 @@ Priority (highest to lowest) for defining app.ini variables:
 
 ### External Database
 
-Any external database listed in [https://docs.gitea.io/en-us/database-prep/](https://docs.gitea.io/en-us/database-prep/) can be used instead of the built-in PostgreSQL.
+Any external database listed in [https://docs.gitea.com/installation/database-prep](https://docs.gitea.com/installation/database-prep) can be used instead of the built-in PostgreSQL.
 In fact, it is **highly recommended** to use an external database to ensure a stable Gitea installation longterm.
 
 If an external database is used, no matter which type, make sure to set `postgresql.enabled` to `false` to disable the use of the built-in PostgreSQL.
@@ -456,7 +460,7 @@ gitea:
 ### LDAP Settings
 
 Like the admin user the LDAP settings can be updated.
-All LDAP values from <https://docs.gitea.io/en-us/command-line/#admin> are available.
+All LDAP values from <https://docs.gitea.com/administration/command-line#admin> are available.
 
 Multiple LDAP sources can be configured with additional LDAP list items.
 
@@ -511,7 +515,7 @@ Affected options:
 
 Like the admin user, OAuth2 settings can be updated and disabled but not deleted.
 Deleting OAuth2 settings has to be done in the ui.
-All OAuth2 values, which are documented [here](https://docs.gitea.io/en-us/command-line/#admin), are
+All OAuth2 values, which are documented [here](https://docs.gitea.com/administration/command-line#admin), are
 available.
 
 Multiple OAuth2 sources can be configured with additional OAuth list items.
@@ -589,7 +593,7 @@ signing:
 ```
 
 To use the gpg key, Gitea needs to be configured accordingly.
-A detailed description can be found in the [official Gitea documentation](https://docs.gitea.io/en-us/signing/#general-configuration).
+A detailed description can be found in the [official Gitea documentation](https://docs.gitea.com/administration/signing#general-configuration).
 
 ## Metrics and profiling
 
