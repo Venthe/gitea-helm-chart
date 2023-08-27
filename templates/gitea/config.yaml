@@ -25,10 +25,8 @@ stringData:
 
 {{- /* multiple replicas assertions */ -}}
 {{- if gt .Values.replicaCount 1.0 -}}
-  {{- if .Values.gitea.config.cron.GIT_GC_REPOS -}}
-    {{- if .Values.gitea.config.cron.GIT_GC_REPOS.enabled -}}
-      {{- fail "Invoking the garbage collector via CRON is not yet supported when running with multiple replicas. Please set 'GIT_GC_REPOS.enabled = false'." -}}
-    {{- end }}
+  {{- if (get (get .Values.gitea.config "cron.GIT_GC_REPOS") "ENABLED") -}}
+    {{- fail "Invoking the garbage collector via CRON is not yet supported when running with multiple replicas. Please set 'cron.GIT_GC_REPOS.enabled = false'." -}}
   {{- end }}
 
   {{- if eq (first .Values.persistence.accessModes) "ReadWriteOnce" -}}
