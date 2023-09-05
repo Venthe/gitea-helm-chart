@@ -46,5 +46,5 @@ dependencies:
   # Chart release date: 2023-07 (https://github.com/bitnami/charts/blob/main/bitnami/redis-cluster/Chart.yaml)
   - name: redis-cluster
     repository: oci://registry-1.docker.io/bitnamicharts
-    version: 8.6.9
+    version: 8.8.2
     condition: redis-cluster.enabled
