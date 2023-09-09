@@ -16,6 +16,37 @@ metadata:
     {{- include "gitea.labels" . | nindent 4 }}
 type: Opaque
 stringData:
+  assertions: |
+
+{{- /*assert that only one PG dep is enabled */ -}}
+{{- if and (.Values.postgresql.enabled) (index .Values "postgresql-ha" "enabled") -}}
+  {{- fail "Only one of postgresql or postgresql-ha can be enabled at the same time." -}}
+{{- end }}
+
+{{- /* multiple replicas assertions */ -}}
+{{- if gt .Values.replicaCount 1.0 -}}
+  {{- if (get (get .Values.gitea.config "cron.GIT_GC_REPOS") "ENABLED") -}}
+    {{- fail "Invoking the garbage collector via CRON is not yet supported when running with multiple replicas. Please set 'cron.GIT_GC_REPOS.enabled = false'." -}}
+  {{- end }}
+
+  {{- if eq (first .Values.persistence.accessModes) "ReadWriteOnce" -}}
+    {{- fail "When using multiple replicas, a RWX file system is required and gitea.persistence.accessModes[0] must be set to ReadWriteMany." -}}
+  {{- end }}
+
+  {{- if eq (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE") "bleve" -}}
+    {{- fail "When using multiple replicas, the issue indexer (gitea.config.indexer.ISSUE_INDEXER_TYPE) must be set to a HA-ready provider such as 'meilisearch', 'elasticsearch' or 'db' (if the DB is HA-ready)." -}}
+  {{- end }}
+  {{- if .Values.gitea.config.indexer.REPO_INDEXER_TYPE -}}
+    {{- if eq (get .Values.gitea.config.indexer "REPO_INDEXER_TYPE") "bleve" -}}
+      {{- if .Values.gitea.config.indexer.REPO_INDEXER_ENABLED -}}
+        {{- if eq (get .Values.gitea.config.indexer "REPO_INDEXER_ENABLED") "true" -}}
+          {{- fail "When using multiple replicas, the repo indexer (gitea.config.indexer.REPO_INDEXER_TYPE) must be set to 'meilisearch' or 'elasticsearch' or disabled." -}}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+  
+{{- end }}
   config_environment.sh: |-
     #!/usr/bin/env bash
     set -euo pipefail
@@ -53,14 +84,14 @@ stringData:
       env2ini::log "    + '${setting}'"
 
       if [[ -z "${section}" ]]; then
-        export "ENV_TO_INI____${setting^^}=${value}"                           # '^^' makes the variable content uppercase
+        export "GITEA____${setting^^}=${value}"                           # '^^' makes the variable content uppercase
         return
       fi
 
       local masked_section="${section//./_0X2E_}"                            # '//' instructs to replace all matches
       masked_section="${masked_section//-/_0X2D_}"
 
-      export "ENV_TO_INI__${masked_section^^}__${setting^^}=${value}"        # '^^' makes the variable content uppercase
+      export "GITEA__${masked_section^^}__${setting^^}=${value}"        # '^^' makes the variable content uppercase
     }
 
     function env2ini::reload_preset_envs() {
@@ -134,15 +165,16 @@ stringData:
       #   - initially used to set up Gitea
       # Anyway, they won't harm existing app.ini files
 
-      export ENV_TO_INI__SECURITY__INTERNAL_TOKEN=$(gitea generate secret INTERNAL_TOKEN)
-      export ENV_TO_INI__SECURITY__SECRET_KEY=$(gitea generate secret SECRET_KEY)
-      export ENV_TO_INI__OAUTH2__JWT_SECRET=$(gitea generate secret JWT_SECRET)
-      export ENV_TO_INI__SERVER__LFS_JWT_SECRET=$(gitea generate secret LFS_JWT_SECRET)
+      export GITEA__SECURITY__INTERNAL_TOKEN=$(gitea generate secret INTERNAL_TOKEN)
+      export GITEA__SECURITY__SECRET_KEY=$(gitea generate secret SECRET_KEY)
+      export GITEA__OAUTH2__JWT_SECRET=$(gitea generate secret JWT_SECRET)
+      export GITEA__SERVER__LFS_JWT_SECRET=$(gitea generate secret LFS_JWT_SECRET)
 
       env2ini::log "...Initial secrets generated\n"
     }
-
-    env | (grep ENV_TO_INI || [[ $? == 1 ]]) > /tmp/existing-envs
+    
+    # save existing envs prior to script execution. Necessary to keep order of preexisting and custom envs
+    env | (grep GITEA || [[ $? == 1 ]]) > /tmp/existing-envs
     
     # MUST BE CALLED BEFORE OTHER CONFIGURATION
     env2ini::generate_initial_secrets
@@ -163,10 +195,10 @@ stringData:
       env2ini::log '  - oauth2.JWT_SECRET'
       env2ini::log '  - server.LFS_JWT_SECRET'
 
-      unset ENV_TO_INI__SECURITY__INTERNAL_TOKEN
-      unset ENV_TO_INI__SECURITY__SECRET_KEY
-      unset ENV_TO_INI__OAUTH2__JWT_SECRET
-      unset ENV_TO_INI__SERVER__LFS_JWT_SECRET
+      unset GITEA__SECURITY__INTERNAL_TOKEN
+      unset GITEA__SECURITY__SECRET_KEY
+      unset GITEA__OAUTH2__JWT_SECRET
+      unset GITEA__SERVER__LFS_JWT_SECRET
     fi
 
-    environment-to-ini -o $GITEA_APP_INI -p ENV_TO_INI
+    environment-to-ini -o $GITEA_APP_INI

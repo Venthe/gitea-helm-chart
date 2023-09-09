@@ -1,13 +1,63 @@
-# Gitea Helm Chart
+# Gitea Helm Chart <!-- omit from toc -->
 
-[Gitea](https://gitea.io/en-us/) is a community managed lightweight code hosting solution written in Go.
+- [Introduction](#introduction)
+- [Update and versioning policy](#update-and-versioning-policy)
+- [Dependencies](#dependencies)
+- [Installing](#installing)
+- [High Availability](#high-availability)
+- [Configuration](#configuration)
+  - [Default Configuration](#default-configuration)
+    - [Database defaults](#database-defaults)
+    - [Server defaults](#server-defaults)
+    - [Metrics defaults](#metrics-defaults)
+  - [Minimal Configuration](#minimal-configuration)
+  - [Additional _app.ini_ settings](#additional-appini-settings)
+    - [User defined environment variables in app.ini](#user-defined-environment-variables-in-appini)
+  - [External Database](#external-database)
+  - [Ports and external url](#ports-and-external-url)
+  - [ClusterIP](#clusterip)
+  - [SSH and Ingress](#ssh-and-ingress)
+  - [SSH on crio based kubernetes cluster](#ssh-on-crio-based-kubernetes-cluster)
+  - [Cache](#cache)
+  - [Persistence](#persistence)
+  - [Admin User](#admin-user)
+  - [LDAP Settings](#ldap-settings)
+  - [OAuth2 Settings](#oauth2-settings)
+- [Configure commit signing](#configure-commit-signing)
+- [Metrics and profiling](#metrics-and-profiling)
+- [Pod annotations](#pod-annotations)
+- [Themes](#themes)
+- [Parameters](#parameters)
+  - [Global](#global)
+  - [strategy](#strategy)
+  - [Image](#image)
+  - [Security](#security)
+  - [Service](#service)
+  - [Ingress](#ingress)
+  - [deployment](#deployment)
+  - [ServiceAccount](#serviceaccount)
+  - [Persistence](#persistence-1)
+  - [Init](#init)
+  - [Signing](#signing)
+  - [Gitea](#gitea)
+  - [LivenessProbe](#livenessprobe)
+  - [ReadinessProbe](#readinessprobe)
+  - [StartupProbe](#startupprobe)
+  - [redis-cluster](#redis-cluster)
+  - [PostgreSQL-ha](#postgresql-ha)
+  - [PostgreSQL](#postgresql)
+  - [Advanced](#advanced)
+- [Contributing](#contributing)
+- [Upgrading](#upgrading)
+
+[Gitea](https://gitea.com) is a community managed lightweight code hosting solution written in Go.
 It is published under the MIT license.
 
 ## Introduction
 
 This helm chart has taken some inspiration from [jfelten's helm chart](https://github.com/jfelten/gitea-helm-chart).
-But takes a completely different approach in providing a database and cache with dependencies.
-Additionally, this chart provides LDAP and admin user configuration with values, as well as being deployed as a statefulset to retain stored repositories.
+Yet it takes a completely different approach in providing a database and cache with dependencies.
+Additionally, this chart allows to provide LDAP and admin user configuration with values.
 
 ## Update and versioning policy
 
@@ -32,31 +82,33 @@ This chart provides those dependencies, which can be enabled, or disabled via co
 
 Dependencies:
 
-- PostgreSQL ([configuration](#postgresql))
-- Memcached ([configuration](#memcached))
+- PostgreSQL HA ([configuration](#postgresql))
+- Redis Cluster ([configuration](#cache))
 
 ## Installing
 
 ```sh
-helm repo add gitea-charts https://dl.gitea.io/charts/
+helm repo add gitea-charts https://dl.gitea.com/charts/
 helm repo update
 helm install gitea gitea-charts/gitea
 ```
 
 When upgrading, please refer to the [Upgrading](#upgrading) section at the bottom of this document for major and breaking changes.
 
-## Prerequisites
+## High Availability
 
-- Kubernetes 1.12+
-- Helm 3.0+
-- PV provisioner for persistent data support
+⚠️ **EXPERIMENTAL** ⚠️
 
-## Examples
+Since version 9.0.0 this chart has experimental support for running Gitea and it's dependencies in a HA setup.
+The setup is still experimental and care must be taken for production use as Gitea core is not yet officially HA-ready.
 
-### Gitea Configuration
+Deploying a HA-ready Gitea instance requires some effort including using HA-ready dependencies.
+See the [HA Setup](docs/ha-setup.md) document for more details.
+
+## Configuration
 
 Gitea offers lots of configuration options.
-This is fully described in the [Gitea Cheat Sheet](https://docs.gitea.io/en-us/config-cheat-sheet/).
+This is fully described in the [Gitea Cheat Sheet](https://docs.gitea.com/administration/config-cheat-sheet).
 
 ```yaml
 gitea:
@@ -75,12 +127,12 @@ All defaults can be overwritten in `gitea.config`.
 
 INSTALL_LOCK is always set to true, since we want to configure Gitea with this helm chart and everything is taken care of.
 
-_All default settings are made directly in the generated app.ini, not in the Values._
+_All default settings are made directly in the generated `app.ini`, not in the Values._
 
 #### Database defaults
 
 If a builtIn database is enabled the database configuration is set automatically.
-For example, PostgreSQL builtIn will appear in the app.ini as:
+For example, PostgreSQL builtIn will appear in the `app.ini` as:
 
 ```ini
 [database]
@@ -89,18 +141,6 @@ HOST = RELEASE-NAME-postgresql.default.svc.cluster.local:5432
 NAME = gitea
 PASSWD = gitea
 USER = gitea
-```
-
-#### Memcached defaults
-
-Memcached is handled the exact same way as database builtIn.
-Once Memcached builtIn is enabled, this chart will generate the following part in the `app.ini`:
-
-```ini
-[cache]
-ADAPTER = memcache
-ENABLED = true
-HOST = RELEASE-NAME-memcached.default.svc.cluster.local:11211
 ```
 
 #### Server defaults
@@ -131,9 +171,39 @@ The Prometheus `/metrics` endpoint is disabled by default.
 ENABLED = false
 ```
 
+### Minimal Configuration
+
+For a minimal installation, i.e. without HA dependencies and using the built-in SQLITE DB instead of Postgres, the following configuration can be used:
+
+```yaml
+redis-cluster:
+  enabled: false
+postgresql:
+  enabled: false
+postgresql-ha:
+  enabled: false
+
+persistence:
+  enabled: false
+
+gitea:
+  config:
+    database:
+      DB_TYPE: sqlite3
+    session:
+      PROVIDER: memory
+    cache:
+      ADAPTER: memory
+    queue:
+      TYPE: level
+```
+
+This will result in a single-pod Gitea instance without any dependencies and persistence.
+Do not use this configuration for production use.
+
 ### Additional _app.ini_ settings
 
-> **The [generic](https://docs.gitea.io/en-us/config-cheat-sheet/#overall-default)
+> **The [generic](https://docs.gitea.com/administration/config-cheat-sheet#overall-default)
 > section cannot be defined that way.**
 
 Some settings inside _app.ini_ (like passwords or whole authentication configurations) must be considered sensitive and therefore should not be passed via plain text inside the _values.yaml_ file.
@@ -151,8 +221,7 @@ gitea:
         name: gitea-app-ini-plaintext
 ```
 
-This would mount the two additional volumes (`oauth` and `some-additionals`)
-from different sources to the init containerwhere the _app.ini_ gets updated.
+This would mount the two additional volumes (`oauth` and `some-additionals`) from different sources to the init container where the _app.ini_ gets updated.
 All files mounted that way will be read and converted to environment variables and then added to the _app.ini_ using [environment-to-ini](https://github.com/go-gitea/gitea/tree/main/contrib/environment-to-ini).
 
 The key of such additional source represents the section inside the _app.ini_.
@@ -196,16 +265,17 @@ We also support to directly interact with the generated _app.ini_.
 To inject self defined variables into the _app.ini_ a certain format needs to be honored.
 This is described in detail on the [env-to-ini](https://github.com/go-gitea/gitea/tree/main/contrib/environment-to-ini) page.
 
-Note that the Prefix on this helm chart is `ENV_TO_INI`.
+Prior to Gitea 1.20 and Chart 9.0.0 the helm chart had a custom prefix `ENV_TO_INI`.
+After the support for a custom prefix was removed in Gite core, the prefix was changed to `GITEA`.
 
 For example a database setting needs to have the following format:
 
 ```yaml
 gitea:
   additionalConfigFromEnvs:
-    - name: ENV_TO_INI__DATABASE__HOST
+    - name: GITEA__DATABASE__HOST
       value: my.own.host
-    - name: ENV_TO_INI__DATABASE__PASSWD
+    - name: GITEA__DATABASE__PASSWD
       valueFrom:
         secretKeyRef:
           name: postgres-secret
@@ -214,13 +284,13 @@ gitea:
 
 Priority (highest to lowest) for defining app.ini variables:
 
-1. Environment variables prefixed with `ENV_TO_INI`
+1. Environment variables prefixed with `GITEA`
 1. Additional config sources
 1. Values defined in `gitea.config`
 
 ### External Database
 
-Any external Database listed in [https://docs.gitea.io/en-us/database-prep/](https://docs.gitea.io/en-us/database-prep/) can be used instead of the built-in PostgreSQL.
+Any external database listed in [https://docs.gitea.com/installation/database-prep](https://docs.gitea.com/installation/database-prep) can be used instead of the built-in PostgreSQL.
 In fact, it is **highly recommended** to use an external database to ensure a stable Gitea installation longterm.
 
 If an external database is used, no matter which type, make sure to set `postgresql.enabled` to `false` to disable the use of the built-in PostgreSQL.
@@ -306,34 +376,23 @@ More about this issue [here](https://gitea.com/gitea/helm-chart/issues/161).
 
 ### Cache
 
-This helm chart can use a built in cache.
-The default is Memcached from bitnami.
+The cache handling is done via `redis-cluster` (via the `bitnami` chart) by default.
+This deployment is HA-ready but can also be used for single-pod deployments.
+By default, 6 replicas are deployed for a working `redis-cluster` deployment.
+Many cloud providers offer a managed redis service, which can be used instead of the built-in `redis-cluster`.
 
 ```yaml
-memcached:
+redis-cluster:
   enabled: true
-```
-
-If the built in cache should not be used simply configure the cache in `gitea.config`.
-
-```yaml
-gitea:
-  config:
-    cache:
-      ENABLED: true
-      ADAPTER: memory
-      INTERVAL: 60
-      HOST: 127.0.0.1:9090
 ```
 
 ### Persistence
 
-Gitea will be deployed as a statefulset.
+Gitea will be deployed as a deployment.
 By simply enabling the persistence and setting the storage class according to your cluster everything else will be taken care of.
-The following example will create a PVC as a part of the statefulset.
-This PVC will not be deleted even if you uninstall the chart.
+The following example will create a PVC as a part of the deployment.
 
-Please note, that an empty storageClass in the persistence will result in kubernetes using your default storage class.
+Please note, that an empty `storageClass` in the persistence will result in kubernetes using your default storage class.
 
 If you want to use your own storage class define it as follows:
 
@@ -343,14 +402,12 @@ persistence:
   storageClass: myOwnStorageClass
 ```
 
-When using PostgreSQL as dependency, this will also be deployed as a statefulset by default.
-
 If you want to manage your own PVC you can simply pass the PVC name to the chart.
 
 ```yaml
 persistence:
   enabled: true
-  existingClaim: MyAwesomeGiteaClaim
+  claimName: MyAwesomeGiteaClaim
 ```
 
 In case that persistence has been disabled it will simply use an empty dir volume.
@@ -362,13 +419,13 @@ You can interact with the postgres settings as displayed in the following exampl
 postgresql:
   persistence:
     enabled: true
-    existingClaim: MyAwesomeGiteaPostgresClaim
+    claimName: MyAwesomeGiteaPostgresClaim
 ```
 
 ### Admin User
 
 This chart enables you to create a default admin user.
-It is also possible to update the password for this user by upgrading or redeloying the chart.
+It is also possible to update the password for this user by upgrading or redeploying the chart.
 It is not possible to delete an admin user after it has been created.
 This has to be done in the ui.
 You cannot use `admin` as username.
@@ -403,7 +460,7 @@ gitea:
 ### LDAP Settings
 
 Like the admin user the LDAP settings can be updated.
-All LDAP values from <https://docs.gitea.io/en-us/command-line/#admin> are available.
+All LDAP values from <https://docs.gitea.com/administration/command-line#admin> are available.
 
 Multiple LDAP sources can be configured with additional LDAP list items.
 
@@ -458,7 +515,7 @@ Affected options:
 
 Like the admin user, OAuth2 settings can be updated and disabled but not deleted.
 Deleting OAuth2 settings has to be done in the ui.
-All OAuth2 values, which are documented [here](https://docs.gitea.io/en-us/command-line/#admin), are
+All OAuth2 values, which are documented [here](https://docs.gitea.com/administration/command-line#admin), are
 available.
 
 Multiple OAuth2 sources can be configured with additional OAuth list items.
@@ -536,9 +593,9 @@ signing:
 ```
 
 To use the gpg key, Gitea needs to be configured accordingly.
-A detailed description can be found in the [official Gitea documentation](https://docs.gitea.io/en-us/signing/#general-configuration).
+A detailed description can be found in the [official Gitea documentation](https://docs.gitea.com/administration/signing#general-configuration).
 
-### Metrics and profiling
+## Metrics and profiling
 
 A Prometheus `/metrics` endpoint on the `HTTP_PORT` and `pprof` profiling endpoints on port 6060 can be enabled under `gitea`.
 Beware that the metrics endpoint is exposed via the ingress, manage access using ingress annotations for example.
@@ -557,7 +614,7 @@ gitea:
       ENABLE_PPROF: true
 ```
 
-### Pod Annotations
+## Pod annotations
 
 Annotations can be added to the Gitea pod.
 
@@ -566,18 +623,94 @@ gitea:
   podAnnotations: {}
 ```
 
+## Themes
+
+Custom themes can be added via k8s secrets and referencing them in `values.yaml`.
+
+The [http provider](https://registry.terraform.io/providers/hashicorp/http/latest/docs/data-sources/http) is useful here.
+
+```yaml
+extraVolumes:
+  - name: gitea-themes
+    secret:
+      secretName: gitea-themes
+
+extraVolumeMounts:
+  - name: gitea-themes
+    readOnly: true
+    mountPath: "/data/gitea/public/css"
+```
+
+The secret can be created via `terraform`:
+
+```hcl
+resource "kubernetes_secret" "gitea-themes" {
+  metadata {
+    name      = "gitea-themes"
+    namespace = "gitea"
+  }
+
+  data = {
+    "my-theme.css"      = data.http.gitea-theme-light.body
+    "my-theme-dark.css" = data.http.gitea-theme-dark.body
+    "my-theme-auto.css" = data.http.gitea-theme-auto.body
+  }
+
+  type = "Opaque"
+}
+
+
+data "http" "gitea-theme-light" {
+  url = "<raw theme url>"
+
+  request_headers = {
+    Accept = "application/json"
+  }
+}
+
+data "http" "gitea-theme-dark" {
+  url = "<raw theme url>"
+
+  request_headers = {
+    Accept = "application/json"
+  }
+}
+
+data "http" "gitea-theme-auto" {
+  url = "<raw theme url>"
+
+  request_headers = {
+    Accept = "application/json"
+  }
+}
+```
+
+or natively via `kubectl`:
+
+```bash
+kubectl create secret generic gitea-themes --from-file={{FULL-PATH-TO-CSS}} --namespace gitea
+```
+
 ## Parameters
 
 ### Global
 
-| Name                      | Description                                                               | Value           |
-| ------------------------- | ------------------------------------------------------------------------- | --------------- |
-| `global.imageRegistry`    | global image registry override                                            | `""`            |
-| `global.imagePullSecrets` | global image pull secrets override; can be extended by `imagePullSecrets` | `[]`            |
-| `global.storageClass`     | global storage class override                                             | `""`            |
-| `global.hostAliases`      | global hostAliases which will be added to the pod's hosts files           | `[]`            |
-| `replicaCount`            | number of replicas for the statefulset                                    | `1`             |
-| `clusterDomain`           | cluster domain                                                            | `cluster.local` |
+| Name                      | Description                                                               | Value |
+| ------------------------- | ------------------------------------------------------------------------- | ----- |
+| `global.imageRegistry`    | global image registry override                                            | `""`  |
+| `global.imagePullSecrets` | global image pull secrets override; can be extended by `imagePullSecrets` | `[]`  |
+| `global.storageClass`     | global storage class override                                             | `""`  |
+| `global.hostAliases`      | global hostAliases which will be added to the pod's hosts files           | `[]`  |
+| `replicaCount`            | number of replicas for the deployment                                     | `1`   |
+
+### strategy
+
+| Name                                    | Description    | Value           |
+| --------------------------------------- | -------------- | --------------- |
+| `strategy.type`                         | strategy type  | `RollingUpdate` |
+| `strategy.rollingUpdate.maxSurge`       | maxSurge       | `100%`          |
+| `strategy.rollingUpdate.maxUnavailable` | maxUnavailable | `0`             |
+| `clusterDomain`                         | cluster domain | `cluster.local` |
 
 ### Image
 
@@ -588,7 +721,7 @@ gitea:
 | `image.tag`        | Visit: [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated). Defaults to `appVersion` within Chart.yaml. | `""`          |
 | `image.digest`     | Image digest. Overrides the image tag if set.                                                                                           | `""`          |
 | `image.pullPolicy` | Image pull policy                                                                                                                       | `Always`      |
-| `image.rootless`   | Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher                                               | `false`       |
+| `image.rootless`   | Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher                                               | `true`        |
 | `imagePullSecrets` | Secret to use for pulling the image                                                                                                     | `[]`          |
 
 ### Security
@@ -598,6 +731,7 @@ gitea:
 | `podSecurityContext.fsGroup` | Set the shared file system group for all containers in the pod. | `1000` |
 | `containerSecurityContext`   | Security context                                                | `{}`   |
 | `securityContext`            | Run init and Gitea containers as a specific securityContext     | `{}`   |
+| `podDisruptionBudget`        | Pod disruption budget                                           | `{}`   |
 
 ### Service
 
@@ -605,7 +739,7 @@ gitea:
 | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | `service.http.type`                     | Kubernetes service type for web traffic                                                                                                                                                              | `ClusterIP` |
 | `service.http.port`                     | Port number for web traffic                                                                                                                                                                          | `3000`      |
-| `service.http.clusterIP`                | ClusterIP setting for http autosetup for statefulset is None                                                                                                                                         | `None`      |
+| `service.http.clusterIP`                | ClusterIP setting for http autosetup for deployment is None                                                                                                                                          | `None`      |
 | `service.http.loadBalancerIP`           | LoadBalancer IP setting                                                                                                                                                                              | `nil`       |
 | `service.http.nodePort`                 | NodePort for http service                                                                                                                                                                            | `nil`       |
 | `service.http.externalTrafficPolicy`    | If `service.http.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation                                                                                         | `nil`       |
@@ -616,7 +750,7 @@ gitea:
 | `service.http.annotations`              | HTTP service annotations                                                                                                                                                                             | `{}`        |
 | `service.ssh.type`                      | Kubernetes service type for ssh traffic                                                                                                                                                              | `ClusterIP` |
 | `service.ssh.port`                      | Port number for ssh traffic                                                                                                                                                                          | `22`        |
-| `service.ssh.clusterIP`                 | ClusterIP setting for ssh autosetup for statefulset is None                                                                                                                                          | `None`      |
+| `service.ssh.clusterIP`                 | ClusterIP setting for ssh autosetup for deployment is None                                                                                                                                           | `None`      |
 | `service.ssh.loadBalancerIP`            | LoadBalancer IP setting                                                                                                                                                                              | `nil`       |
 | `service.ssh.nodePort`                  | NodePort for ssh service                                                                                                                                                                             | `nil`       |
 | `service.ssh.externalTrafficPolicy`     | If `service.ssh.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation                                                                                          | `nil`       |
@@ -640,38 +774,53 @@ gitea:
 | `ingress.tls`                        | Ingress tls settings                                                        | `[]`              |
 | `ingress.apiVersion`                 | Specify APIVersion of ingress object. Mostly would only be used for argocd. |                   |
 
-### StatefulSet
+### deployment
 
-| Name                                        | Description                                            | Value |
-| ------------------------------------------- | ------------------------------------------------------ | ----- |
-| `resources`                                 | Kubernetes resources                                   | `{}`  |
-| `schedulerName`                             | Use an alternate scheduler, e.g. "stork"               | `""`  |
-| `nodeSelector`                              | NodeSelector for the statefulset                       | `{}`  |
-| `tolerations`                               | Tolerations for the statefulset                        | `[]`  |
-| `affinity`                                  | Affinity for the statefulset                           | `{}`  |
-| `dnsConfig`                                 | dnsConfig for the statefulset                          | `{}`  |
-| `priorityClassName`                         | priorityClassName for the statefulset                  | `""`  |
-| `statefulset.env`                           | Additional environment variables to pass to containers | `[]`  |
-| `statefulset.terminationGracePeriodSeconds` | How long to wait until forcefully kill the pod         | `60`  |
-| `statefulset.labels`                        | Labels for the statefulset                             | `{}`  |
-| `statefulset.annotations`                   | Annotations for the Gitea StatefulSet to be created    | `{}`  |
+| Name                                       | Description                                            | Value |
+| ------------------------------------------ | ------------------------------------------------------ | ----- |
+| `resources`                                | Kubernetes resources                                   | `{}`  |
+| `schedulerName`                            | Use an alternate scheduler, e.g. "stork"               | `""`  |
+| `nodeSelector`                             | NodeSelector for the deployment                        | `{}`  |
+| `tolerations`                              | Tolerations for the deployment                         | `[]`  |
+| `affinity`                                 | Affinity for the deployment                            | `{}`  |
+| `topologySpreadConstraints`                | TopologySpreadConstraints for the deployment           | `[]`  |
+| `dnsConfig`                                | dnsConfig for the deployment                           | `{}`  |
+| `priorityClassName`                        | priorityClassName for the deployment                   | `""`  |
+| `deployment.env`                           | Additional environment variables to pass to containers | `[]`  |
+| `deployment.terminationGracePeriodSeconds` | How long to wait until forcefully kill the pod         | `60`  |
+| `deployment.labels`                        | Labels for the deployment                              | `{}`  |
+| `deployment.annotations`                   | Annotations for the Gitea deployment to be created     | `{}`  |
+
+### ServiceAccount
+
+| Name                                          | Description                                                                                                                               | Value   |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `serviceAccount.create`                       | Enable the creation of a ServiceAccount                                                                                                   | `false` |
+| `serviceAccount.name`                         | Name of the created ServiceAccount, defaults to release name. Can also link to an externally provided ServiceAccount that should be used. | `""`    |
+| `serviceAccount.automountServiceAccountToken` | Enable/disable auto mounting of the service account token                                                                                 | `false` |
+| `serviceAccount.imagePullSecrets`             | Image pull secrets, available to the ServiceAccount                                                                                       | `[]`    |
+| `serviceAccount.annotations`                  | Custom annotations for the ServiceAccount                                                                                                 | `{}`    |
+| `serviceAccount.labels`                       | Custom labels for the ServiceAccount                                                                                                      | `{}`    |
 
 ### Persistence
 
-| Name                         | Description                                                                                           | Value               |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------- |
-| `persistence.enabled`        | Enable persistent storage                                                                             | `true`              |
-| `persistence.existingClaim`  | Use an existing claim to store repository information                                                 | `nil`               |
-| `persistence.size`           | Size for persistence to store repo information                                                        | `10Gi`              |
-| `persistence.accessModes`    | AccessMode for persistence                                                                            | `["ReadWriteOnce"]` |
-| `persistence.labels`         | Labels for the persistence volume claim to be created                                                 | `{}`                |
-| `persistence.annotations`    | Annotations for the persistence volume claim to be created                                            | `{}`                |
-| `persistence.storageClass`   | Name of the storage class to use                                                                      | `nil`               |
-| `persistence.subPath`        | Subdirectory of the volume to mount at                                                                | `nil`               |
-| `extraVolumes`               | Additional volumes to mount to the Gitea statefulset                                                  | `[]`                |
-| `extraContainerVolumeMounts` | Mounts that are only mapped into the Gitea runtime/main container, to e.g. override custom templates. | `[]`                |
-| `extraInitVolumeMounts`      | Mounts that are only mapped into the init-containers. Can be used for additional preconfiguration.    | `[]`                |
-| `extraVolumeMounts`          | **DEPRECATED** Additional volume mounts for init containers and the Gitea main container              | `[]`                |
+| Name                                              | Description                                                                                           | Value                  |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------- |
+| `persistence.enabled`                             | Enable persistent storage                                                                             | `true`                 |
+| `persistence.create`                              | Whether to create the persistentVolumeClaim for shared storage                                        | `true`                 |
+| `persistence.mount`                               | Whether the persistentVolumeClaim should be mounted (even if not created)                             | `true`                 |
+| `persistence.claimName`                           | Use an existing claim to store repository information                                                 | `gitea-shared-storage` |
+| `persistence.size`                                | Size for persistence to store repo information                                                        | `10Gi`                 |
+| `persistence.accessModes`                         | AccessMode for persistence                                                                            | `["ReadWriteOnce"]`    |
+| `persistence.labels`                              | Labels for the persistence volume claim to be created                                                 | `{}`                   |
+| `persistence.annotations.helm.sh/resource-policy` | Resource policy for the persistence volume claim                                                      | `keep`                 |
+| `persistence.storageClass`                        | Name of the storage class to use                                                                      | `nil`                  |
+| `persistence.subPath`                             | Subdirectory of the volume to mount at                                                                | `nil`                  |
+| `persistence.volumeName`                          | Name of persistent volume in PVC                                                                      | `""`                   |
+| `extraVolumes`                                    | Additional volumes to mount to the Gitea deployment                                                   | `[]`                   |
+| `extraContainerVolumeMounts`                      | Mounts that are only mapped into the Gitea runtime/main container, to e.g. override custom templates. | `[]`                   |
+| `extraInitVolumeMounts`                           | Mounts that are only mapped into the init-containers. Can be used for additional preconfiguration.    | `[]`                   |
+| `extraVolumeMounts`                               | **DEPRECATED** Additional volume mounts for init containers and the Gitea main container              | `[]`                   |
 
 ### Init
 
@@ -693,21 +842,22 @@ gitea:
 
 ### Gitea
 
-| Name                                   | Description                                                                                                   | Value                |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------- |
-| `gitea.admin.username`                 | Username for the Gitea admin user                                                                             | `gitea_admin`        |
-| `gitea.admin.existingSecret`           | Use an existing secret to store admin user credentials                                                        | `nil`                |
-| `gitea.admin.password`                 | Password for the Gitea admin user                                                                             | `r8sA8CPHD9!bt6d`    |
-| `gitea.admin.email`                    | Email for the Gitea admin user                                                                                | `gitea@local.domain` |
-| `gitea.metrics.enabled`                | Enable Gitea metrics                                                                                          | `false`              |
-| `gitea.metrics.serviceMonitor.enabled` | Enable Gitea metrics service monitor                                                                          | `false`              |
-| `gitea.ldap`                           | LDAP configuration                                                                                            | `[]`                 |
-| `gitea.oauth`                          | OAuth configuration                                                                                           | `[]`                 |
-| `gitea.config`                         | Configuration for the Gitea server,ref: [config-cheat-sheet](https://docs.gitea.io/en-us/config-cheat-sheet/) | `{}`                 |
-| `gitea.additionalConfigSources`        | Additional configuration from secret or configmap                                                             | `[]`                 |
-| `gitea.additionalConfigFromEnvs`       | Additional configuration sources from environment variables                                                   | `[]`                 |
-| `gitea.podAnnotations`                 | Annotations for the Gitea pod                                                                                 | `{}`                 |
-| `gitea.ssh.logLevel`                   | Configure OpenSSH's log level. Only available for root-based Gitea image.                                     | `INFO`               |
+| Name                                   | Description                                                               | Value                |
+| -------------------------------------- | ------------------------------------------------------------------------- | -------------------- |
+| `gitea.admin.username`                 | Username for the Gitea admin user                                         | `gitea_admin`        |
+| `gitea.admin.existingSecret`           | Use an existing secret to store admin user credentials                    | `nil`                |
+| `gitea.admin.password`                 | Password for the Gitea admin user                                         | `r8sA8CPHD9!bt6d`    |
+| `gitea.admin.email`                    | Email for the Gitea admin user                                            | `gitea@local.domain` |
+| `gitea.metrics.enabled`                | Enable Gitea metrics                                                      | `false`              |
+| `gitea.metrics.serviceMonitor.enabled` | Enable Gitea metrics service monitor                                      | `false`              |
+| `gitea.ldap`                           | LDAP configuration                                                        | `[]`                 |
+| `gitea.oauth`                          | OAuth configuration                                                       | `[]`                 |
+| `gitea.config.server.SSH_PORT`         | SSH port for rootlful Gitea image                                         | `22`                 |
+| `gitea.config.server.SSH_LISTEN_PORT`  | SSH port for rootless Gitea image                                         | `2222`               |
+| `gitea.additionalConfigSources`        | Additional configuration from secret or configmap                         | `[]`                 |
+| `gitea.additionalConfigFromEnvs`       | Additional configuration sources from environment variables               | `[]`                 |
+| `gitea.podAnnotations`                 | Annotations for the Gitea pod                                             | `{}`                 |
+| `gitea.ssh.logLevel`                   | Configure OpenSSH's log level. Only available for root-based Gitea image. | `INFO`               |
 
 ### LivenessProbe
 
@@ -745,18 +895,33 @@ gitea:
 | `gitea.startupProbe.successThreshold`    | Success threshold for startup probe             | `1`     |
 | `gitea.startupProbe.failureThreshold`    | Failure threshold for startup probe             | `10`    |
 
-### Memcached
+### redis-cluster
 
-| Name                                | Description                                                                                                                                                                                           | Value   |
-| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| `memcached.enabled`                 | Memcached is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if enabled in the values. Complete Configuration can be taken from their website. | `true`  |
-| `memcached.service.ports.memcached` | Port for Memcached                                                                                                                                                                                    | `11211` |
+| Name                        | Description                            | Value   |
+| --------------------------- | -------------------------------------- | ------- |
+| `redis-cluster.enabled`     | Enable redis                           | `true`  |
+| `redis-cluster.usePassword` | Whether to use password authentication | `false` |
+
+### PostgreSQL-ha
+
+| Name                                        | Description                                                      | Value       |
+| ------------------------------------------- | ---------------------------------------------------------------- | ----------- |
+| `postgresql-ha.enabled`                     | Enable PostgreSQL-ha                                             | `true`      |
+| `postgresql-ha.postgresql.password`         | Password for the `gitea` user (overrides `auth.password`)        | `changeme4` |
+| `postgresql-ha.global.postgresql.database`  | Name for a custom database to create (overrides `auth.database`) | `gitea`     |
+| `postgresql-ha.global.postgresql.username`  | Name for a custom user to create (overrides `auth.username`)     | `gitea`     |
+| `postgresql-ha.global.postgresql.password`  | Name for a custom password to create (overrides `auth.password`) | `gitea`     |
+| `postgresql-ha.postgresql.repmgrPassword`   | Repmgr Password                                                  | `changeme2` |
+| `postgresql-ha.postgresql.postgresPassword` | postgres Password                                                | `changeme1` |
+| `postgresql-ha.pgpool.adminPassword`        | pgpool adminPassword                                             | `changeme3` |
+| `postgresql-ha.service.ports.postgresql`    | PostgreSQL service port (overrides `service.ports.postgresql`)   | `5432`      |
+| `postgresql-ha.primary.persistence.size`    | PVC Storage Request for PostgreSQL-ha volume                     | `10Gi`      |
 
 ### PostgreSQL
 
 | Name                                                    | Description                                                      | Value   |
 | ------------------------------------------------------- | ---------------------------------------------------------------- | ------- |
-| `postgresql.enabled`                                    | Enable PostgreSQL                                                | `true`  |
+| `postgresql.enabled`                                    | Enable PostgreSQL                                                | `false` |
 | `postgresql.global.postgresql.auth.password`            | Password for the `gitea` user (overrides `auth.password`)        | `gitea` |
 | `postgresql.global.postgresql.auth.database`            | Name for a custom database to create (overrides `auth.database`) | `gitea` |
 | `postgresql.global.postgresql.auth.username`            | Name for a custom user to create (overrides `auth.username`)     | `gitea` |
@@ -782,16 +947,114 @@ See [CONTRIBUTORS GUIDE](CONTRIBUTING.md) for details.
 ## Upgrading
 
 This section lists major and breaking changes of each Helm Chart version.
-Please read them carefully to upgrade successfully.
+Please read them carefully to upgrade successfully, especially the change of the **default database backend**!
+If you miss this, blindly upgrading may delete your Postgres instance and you may lose your data!
 
-### To 8.0.0
+<details>
 
-#### Removal of MariaDB and MySQL DB chart dependencies
+<summary>To 9.0.0</summary>
+
+This chart release comes with many breaking changes while aiming for a HA-ready setup.
+Please go through all of them carefully to perform a successful upgrade.
+Here's a brief summary again, followed by more detailed migration instructions:
+
+- Switch from `Statefulset` to `Deployment`
+- Switch from `Memcached` to `redis-cluster` as the default session and queue provider
+- Switch from `postgres` to `postgres-ha` as the default database provider
+- A chart-internal PVC bootstrapping logic
+  - New `persistence.mount`: whether to mount an existent PVC (even if not creating it)
+  - New `persistence.create`: whether to create a new PVC
+  - Renamed `persistence.existingClaim` to `persistence.claimName`
+
+While not required, we recommend to start with a RWX PV for new installations.
+A RWX volume is required for installation aiming for HA.
+
+If you want to stay with a pre-existing RWO PV, you need to set
+
+- `persistence.mount=true`
+- `persistence.create=false`
+- `persistence.claimName` to the name of your existing PVC.
+
+If you do not, Gitea will create a new PVC which will in turn create a new PV.
+If this happened to you by accident, you can still recover your data by setting using the settings from above in a subsequent run.
+
+If you want to stay with a `memcache` instead of `redis-cluster`, you need to deploy `memcache` manually (e.g. from [bitnami](https://github.com/bitnami/charts/tree/main/bitnami/memcached)) and set
+
+- `cache.HOST = "<memcache connection string>"`
+- `cache.ADAPTER = "memcache"`
+- `session.PROVIDER = "memcache"`
+- `session.PROVIDER_CONFIG = "<memcache connection string>"`
+- `queue.TYPE = "memcache"`
+- `queue.CONN_STR = "<memcache connection string>"`
+
+The `memcache` connection string has the scheme `memcache://<memcache service name>:<memcache service port>`, e.g. `gitea-memcached.gitea.svc.cluster.local:11211`.
+The first item here (`<memcache service name>`) will be different compared to the example if you deploy `memcache` yourself.
+
+The above changes are motivated by the idea to tidy dependencies but also have HA-ready ones at the same time.
+The previous `memcache` default was not HA-ready, hence we decided to switch to `redis-cluster` by default.
+
+If you are coming from an existing deployment and [#356](https://gitea.com/gitea/helm-chart/issues/356) is still open, you need to set the config sections for `cache`, `session` and `queue` explicitly:
+
+```yaml
+    session:
+      PROVIDER: redis-cluster
+      PROVIDER_CONFIG: redis+cluster://:gitea@gitea-redis-cluster-headless.<namespace>.svc.cluster.local:6379/0?pool_size=100&idle_timeout=180s&
+      
+    cache:
+      ENABLED: true
+      ADAPTER: redis-cluster
+      HOST: redis+cluster://:gitea@gitea-redis-cluster-headless.<namespace>.svc.cluster.local:6379/0?pool_size=100&idle_timeout=180s&
+      
+    queue:
+      TYPE: redis
+      CONN_STR: redis+cluster://:gitea@gitea-redis-cluster-headless.<namespace>.svc.cluster.local:6379/0?pool_size=100&idle_timeout=180s&
+```
+
+<!-- markdownlint-disable-next-line -->
+**Switch to rootless image by default**
+If you are facing errors like `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED` due to this automatic transition:
+Have a look at [this discussion](https://gitea.com/gitea/helm-chart/issues/487#issue-220660) and either set `image.rootless: false` or manually update your `~/.ssh/known_hosts` file(s).
+
+<!-- markdownlint-disable-next-line -->
+**Transitioning from a RWO to RWX Persistent Volume**
+
+If you want to switch to a RWX volume and go for HA, you need to
+
+1. Backup the data stored under `/data`
+2. Let the chart create a new RWX PV (or do it statically yourself)
+3. Restore the backup to the same location in the new PV
+
+<!-- markdownlint-disable-next-line -->
+**Transitioning from Postgres to Postgres HA**
+
+If you are running with a non-HA PG DB from a previous chart release, you need to set
+
+- `postgresql-ha.enabled=false`
+- `postgresql.enabled=true`
+
+This is needed to stay with your existing single-instance DB (as the HA-variant is the new default).
+
+<!-- markdownlint-disable-next-line -->
+**Change of env-to-ini prefix**
+
+Before this release, the env-to-ini prefix was `ENV_TO_INI__`.
+This allowed a clear distinction between user-provided and chart-provided env-to-ini variables.
+Due to the removal custom prefix feature in the upstream implementation of env-to-ini, the prefix has been changed to the default `GITEA__`.
+
+If you previously had defined env vars that had the `ENV_TO_INI__` prefix, you need to change them to `GITEA__` in order for them to be picked up by the chart.
+
+</details>
+
+<details>
+
+<summary>To 8.0.0</summary>
+
+### Removal of MariaDB and MySQL DB chart dependencies <!-- omit from toc -->
 
 In this version support for DB chart dependencies of MySQL and MariaDB have been removed to simplify the maintenance of the helm chart.
 External MySQL and MariaDB databases are still supported and will be in the future.
 
-#### Postgres Update from v11 to v15
+### Postgres Update from v11 to v15 <!-- omit from toc -->
 
 This Chart version updates the Postgres chart dependency and subsequently Postgres from v11 to v15.
 Please read the [Postgres Release Notes](https://www.postgresql.org/docs/release/) for version-specific changes.
@@ -799,16 +1062,28 @@ With respect to `values.yaml`, parameters `username`, `database` and `password` 
 `persistence` has also been regrouped under the `primary` key.
 Please adjust your `values.yaml` accordingly.
 
-### To 7.0.0
+**Attention**: The Postgres upgrade is not automatically handled by the chart and must be done by yourself.
+See [this comment](https://gitea.com/gitea/helm-chart/issues/452#issuecomment-740885) for an extensive walkthrough.
+We again highly encourage users to use an external (managed) database for production instances.
 
-#### Private GPG key configuration for Gitea signing actions
+</details>
+
+<details>
+
+<summary>To 7.0.0</summary>
+
+### Private GPG key configuration for Gitea signing actions <!-- omit from toc -->
 
 Having `signing.enabled=true` now requires to use either `signing.privateKey` or `signing.existingSecret` so that the Chart can automatically prepare the GPG key for Gitea internal signing actions.
 See [Configure commit signing](#configure-commit-signing) for details.
 
-### To 6.0.0
+</details>
 
-#### Different volume mounts for init-containers and runtime container
+<details>
+
+<summary>To 6.0.0</summary>
+
+### Different volume mounts for init-containers and runtime container <!-- omit from toc -->
 
 **The `extraVolumeMounts` is deprecated** in favor of `extraInitVolumeMounts` and `extraContainerVolumeMounts`.
 You can now have different mounts for the initialization phase and Gitea runtime.
@@ -817,7 +1092,7 @@ If you want to switch to the new settings and want to mount specific volumes int
 
 **Combining values from the deprecated setting with values from the new settings is not possible.**
 
-#### New `enabled` flag for `startupProbe`
+### New `enabled` flag for `startupProbe` <!-- omit from toc -->
 
 Prior to this version the `startupProbe` was just a commented sample within the `values.yaml`.
 With the migration to an auto-generated [Parameters](#parameters) section, a new parameter `gitea.startupProbe.enabled` has been introduced set to
@@ -826,11 +1101,15 @@ With the migration to an auto-generated [Parameters](#parameters) section, a new
 If you are using the `startupProbe` you need to add that new parameter and set it to `true`.
 Otherwise, your defined probe won't be considered after the upgrade.
 
-### To 5.0.0
+</details>
+
+<details>
+
+<summary>To 5.0.0</summary>
 
 > 💥 The Helm Chart now requires Gitea versions of at least 1.11.0.
 
-#### Enable Dependencies
+### Enable Dependencies <!-- omit from toc -->
 
 The values to enable the dependencies, such as PostgreSQL, Memcached, MySQL and MariaDB have been moved from `gitea.database.builtIn.` to the dependency values.
 
@@ -850,12 +1129,12 @@ mariadb:
   enabled: false
 ```
 
-#### App.ini generation
+### App.ini generation <!-- omit from toc -->
 
 The app.ini generation has changed and now utilizes the environment-to-ini script provided by newer Gitea versions.
 This change ensures, that the app.ini is now persistent.
 
-##### Secret Key generation
+### Secret Key generation <!-- omit from toc -->
 
 Gitea secret keys (SECRET_KEY, INTERNAL_TOKEN, JWT_SECRET) are now generated automatically in certain situations:
 
@@ -868,7 +1147,7 @@ Gitea secret keys (SECRET_KEY, INTERNAL_TOKEN, JWT_SECRET) are now generated aut
 > However, this it is not advisable to do so for existing installations.
 > Certain settings like _LDAP_ would not be readable anymore.
 
-#### Probes
+### Probes <!-- omit from toc -->
 
 `gitea.customLivenessProbe`, `gitea.customReadinessProbe` and `gitea.customStartupProbe` have been removed.
 
@@ -885,16 +1164,20 @@ gitea:
   podAnnotations: {}
 ```
 
-#### Multiple OAuth and LDAP authentication sources
+### Multiple OAuth and LDAP authentication sources <!-- omit from toc -->
 
 With `5.0.0` of this Chart it is now possible to configure Gitea with multiple OAuth and LDAP sources.
 As a result, you need to update an existing OAuth/LDAP configuration in your customized `values.yaml` by replacing the object with settings to a list
 of settings objects.
 See [OAuth2 Settings](#oauth2-settings) and [LDAP Settings](#ldap-settings) section for details.
 
-### To 4.0.0
+</details>
 
-#### Ingress changes
+<details>
+
+<summary>To 4.0.0</summary>
+
+### Ingress changes <!-- omit from toc -->
 
 To provide a more flexible Ingress configuration we now support not only host settings but also provide configuration for the path and pathType.
 So this change changes the hosts from a simple string list, to a list containing a more complex object for more configuration.
@@ -926,12 +1209,12 @@ paths:
     pathType: Prefix
 ```
 
-#### Dropped kebab-case support
+### Dropped kebab-case support <!-- omit from toc -->
 
 In 3.x.x it was possible to provide an ldap configuration via kebab-case, this support has now been dropped and only camel case is supported.
 See [LDAP section](#ldap-settings) for more information.
 
-#### Dependency update
+### Dependency update <!-- omit from toc -->
 
 The chart comes with multiple databases and Memcached as dependency, the latest release updated the dependencies.
 
@@ -941,7 +1224,7 @@ The chart comes with multiple databases and Memcached as dependency, the latest 
 
 If you're using the builtin databases you will most likely redeploy the chart in order to update the database correctly.
 
-#### Execution of initPreScript
+### Execution of initPreScript <!-- omit from toc -->
 
 Generally spoken, this might not be a breaking change, but it is worth to be mentioned.
 
@@ -951,11 +1234,11 @@ This also includes the execution of _initPreScript_.
 If you have such script, please be aware of this.
 Dynamically prepare the Gitea setup during execution by e.g. adding environment variables to the execution context won't work anymore.
 
-### Misc
-
-#### Gitea Version 1.14.X repository ROOT
+### Gitea Version 1.14.X repository ROOT <!-- omit from toc -->
 
 Previously the ROOT folder for the Gitea repositories was located at `/data/git/gitea-repositories`.
 In version `1.14` has the path been changed to `/data/gitea-repositories`.
 
 This chart will set the `gitea.config.repository.ROOT` value default to `/data/git/gitea-repositories`.
+
+</details>

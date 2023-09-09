@@ -10,3 +10,8 @@ readme: prepare-environment
 .PHONY: unittests
 unittests:
 	helm unittest --strict -f 'unittests/**/*.yaml' ./
+
+.PHONY: helm
+update-helm-dependencies:
+	helm dependency update
+  

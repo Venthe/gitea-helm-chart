@@ -39,3 +39,4 @@
 
 - [ ] Parameters are documented in the `values.yaml` and added to the `README.md` using [readme-generator-for-helm](https://github.com/bitnami-labs/readme-generator-for-helm)
 - [ ] Breaking changes are documented in the `README.md`
+- [ ] Templating unittests are added

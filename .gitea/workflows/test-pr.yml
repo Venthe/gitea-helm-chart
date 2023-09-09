@@ -26,7 +26,7 @@ jobs:
           helm template --debug gitea-helm .
       - name: unit tests
         run: |
-          helm plugin install --version 0.3.1 https://github.com/helm-unittest/helm-unittest
+          helm plugin install --version 0.3.3 https://github.com/helm-unittest/helm-unittest
           make unittests
       - name: verify readme
         run: |

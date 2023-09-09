@@ -20,8 +20,18 @@ global:
   #   hostnames:
   #   - example.com
 
-## @param replicaCount number of replicas for the statefulset
+## @param replicaCount number of replicas for the deployment
 replicaCount: 1
+
+## @section strategy
+## @param strategy.type strategy type
+## @param strategy.rollingUpdate.maxSurge maxSurge
+## @param strategy.rollingUpdate.maxUnavailable maxUnavailable
+strategy:
+  type: "RollingUpdate"
+  rollingUpdate:
+    maxSurge: "100%"
+    maxUnavailable: 0
 
 ## @param clusterDomain cluster domain
 clusterDomain: cluster.local
@@ -41,7 +51,7 @@ image:
   # Overrides the image tag if set (Example: sha256:b28e8f3089b52ebe6693295df142f8c12eff354e9a4a5bfbb5c10f296c3a537a)
   digest: ""
   pullPolicy: Always
-  rootless: false # only possible when running 1.14 or later
+  rootless: true
 
 ## @param imagePullSecrets Secret to use for pulling the image
 imagePullSecrets: []
@@ -77,11 +87,16 @@ containerSecurityContext: {}
 ## @param securityContext Run init and Gitea containers as a specific securityContext
 securityContext: {}
 
+## @param podDisruptionBudget Pod disruption budget
+podDisruptionBudget: {}
+#  maxUnavailable: 1
+#  minAvailable: 1
+
 ## @section Service
 service:
   ## @param service.http.type Kubernetes service type for web traffic
   ## @param service.http.port Port number for web traffic
-  ## @param service.http.clusterIP ClusterIP setting for http autosetup for statefulset is None
+  ## @param service.http.clusterIP ClusterIP setting for http autosetup for deployment is None
   ## @param service.http.loadBalancerIP LoadBalancer IP setting
   ## @param service.http.nodePort NodePort for http service
   ## @param service.http.externalTrafficPolicy If `service.http.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation
@@ -104,7 +119,7 @@ service:
     annotations: {}
   ## @param service.ssh.type Kubernetes service type for ssh traffic
   ## @param service.ssh.port Port number for ssh traffic
-  ## @param service.ssh.clusterIP ClusterIP setting for ssh autosetup for statefulset is None
+  ## @param service.ssh.clusterIP ClusterIP setting for ssh autosetup for deployment is None
   ## @param service.ssh.loadBalancerIP LoadBalancer IP setting
   ## @param service.ssh.nodePort NodePort for ssh service
   ## @param service.ssh.externalTrafficPolicy If `service.ssh.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable source IP preservation
@@ -158,7 +173,7 @@ ingress:
   # If helm doesn't correctly detect your ingress API version you can set it here.
   # apiVersion: networking.k8s.io/v1
 
-## @section StatefulSet
+## @section deployment
 #
 ## @param resources Kubernetes resources
 resources:
@@ -180,26 +195,29 @@ resources:
 ## @param schedulerName Use an alternate scheduler, e.g. "stork"
 schedulerName: ""
 
-## @param nodeSelector NodeSelector for the statefulset
+## @param nodeSelector NodeSelector for the deployment
 nodeSelector: {}
 
-## @param tolerations Tolerations for the statefulset
+## @param tolerations Tolerations for the deployment
 tolerations: []
 
-## @param affinity Affinity for the statefulset
+## @param affinity Affinity for the deployment
 affinity: {}
 
-## @param dnsConfig dnsConfig for the statefulset
+## @param topologySpreadConstraints TopologySpreadConstraints for the deployment
+topologySpreadConstraints: []
+
+## @param dnsConfig dnsConfig for the deployment
 dnsConfig: {}
 
-## @param priorityClassName priorityClassName for the statefulset
+## @param priorityClassName priorityClassName for the deployment
 priorityClassName: ""
 
-## @param statefulset.env  Additional environment variables to pass to containers
-## @param statefulset.terminationGracePeriodSeconds How long to wait until forcefully kill the pod
-## @param statefulset.labels Labels for the statefulset
-## @param statefulset.annotations Annotations for the Gitea StatefulSet to be created
-statefulset:
+## @param deployment.env  Additional environment variables to pass to containers
+## @param deployment.terminationGracePeriodSeconds How long to wait until forcefully kill the pod
+## @param deployment.labels Labels for the deployment
+## @param deployment.annotations Annotations for the Gitea deployment to be created
+deployment:
   env:
     []
     # - name: VARIABLE
@@ -208,28 +226,52 @@ statefulset:
   labels: {}
   annotations: {}
 
+## @section ServiceAccount
+
+## @param serviceAccount.create Enable the creation of a ServiceAccount
+## @param serviceAccount.name Name of the created ServiceAccount, defaults to release name. Can also link to an externally provided ServiceAccount that should be used.
+## @param serviceAccount.automountServiceAccountToken Enable/disable auto mounting of the service account token
+## @param serviceAccount.imagePullSecrets Image pull secrets, available to the ServiceAccount
+## @param serviceAccount.annotations Custom annotations for the ServiceAccount
+## @param serviceAccount.labels Custom labels for the ServiceAccount
+serviceAccount:
+  create: false
+  name: ""
+  automountServiceAccountToken: false
+  imagePullSecrets: []
+  # - name: private-registry-access
+  annotations: {}
+  labels: {}
+
 ## @section Persistence
 #
 ## @param persistence.enabled Enable persistent storage
-## @param persistence.existingClaim Use an existing claim to store repository information
+## @param persistence.create Whether to create the persistentVolumeClaim for shared storage
+## @param persistence.mount Whether the persistentVolumeClaim should be mounted (even if not created)
+## @param persistence.claimName Use an existing claim to store repository information
 ## @param persistence.size Size for persistence to store repo information
 ## @param persistence.accessModes AccessMode for persistence
 ## @param persistence.labels Labels for the persistence volume claim to be created
-## @param persistence.annotations Annotations for the persistence volume claim to be created
+## @param persistence.annotations.helm.sh/resource-policy Resource policy for the persistence volume claim
 ## @param persistence.storageClass Name of the storage class to use
 ## @param persistence.subPath Subdirectory of the volume to mount at
+## @param persistence.volumeName Name of persistent volume in PVC
 persistence:
   enabled: true
-  existingClaim:
+  create: true
+  mount: true
+  claimName: gitea-shared-storage
   size: 10Gi
   accessModes:
     - ReadWriteOnce
   labels: {}
-  annotations: {}
   storageClass:
   subPath:
+  volumeName: ""
+  annotations:
+    helm.sh/resource-policy: keep
 
-## @param extraVolumes Additional volumes to mount to the Gitea statefulset
+## @param extraVolumes Additional volumes to mount to the Gitea deployment
 extraVolumes: []
 # - name: postgres-ssl-vol
 #   secret:
@@ -344,13 +386,14 @@ gitea:
     #   customProfileUrl:
     #   customEmailUrl:
 
-  ## @param gitea.config  Configuration for the Gitea server,ref: [config-cheat-sheet](https://docs.gitea.io/en-us/config-cheat-sheet/)
-  config: {}
-  #  APP_NAME: "Gitea: Git with a cup of tea"
-  #  RUN_MODE: dev
-  #
-  #  server:
-  #    SSH_PORT: 22
+  ## @param gitea.config.server.SSH_PORT SSH port for rootlful Gitea image
+  ## @param gitea.config.server.SSH_LISTEN_PORT SSH port for rootless Gitea image
+  config:
+    #  APP_NAME: "Gitea: Git with a cup of tea"
+    #  RUN_MODE: dev
+    server:
+      SSH_PORT: 22 # rootful image
+      SSH_LISTEN_PORT: 2222 # rootless image
   #
   #  security:
   #    PASSWORD_COMPLEXITY: spec
@@ -432,23 +475,44 @@ gitea:
     successThreshold: 1
     failureThreshold: 10
 
-## @section Memcached
-#
-## @param memcached.enabled Memcached is loaded as a dependency from [Bitnami](https://github.com/bitnami/charts/tree/master/bitnami/memcached) if enabled in the values. Complete Configuration can be taken from their website.
-## ref: https://hub.docker.com/r/bitnami/memcached/tags/
-## @param memcached.service.ports.memcached Port for Memcached
-memcached:
+## @section redis-cluster
+## @param redis-cluster.enabled Enable redis
+## @param redis-cluster.usePassword Whether to use password authentication
+redis-cluster:
   enabled: true
-  # image:
-  #   registry: docker.io
-  #   repository: bitnami/memcached
-  #   tag: ""
-  #   digest: ""
-  #   pullPolicy: IfNotPresent
-  #   pullSecrets: []
+  usePassword: false
+
+## @section postgresql-ha
+#
+## @param postgresql-ha.enabled Enable postgresql-ha
+## @param postgresql-ha.postgresql.password Password for the `gitea` user (overrides `auth.password`)
+## @param postgresql-ha.global.postgresql.database Name for a custom database to create (overrides `auth.database`)
+## @param postgresql-ha.global.postgresql.username Name for a custom user to create (overrides `auth.username`)
+## @param postgresql-ha.global.postgresql.password Name for a custom password to create (overrides `auth.password`)
+## @param postgresql-ha.postgresql.repmgrPassword Repmgr Password
+## @param postgresql-ha.postgresql.postgresPassword postgres Password
+## @param postgresql-ha.pgpool.adminPassword pgpool adminPassword
+## @param postgresql-ha.service.ports.postgresql postgresql service port (overrides `service.ports.postgresql`)
+## @param postgresql-ha.primary.persistence.size PVC Storage Request for postgresql-ha volume
+postgresql-ha:
+  global:
+    postgresql:
+      database: gitea
+      password: gitea
+      username: gitea
+  enabled: true
+  postgresql:
+    repmgrPassword: changeme2
+    postgresPassword: changeme1
+    password: changeme4
+  pgpool:
+    adminPassword: changeme3
   service:
     ports:
-      memcached: 11211
+      postgresql: 5432
+  primary:
+    persistence:
+      size: 10Gi
 
 ## @section PostgreSQL
 #
@@ -459,7 +523,7 @@ memcached:
 ## @param postgresql.global.postgresql.service.ports.postgresql PostgreSQL service port (overrides `service.ports.postgresql`)
 ## @param postgresql.primary.persistence.size PVC Storage Request for PostgreSQL volume
 postgresql:
-  enabled: true
+  enabled: false
   global:
     postgresql:
       auth:
