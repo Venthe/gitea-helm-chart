@@ -1,12 +1,13 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  extends: ["gitea>gitea/renovate-config", ":maintainLockFilesWeekly"],
+  extends: ["gitea>gitea/renovate-config"],
   packageRules: [
     {
       description: "Automerge minor + patch dependency updates weekly",
       matchManagers: ["helm"],
       matchUpdateTypes: ["minor", "patch", "digest"],
       automerge: true,
+      schedule: ["weekly"]
     },
   ],
 }
