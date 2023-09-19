@@ -27,6 +27,7 @@
 - [Metrics and profiling](#metrics-and-profiling)
 - [Pod annotations](#pod-annotations)
 - [Themes](#themes)
+- [Renovate](#renovate)
 - [Parameters](#parameters)
   - [Global](#global)
   - [strategy](#strategy)
@@ -690,6 +691,31 @@ or natively via `kubectl`:
 ```bash
 kubectl create secret generic gitea-themes --from-file={{FULL-PATH-TO-CSS}} --namespace gitea
 ```
+
+## Renovate
+To be able to pin digest automatically by renovate you need to configure regex manager.
+For an a example `values.yaml` content we would like for renovate to update `tag` and `digest`.
+```yaml
+gitea:
+  image:
+    repository: gitea/gitea
+    tag: 1.20.2
+    digest: sha256:6e3b85a36653894d6741d0aefb41dfaac39044e028a42e0a520cc05ebd7bfc3f
+    pullPolicy: IfNotPresent
+```
+By default renovate adds digest after `tag` and to avoid that we need to write our own manager to handle that.
+```json
+"regexManagers": [
+  {
+    "description": "Do a explicit gitea digest field match",
+    "fileMatch": ["values\\.yaml"],
+    "matchStrings": ["(?<depName>gitea\\/gitea)\\n.*?tag: (?<currentValue>[^@].*?)\\n.*?digest: (?<currentDigest>sha256:[a-f0-9]+)"],
+    "datasourceTemplate": "docker",
+    "autoReplaceStringTemplate": "{{depName}}\n    tag: {{newValue}}\n    digest: {{#if newDigest}}{{{newDigest}}}{{else}}{{{currentDigest}}}{{/if}}"
+  }
+]
+```
+The parameter `fileMatch` needs to match file where renovate will look for gitea image to update.
 
 ## Parameters
 
