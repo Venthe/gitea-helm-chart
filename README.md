@@ -693,8 +693,10 @@ kubectl create secret generic gitea-themes --from-file={{FULL-PATH-TO-CSS}} --na
 ```
 
 ## Renovate
+
 To be able to pin digest automatically by renovate you need to configure regex manager.
 For an a example `values.yaml` content we would like for renovate to update `tag` and `digest`.
+
 ```yaml
 gitea:
   image:
@@ -703,7 +705,9 @@ gitea:
     digest: sha256:6e3b85a36653894d6741d0aefb41dfaac39044e028a42e0a520cc05ebd7bfc3f
     pullPolicy: IfNotPresent
 ```
+
 By default renovate adds digest after `tag` and to avoid that we need to write our own manager to handle that.
+
 ```json
 "regexManagers": [
   {
@@ -715,7 +719,8 @@ By default renovate adds digest after `tag` and to avoid that we need to write o
   }
 ]
 ```
-The parameter `fileMatch` needs to match file where renovate will look for gitea image to update.
+
+The parameter `fileMatch` needs to match file where renovate will look for Gitea image to update.
 
 ## Parameters
 
