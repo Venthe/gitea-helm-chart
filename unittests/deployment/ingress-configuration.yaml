@@ -6,7 +6,6 @@ templates:
   - templates/gitea/ingress.yaml
 tests:
   - it: hostname using TPL
-    template: templates/gitea/ingress.yaml
     set: 
       global.giteaHostName: "gitea.example.com"
       ingress.enabled: true
@@ -17,8 +16,8 @@ tests:
             - "{{ .Values.global.giteaHostName }}"
     asserts:
       - equal:
-        path: spec.tls[0].hosts[0]
-        value: "gitea.example.com"
+          path: spec.tls[0].hosts[0]
+          value: "gitea.example.com"
       - equal:
-        path: spec.rules[0].host
-        value: "gitea.example.com"
+          path: spec.rules[0].host
+          value: "gitea.example.com"
