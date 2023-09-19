@@ -6,11 +6,11 @@ templates:
   - templates/gitea/ingress.yaml
 tests:
   - it: hostname using TPL
-    set: 
+    set:
       global.giteaHostName: "gitea.example.com"
       ingress.enabled: true
       ingress.hosts[0].host: "{{ .Values.global.giteaHostName }}"
-      ingress.tls: 
+      ingress.tls:
         - secretName: gitea-tls
           hosts:
             - "{{ .Values.global.giteaHostName }}"
