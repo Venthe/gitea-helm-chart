@@ -694,7 +694,7 @@ kubectl create secret generic gitea-themes --from-file={{FULL-PATH-TO-CSS}} --na
 
 ## Renovate
 
-To be able to use a digest value which is automatically updated by `Renovate` a custom [regexManager](https://docs.renovatebot.com/modules/manager/regex/) is required.
+To be able to use a digest value which is automatically updated by `Renovate` a [customManager](https://docs.renovatebot.com/modules/manager/regex/) is required.
 Here's an examplary `values.yml` definition which makes use of a digest:
 
 ```yaml
@@ -705,11 +705,12 @@ image:
 ```
 
 By default Renovate adds digest after the `tag`.
-To comply with the Gitea helm chart definition of the digest parameter, a custom "regexManager" definition is required:
+To comply with the Gitea helm chart definition of the digest parameter, a "customManagers" definition is required:
 
 ```json
-"regexManagers": [
+"customManagers": [
   {
+    "customType": "regex",
     "description": "Apply an explicit gitea digest field match",
     "fileMatch": ["values\\.ya?ml"],
     "matchStrings": ["(?<depName>gitea\\/gitea)\\n(?<indentation>\\s+)tag: (?<currentValue>[^@].*?)\\n\\s+digest: (?<currentDigest>sha256:[a-f0-9]+)"],
