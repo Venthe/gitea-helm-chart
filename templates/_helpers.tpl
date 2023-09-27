@@ -2,6 +2,27 @@
 {{/*
 Expand the name of the chart.
 */}}
+
+{{- /* multiple replicas assertions */ -}}
+{{- if gt .Values.replicaCount 1.0 -}}
+  {{- fail "When using multiple replicas, a RWX file system is required" -}}
+  {{- if eq (get (.Values.persistence.accessModes 0) "ReadWriteOnce") -}}
+    {{- fail "When using multiple replicas, a RWX file system is required" -}}
+  {{- end }}
+  
+  {{- if eq (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE") "bleve" -}}
+    {{- fail "When using multiple replicas, the repo indexer must be set to 'meilisearch' or 'elasticsearch'" -}}
+  {{- end }}
+  
+  {{- if and (eq .Values.gitea.config.indexer.REPO_INDEXER_TYPE "bleve") (eq .Values.gitea.config.indexer.REPO_INDEXER_ENABLED "true") -}}
+    {{- fail "When using multiple replicas, the repo indexer must be set to 'meilisearch' or 'elasticsearch'" -}}
+  {{- end }}
+  
+  {{- if eq .Values.gitea.config.indexer.ISSUE_INDEXER_TYPE "bleve" -}}
+    {{- (printf "DEBUG: When using multiple replicas, the repo indexer must be set to 'meilisearch' or 'elasticsearch'") | fail -}}
+  {{- end }}
+{{- end }}
+
 {{- define "gitea.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
@@ -36,13 +57,18 @@ Create image name and tag used by the deployment.
 */}}
 {{- define "gitea.image" -}}
 {{- $registry := .Values.global.imageRegistry | default .Values.image.registry -}}
-{{- $name := .Values.image.repository -}}
+{{- $repository := .Values.image.repository -}}
+{{- $separator := ":" -}}
 {{- $tag := .Values.image.tag | default .Chart.AppVersion -}}
 {{- $rootless := ternary "-rootless" "" (.Values.image.rootless) -}}
-{{- if $registry -}}
-  {{- printf "%s/%s:%s%s" $registry $name $tag $rootless -}}
+{{- $digest := "" -}}
+{{- if .Values.image.digest }}
+    {{- $digest = (printf "@%s" (.Values.image.digest | toString)) -}}
+{{- end -}}
+{{- if $registry }}
+    {{- printf "%s/%s%s%s%s%s" $registry $repository $separator $tag $rootless $digest -}}
 {{- else -}}
-  {{- printf "%s:%s%s" $name $tag $rootless -}}
+    {{- printf "%s%s%s%s%s" $repository $separator $tag $rootless $digest -}}
 {{- end -}}
 {{- end -}}
 
@@ -91,12 +117,34 @@ app.kubernetes.io/name: {{ include "gitea.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
-{{- define "postgresql.dns" -}}
-{{- printf "%s-postgresql.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.postgresql.global.postgresql.service.ports.postgresql -}}
+{{- define "postgresql-ha.dns" -}}
+{{- if (index .Values "postgresql-ha").enabled -}}
+{{- printf "%s-postgresql-ha-postgresql.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain (index .Values "postgresql-ha" "service" "ports" "postgresql") -}}
+{{- end -}}
 {{- end -}}
 
-{{- define "memcached.dns" -}}
-{{- printf "%s-memcached.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.memcached.service.ports.memcached | trunc 63 | trimSuffix "-" -}}
+{{- define "postgresql.dns" -}}
+{{- if (index .Values "postgresql").enabled -}}
+{{- printf "%s-postgresql.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain .Values.postgresql.global.postgresql.service.ports.postgresql -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "redis.dns" -}}
+{{- if (index .Values "redis-cluster").enabled -}}
+{{- printf "redis+cluster://:%s@%s-redis-cluster-headless.%s.svc.%s:%g/0?pool_size=100&idle_timeout=180s&" (index .Values "redis-cluster").global.redis.password .Release.Name .Release.Namespace .Values.clusterDomain (index .Values "redis-cluster").service.ports.redis -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "redis.port" -}}
+{{- if (index .Values "redis-cluster").enabled -}}
+{{ (index .Values "redis-cluster").service.ports.redis }}
+{{- end -}}
+{{- end -}}
+
+{{- define "redis.servicename" -}}
+{{- if (index .Values "redis-cluster").enabled -}}
+{{- printf "%s-redis-cluster-headless.%s.svc.%s" .Release.Name .Release.Namespace .Values.clusterDomain -}}
+{{- end -}}
 {{- end -}}
 
 {{- define "gitea.default_domain" -}}
@@ -182,6 +230,7 @@ https
       {{- else -}}
         {{- (printf "Key %s cannot be on top level of configuration" $key) | fail -}}
       {{- end -}}
+
     {{- end }}
   {{- end }}
 
@@ -211,6 +260,18 @@ https
   {{- if not (hasKey .Values.gitea.config "oauth2") -}}
     {{- $_ := set .Values.gitea.config "oauth2" dict -}}
   {{- end -}}
+  {{- if not (hasKey .Values.gitea.config "session") -}}
+    {{- $_ := set .Values.gitea.config "session" dict -}}
+  {{- end -}}
+  {{- if not (hasKey .Values.gitea.config "queue") -}}
+    {{- $_ := set .Values.gitea.config "queue" dict -}}
+  {{- end -}}
+  {{- if not (hasKey .Values.gitea.config "queue.issue_indexer") -}}
+    {{- $_ := set .Values.gitea.config "queue.issue_indexer" dict -}}
+  {{- end -}}
+  {{- if not (hasKey .Values.gitea.config "indexer") -}}
+    {{- $_ := set .Values.gitea.config "indexer" dict -}}
+  {{- end -}}
 {{- end -}}
 
 {{- define "gitea.inline_configuration.defaults" -}}
@@ -226,12 +287,26 @@ https
   {{- if not (hasKey .Values.gitea.config.metrics "ENABLED") -}}
     {{- $_ := set .Values.gitea.config.metrics "ENABLED" .Values.gitea.metrics.enabled -}}
   {{- end -}}
-  {{- if .Values.memcached.enabled -}}
+  {{- if (index .Values "redis-cluster").enabled -}}
     {{- $_ := set .Values.gitea.config.cache "ENABLED" "true" -}}
-    {{- $_ := set .Values.gitea.config.cache "ADAPTER" "memcache" -}}
+    {{- $_ := set .Values.gitea.config.cache "ADAPTER" "redis" -}}
     {{- if not (.Values.gitea.config.cache.HOST) -}}
-      {{- $_ := set .Values.gitea.config.cache "HOST" (include "memcached.dns" .) -}}
+      {{- $_ := set .Values.gitea.config.cache "HOST" (include "redis.dns" .) -}}
     {{- end -}}
+  {{- end -}}
+  {{- /* redis queue */ -}}
+  {{- if (index .Values "redis-cluster").enabled -}}
+    {{- $_ := set .Values.gitea.config.queue "TYPE" "redis" -}}
+    {{- $_ := set .Values.gitea.config.queue "CONN_STR" (include "redis.dns" .) -}}
+  {{- end -}}
+  {{- if not (get .Values.gitea.config.session "PROVIDER") -}}
+    {{- $_ := set .Values.gitea.config.session "PROVIDER" "redis" -}}
+  {{- end -}}
+  {{- if not (get .Values.gitea.config.session "PROVIDER_CONFIG") -}}
+    {{- $_ := set .Values.gitea.config.session "PROVIDER_CONFIG" (include "redis.dns" .) -}}
+  {{- end -}}
+  {{- if not .Values.gitea.config.indexer.ISSUE_INDEXER_TYPE -}}
+     {{- $_ := set .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE" "db" -}}
   {{- end -}}
 {{- end -}}
 
@@ -279,7 +354,16 @@ https
 {{- end -}}
 
 {{- define "gitea.inline_configuration.defaults.database" -}}
-  {{- if .Values.postgresql.enabled -}}
+  {{- if (index .Values "postgresql-ha" "enabled") -}}
+    {{- $_ := set .Values.gitea.config.database "DB_TYPE"   "postgres" -}}
+    {{- if not (.Values.gitea.config.database.HOST) -}}
+      {{- $_ := set .Values.gitea.config.database "HOST"      (include "postgresql-ha.dns" .) -}}
+    {{- end -}}
+    {{- $_ := set .Values.gitea.config.database "NAME"      (index .Values "postgresql-ha" "global" "postgresql" "database") -}}
+    {{- $_ := set .Values.gitea.config.database "USER"      (index .Values "postgresql-ha" "global" "postgresql" "username") -}}
+    {{- $_ := set .Values.gitea.config.database "PASSWD"    (index .Values "postgresql-ha" "global" "postgresql" "password") -}}
+  {{- end -}}
+  {{- if (index .Values "postgresql" "enabled") -}}
     {{- $_ := set .Values.gitea.config.database "DB_TYPE"   "postgres" -}}
     {{- if not (.Values.gitea.config.database.HOST) -}}
       {{- $_ := set .Values.gitea.config.database "HOST"      (include "postgresql.dns" .) -}}

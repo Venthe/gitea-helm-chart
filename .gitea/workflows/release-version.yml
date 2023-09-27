@@ -9,7 +9,7 @@ jobs:
   generate-chart-publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: install tools
         run: |
           apt update -y
@@ -39,7 +39,7 @@ jobs:
           mkdir gitea
           mv gitea*.tgz gitea/
           curl -L -o gitea/index.yaml https://dl.gitea.com/charts/index.yaml
-          helm repo index gitea/ --url https://dl.gitea.io/charts --merge gitea/index.yaml
+          helm repo index gitea/ --url https://dl.gitea.com/charts --merge gitea/index.yaml
 
       - name: aws credential configure
         uses: https://github.com/aws-actions/configure-aws-credentials@v2

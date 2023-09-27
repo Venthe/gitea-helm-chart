@@ -1,0 +1,14 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["gitea>gitea/renovate-config"],
+  packageRules: [
+    {
+      description: "Automerge minor + patch dependency updates weekly",
+      matchManagers: ["helmv3"],
+      matchUpdateTypes: ["minor", "patch", "digest"],
+      automerge: true,
+      automergeStrategy: "squash",
+      extends: ["schedule:weekly"],
+    },
+  ],
+}
