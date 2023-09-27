@@ -1,0 +1,43 @@
+name: chart-testing-action
+
+on:
+  - pull_request
+
+jobs:
+  chart-testing-action:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Helm
+        uses: https://github.com/azure/setup-helm@v3
+        with:
+          version: v3.12.1
+
+      - name: Install python
+        run: apt update -y && apt install -y python3 python3-venv python3-pip
+
+      - name: Set up chart-testing
+        uses: https://github.com/helm/chart-testing-action@v2.4.0
+
+      - name: Run chart-testing (list-changed)
+        id: list-changed
+        run: |
+          changed=$(ct list-changed --target-branch main --chart-dirs .)
+          if [[ -n "$changed" ]]; then
+            echo "changed=true" 
+          fi
+
+      - name: Run chart-testing (lint)
+        if: steps.list-changed.outputs.changed == 'true'
+        run: ct lint --target-branch main
+
+      - name: Create kind cluster
+        if: steps.list-changed.outputs.changed == 'true'
+        uses: https://github.com/helm/kind-action@v1.7.0
+
+      - name: Run chart-testing (install)
+        if: steps.list-changed.outputs.changed == 'true'
+        run: ct install --target-branch main
