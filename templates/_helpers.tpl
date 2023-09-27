@@ -195,7 +195,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{- range $key, $val := $values -}}
 {{- if ne $key "existingSecret" -}}
-{{- printf "--%s %s " ($key | kebabcase) ($val | quote) -}}
+{{- printf "--%s %s " ($key | kebabcase) ($val | squote) -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}

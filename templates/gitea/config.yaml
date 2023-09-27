@@ -51,6 +51,29 @@ stringData:
     #!/usr/bin/env bash
     set -euo pipefail
 
+    ### initial creation of persistent secrets
+    if ![ -f ${GITEA_APP_INI} ]; then
+      function env2ini::generate_initial_secrets() {
+        # These environment variables will either be
+        #   - overwritten with user defined values,
+        #   - initially used to set up Gitea
+        # Anyway, they won't harm existing app.ini files
+
+        export ENV_TO_INI__SECURITY__INTERNAL_TOKEN=$(gitea generate secret INTERNAL_TOKEN)
+        export ENV_TO_INI__SECURITY__SECRET_KEY=$(gitea generate secret SECRET_KEY)
+        export ENV_TO_INI__OAUTH2__JWT_SECRET=$(gitea generate secret JWT_SECRET)
+        export ENV_TO_INI__SERVER__LFS_JWT_SECRET=$(gitea generate secret LFS_JWT_SECRET)
+
+        env2ini::log "...Initial secrets generated\n"
+      }
+    fi
+
+    # ensure a clean start
+    if [ -f ${GITEA_APP_INI} ]; then
+      rm $GITEA_APP_INI
+    fi
+
+
     function env2ini::log() {
       printf "${1}\n"
     }
