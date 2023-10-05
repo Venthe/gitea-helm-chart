@@ -47,6 +47,10 @@ jobs:
           mv gitea*.tgz gitea/
           curl -L -o gitea/index.yaml https://dl.gitea.com/charts/index.yaml
           helm repo index gitea/ --url https://dl.gitea.com/charts --merge gitea/index.yaml
+          # push to dockerhub
+          echo ${{ secrets.DOCKER_PASSWORD }} | helm registry login -u ${{ secrets.DOCKER_USERNAME }} registry-1.docker.io --password-stdin
+          helm push gitea-${GITHUB_REF#refs/tags/v}.tgz oci://registry-1.docker.io/gitea/helm
+          helm registry logout registry-1.docker.io
 
       - name: aws credential configure
         uses: https://github.com/aws-actions/configure-aws-credentials@v2

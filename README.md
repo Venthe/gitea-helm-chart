@@ -90,7 +90,13 @@ Dependencies:
 
 ```sh
 helm repo add gitea-charts https://dl.gitea.com/charts/
-helm repo update
+helm install gitea gitea-charts/gitea
+```
+
+Alternatively, the chart can also be installed from Dockerhub (since v9.6.0)
+
+```sh
+helm repo add gitea-charts oci://registry-1.docker.io/gitea/helm
 helm install gitea gitea-charts/gitea
 ```
 
