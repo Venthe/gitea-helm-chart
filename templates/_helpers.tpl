@@ -319,7 +319,7 @@ https
   {{- end -}}
   {{- if not (.Values.gitea.config.server.DOMAIN) -}}
     {{- if gt (len .Values.ingress.hosts) 0 -}}
-      {{- $_ := set .Values.gitea.config.server "DOMAIN" (index .Values.ingress.hosts 0).host -}}
+      {{- $_ := set .Values.gitea.config.server "DOMAIN" ( tpl (index .Values.ingress.hosts 0).host $) -}}
     {{- else -}}
       {{- $_ := set .Values.gitea.config.server "DOMAIN" (include "gitea.default_domain" .) -}}
     {{- end -}}
