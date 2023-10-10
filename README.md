@@ -212,7 +212,7 @@ If HA is not needed/desired, the following configurations can be used to deploy 
 
 2. For a minimal DEV installation (using the built-in sqlite DB instead of Postgres):
 
-   This will result in a single-pod Gitea instance *without any dependencies and persistence*.
+   This will result in a single-pod Gitea instance _without any dependencies and persistence_.
    **Do not use this configuration for production use**.
 
    <details>
