@@ -7,6 +7,7 @@
       matchManagers: ["helmv3"],
       matchUpdateTypes: ["minor", "patch", "digest"],
       automerge: true,
+      automergeStrategy: "squash",
       extends: ["schedule:weekly"],
     },
   ],

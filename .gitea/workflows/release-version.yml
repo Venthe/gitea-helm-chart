@@ -9,15 +9,21 @@ jobs:
   generate-chart-publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: install tools
         run: |
           apt update -y
-          apt install -y curl
+          apt install -y curl ca-certificates curl gnupg
+          # helm
           curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | tee /usr/share/keyrings/helm.gpg > /dev/null
           echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list
+          # docker
+          install -m 0755 -d /etc/apt/keyrings
+          curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+          chmod a+r /etc/apt/keyrings/docker.gpg
+          echo "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
           apt update -y
-          apt install -y python helm python3-pip apt-transport-https
+          apt install -y python helm python3-pip apt-transport-https docker-ce-cli
           pip install awscli
 
       - name: Import GPG key
@@ -31,6 +37,7 @@ jobs:
       # Using helm gpg plugin as 'helm package --sign' has issues with gpg2: https://github.com/helm/helm/issues/2843
       - name: package chart
         run: |
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
           # FIXME: use upstream after https://github.com/technosophos/helm-gpg/issues/1 is solved
           helm plugin install https://github.com/pat-s/helm-gpg
           helm dependency update

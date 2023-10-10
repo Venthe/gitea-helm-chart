@@ -27,6 +27,7 @@
 - [Metrics and profiling](#metrics-and-profiling)
 - [Pod annotations](#pod-annotations)
 - [Themes](#themes)
+- [Renovate](#renovate)
 - [Parameters](#parameters)
   - [Global](#global)
   - [strategy](#strategy)
@@ -689,6 +690,34 @@ or natively via `kubectl`:
 
 ```bash
 kubectl create secret generic gitea-themes --from-file={{FULL-PATH-TO-CSS}} --namespace gitea
+```
+
+## Renovate
+
+To be able to use a digest value which is automatically updated by `Renovate` a [customManager](https://docs.renovatebot.com/modules/manager/regex/) is required.
+Here's an examplary `values.yml` definition which makes use of a digest:
+
+```yaml
+image:
+  repository: gitea/gitea
+  tag: 1.20.2
+  digest: sha256:6e3b85a36653894d6741d0aefb41dfaac39044e028a42e0a520cc05ebd7bfc3f
+```
+
+By default Renovate adds digest after the `tag`.
+To comply with the Gitea helm chart definition of the digest parameter, a "customManagers" definition is required:
+
+```json
+"customManagers": [
+  {
+    "customType": "regex",
+    "description": "Apply an explicit gitea digest field match",
+    "fileMatch": ["values\\.ya?ml"],
+    "matchStrings": ["(?<depName>gitea\\/gitea)\\n(?<indentation>\\s+)tag: (?<currentValue>[^@].*?)\\n\\s+digest: (?<currentDigest>sha256:[a-f0-9]+)"],
+    "datasourceTemplate": "docker",
+    "autoReplaceStringTemplate": "{{depName}}\n{{indentation}}tag: {{newValue}}\n{{indentation}}digest: {{#if newDigest}}{{{newDigest}}}{{else}}{{{currentDigest}}}{{/if}}"
+  }
+]
 ```
 
 ## Parameters
