@@ -1067,28 +1067,29 @@ The previous `memcache` default was not HA-ready, hence we decided to switch to 
 If you are coming from an existing deployment and [#356](https://gitea.com/gitea/helm-chart/issues/356) is still open, you need to set the config sections for `cache`, `session` and `queue` explicitly:
 
 ```yaml
-session:
-  PROVIDER: redis-cluster
-  PROVIDER_CONFIG: redis+cluster://:gitea@gitea-redis-cluster-headless.<namespace>.svc.cluster.local:6379/0?pool_size=100&idle_timeout=180s&
+gitea:
+  config:
+    session:
+      PROVIDER: redis-cluster
+      PROVIDER_CONFIG: redis+cluster://:gitea@gitea-redis-cluster-headless.<namespace>.svc.cluster.local:6379/0?pool_size=100&idle_timeout=180s&
 
-cache:
-  ENABLED: true
-  ADAPTER: redis-cluster
-  HOST: redis+cluster://:gitea@gitea-redis-cluster-headless.<namespace>.svc.cluster.local:6379/0?pool_size=100&idle_timeout=180s&
+    cache:
+      ENABLED: true
+      ADAPTER: redis-cluster
+      HOST: redis+cluster://:gitea@gitea-redis-cluster-headless.<namespace>.svc.cluster.local:6379/0?pool_size=100&idle_timeout=180s&
 
-queue:
-  TYPE: redis
-  CONN_STR: redis+cluster://:gitea@gitea-redis-cluster-headless.<namespace>.svc.cluster.local:6379/0?pool_size=100&idle_timeout=180s&
+    queue:
+      TYPE: redis
+      CONN_STR: redis+cluster://:gitea@gitea-redis-cluster-headless.<namespace>.svc.cluster.local:6379/0?pool_size=100&idle_timeout=180s&
 ```
 
 <!-- markdownlint-disable-next-line -->
-
 **Switch to rootless image by default**
+
 If you are facing errors like `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED` due to this automatic transition:
 Have a look at [this discussion](https://gitea.com/gitea/helm-chart/issues/487#issue-220660) and either set `image.rootless: false` or manually update your `~/.ssh/known_hosts` file(s).
 
 <!-- markdownlint-disable-next-line -->
-
 **Transitioning from a RWO to RWX Persistent Volume**
 
 If you want to switch to a RWX volume and go for HA, you need to
@@ -1098,7 +1099,6 @@ If you want to switch to a RWX volume and go for HA, you need to
 3. Restore the backup to the same location in the new PV
 
 <!-- markdownlint-disable-next-line -->
-
 **Transitioning from Postgres to Postgres HA**
 
 If you are running with a non-HA PG DB from a previous chart release, you need to set
@@ -1109,7 +1109,6 @@ If you are running with a non-HA PG DB from a previous chart release, you need t
 This is needed to stay with your existing single-instance DB (as the HA-variant is the new default).
 
 <!-- markdownlint-disable-next-line -->
-
 **Change of env-to-ini prefix**
 
 Before this release, the env-to-ini prefix was `ENV_TO_INI__`.
