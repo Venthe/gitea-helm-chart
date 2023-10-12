@@ -42,7 +42,8 @@ clusterDomain: cluster.local
 ## @param image.tag Visit: [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated). Defaults to `appVersion` within Chart.yaml.
 ## @param image.digest Image digest. Allows to pin the given image tag. Useful for having control over mutable tags like `latest`
 ## @param image.pullPolicy Image pull policy
-## @param image.rootless Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher
+## @param image.rootless Whether to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher
+## @param image.fullOverride Completely overrides the image registry, path/image, tag and digest
 image:
   registry: ""
   repository: gitea/gitea
@@ -51,6 +52,7 @@ image:
   digest: ""
   pullPolicy: Always
   rootless: true
+  fullOverride: ""
 
 ## @param imagePullSecrets Secret to use for pulling the image
 imagePullSecrets: []

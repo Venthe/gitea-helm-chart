@@ -56,7 +56,7 @@ Create chart name and version as used by the chart label.
 Create image name and tag used by the deployment.
 */}}
 {{- define "gitea.image" -}}
-{{- $imageOverride := .Values.image.imageOverride | default "" -}}
+{{- $fullOverride := .Values.image.fullOverride | default "" -}}
 {{- $registry := .Values.global.imageRegistry | default .Values.image.registry -}}
 {{- $repository := .Values.image.repository -}}
 {{- $separator := ":" -}}
@@ -66,8 +66,8 @@ Create image name and tag used by the deployment.
 {{- if .Values.image.digest }}
     {{- $digest = (printf "@%s" (.Values.image.digest | toString)) -}}
 {{- end -}}
-{{- if $imageOverride }}
-    {{- printf "%s" $imageOverride -}}
+{{- if $fullOverride }}
+    {{- printf "%s" $fullOverride -}}
 {{- else if $registry }}
     {{- printf "%s/%s%s%s%s%s" $registry $repository $separator $tag $rootless $digest -}}
 {{- else -}}
