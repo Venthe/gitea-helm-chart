@@ -15,7 +15,7 @@ jobs:
       - name: install tools
         run: |
           apk update
-          apk add --update make node npm
+          apk add --update make nodejs npm
       - uses: actions/checkout@v4
       - name: install chart dependencies
         run: helm dependency build
