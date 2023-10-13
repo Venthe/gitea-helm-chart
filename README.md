@@ -10,7 +10,7 @@
     - [Database defaults](#database-defaults)
     - [Server defaults](#server-defaults)
     - [Metrics defaults](#metrics-defaults)
-  - [Minimal Configuration](#minimal-configuration)
+  - [Single-Pod Configurations](#single-pod-configurations)
   - [Additional _app.ini_ settings](#additional-appini-settings)
     - [User defined environment variables in app.ini](#user-defined-environment-variables-in-appini)
   - [External Database](#external-database)
@@ -172,35 +172,77 @@ The Prometheus `/metrics` endpoint is disabled by default.
 ENABLED = false
 ```
 
-### Minimal Configuration
+### Single-Pod Configurations
 
-For a minimal installation, i.e. without HA dependencies and using the built-in SQLITE DB instead of Postgres, the following configuration can be used:
+If HA is not needed/desired, the following configurations can be used to deploy a single-pod Gitea instance.
 
-```yaml
-redis-cluster:
-  enabled: false
-postgresql:
-  enabled: false
-postgresql-ha:
-  enabled: false
+1. For a production-ready single-pod Gitea instance without external dependencies (using the chart dependency `postgresql`):
 
-persistence:
-  enabled: false
+   <details>
 
-gitea:
-  config:
-    database:
-      DB_TYPE: sqlite3
-    session:
-      PROVIDER: memory
-    cache:
-      ADAPTER: memory
-    queue:
-      TYPE: level
-```
+   <summary>values.yml</summary>
 
-This will result in a single-pod Gitea instance without any dependencies and persistence.
-Do not use this configuration for production use.
+   ```yaml
+   redis-cluster:
+     enabled: false
+   postgresql:
+     enabled: true
+   postgresql-ha:
+     enabled: false
+
+   persistence:
+     enabled: true
+
+   gitea:
+     config:
+       database:
+         DB_TYPE: postgres
+       session:
+         PROVIDER: db
+       cache:
+         ADAPTER: memory
+       queue:
+         TYPE: level
+       indexer:
+         ISSUE_INDEXER_TYPE: bleve
+         REPO_INDEXER_ENABLED: true
+   ```
+
+   </details>
+
+2. For a minimal DEV installation (using the built-in sqlite DB instead of Postgres):
+
+   This will result in a single-pod Gitea instance _without any dependencies and persistence_.
+   **Do not use this configuration for production use**.
+
+   <details>
+  
+   <summary>values.yml</summary>
+  
+   ```yaml
+   redis-cluster:
+     enabled: false
+   postgresql:
+     enabled: false
+   postgresql-ha:
+     enabled: false
+  
+   persistence:
+     enabled: false
+  
+   gitea:
+     config:
+       database:
+         DB_TYPE: sqlite3
+       session:
+         PROVIDER: memory
+       cache:
+         ADAPTER: memory
+       queue:
+         TYPE: level
+   ```
+
+   </details>
 
 ### Additional _app.ini_ settings
 
@@ -1025,15 +1067,17 @@ The previous `memcache` default was not HA-ready, hence we decided to switch to 
 If you are coming from an existing deployment and [#356](https://gitea.com/gitea/helm-chart/issues/356) is still open, you need to set the config sections for `cache`, `session` and `queue` explicitly:
 
 ```yaml
+gitea:
+  config:
     session:
       PROVIDER: redis-cluster
       PROVIDER_CONFIG: redis+cluster://:gitea@gitea-redis-cluster-headless.<namespace>.svc.cluster.local:6379/0?pool_size=100&idle_timeout=180s&
-      
+
     cache:
       ENABLED: true
       ADAPTER: redis-cluster
       HOST: redis+cluster://:gitea@gitea-redis-cluster-headless.<namespace>.svc.cluster.local:6379/0?pool_size=100&idle_timeout=180s&
-      
+
     queue:
       TYPE: redis
       CONN_STR: redis+cluster://:gitea@gitea-redis-cluster-headless.<namespace>.svc.cluster.local:6379/0?pool_size=100&idle_timeout=180s&
@@ -1041,6 +1085,7 @@ If you are coming from an existing deployment and [#356](https://gitea.com/gitea
 
 <!-- markdownlint-disable-next-line -->
 **Switch to rootless image by default**
+
 If you are facing errors like `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED` due to this automatic transition:
 Have a look at [this discussion](https://gitea.com/gitea/helm-chart/issues/487#issue-220660) and either set `image.rootless: false` or manually update your `~/.ssh/known_hosts` file(s).
 
