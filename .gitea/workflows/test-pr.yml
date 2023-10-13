@@ -14,6 +14,7 @@ jobs:
     steps:
       - name: install tools
         run: |
+          apk update
           apk add --update make node npm
       - uses: actions/checkout@v4
       - name: install chart dependencies
