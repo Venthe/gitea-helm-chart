@@ -5,6 +5,10 @@ on:
     tags:
       - "*"
 
+env:
+  # renovate: datasource=docker depName=alpine/helm
+  HELM_VERSION: "3.12.3"
+
 jobs:
   generate-chart-publish:
     runs-on: ubuntu-latest
@@ -23,7 +27,7 @@ jobs:
           chmod a+r /etc/apt/keyrings/docker.gpg
           echo "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
           apt update -y
-          apt install -y python helm python3-pip apt-transport-https docker-ce-cli
+          apt install -y python helm=${{ env.HELM_VERSION }}-1 python3-pip apt-transport-https docker-ce-cli
           pip install awscli
 
       - name: Import GPG key
