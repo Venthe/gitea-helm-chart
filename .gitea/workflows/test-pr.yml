@@ -12,10 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     container: alpine/helm:3.12.3
     steps:
-      - uses: actions/checkout@v4
       - name: install tools
         run: |
-          apk add --update make npm
+          apk add --update make node npm
+      - uses: actions/checkout@v4
       - name: install chart dependencies
         run: helm dependency build
       - name: lint
