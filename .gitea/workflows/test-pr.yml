@@ -15,7 +15,7 @@ jobs:
       - name: install tools
         run: |
           apk update
-          apk add --update make nodejs npm
+          apk add --update make nodejs npm yamllint
       - uses: actions/checkout@v4
       - name: install chart dependencies
         run: helm dependency build
