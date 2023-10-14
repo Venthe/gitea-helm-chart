@@ -119,7 +119,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{- define "postgresql-ha.dns" -}}
 {{- if (index .Values "postgresql-ha").enabled -}}
-{{- printf "%s-postgresql-ha-postgresql.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain (index .Values "postgresql-ha" "service" "ports" "postgresql") -}}
+{{- printf "%s-postgresql-ha-pgpool.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain (index .Values "postgresql-ha" "service" "ports" "postgresql") -}}
 {{- end -}}
 {{- end -}}
 
