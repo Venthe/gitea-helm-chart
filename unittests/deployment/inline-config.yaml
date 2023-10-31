@@ -15,11 +15,15 @@ tests:
           hosts:
             - "{{ .Values.global.giteaHostName }}"
     asserts:
-      - equal:
-          path: stringData.server.DOMAIN
-          value: "gitea.example.com"
+      - matchRegex:
+          path: stringData.server
+          pattern: DOMAIN\: "gitea.example.com"
         documentIndex: 0
-      - equal:
-          path: stringData.server.ROOT_URL
-          value: "https://gitea.example.com"
+      - matchRegex:
+          path: stringData.server
+          pattern: ROOT_URL\: "https://gitea.example.com"
+        documentIndex: 0
+      - matchRegex:
+          path: stringData.server
+          pattern: SSH_DOMAIN\: "gitea.example.com"
         documentIndex: 0
