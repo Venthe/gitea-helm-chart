@@ -1,6 +1,7 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   extends: ["gitea>gitea/renovate-config"],
+  labels: ["kind/dependency"],
   customManagers: [
       {
         description: 'Gitea-version of https://docs.renovatebot.com/presets-regexManagers/#regexmanagersgithubactionsversions',
