@@ -17,7 +17,7 @@ tests:
     asserts:
       - matchRegex:
           path: metadata.name
-          pattern: -inline-config$
+          pattern: .*-inline-config$
       - matchRegex:
           path: stringData.server
           pattern: DOMAIN=gitea\.example\.com
