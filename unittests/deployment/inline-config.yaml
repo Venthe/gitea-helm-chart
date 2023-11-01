@@ -15,7 +15,8 @@ tests:
           hosts:
             - "{{ .Values.global.giteaHostName }}"
     asserts:
-      - matchRegex:
+      - documentIndex: 0
+        matchRegex:
           path: metadata.name
           pattern: .*-inline-config$
       - matchRegex:
