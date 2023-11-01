@@ -66,3 +66,34 @@ tests:
               chmod 700 "${GNUPGHOME}"
               chown 1000:1000 "${GNUPGHOME}"
             fi
+  - it: adds gpg script block for enabled signing (even when image.fullOverride set)
+    template: templates/gitea/init.yaml
+    set:
+      image.fullOverride: gitea/gitea:1.20.5
+      signing.enabled: true
+      signing.privateKey: |-
+        -----BEGIN PGP PRIVATE KEY BLOCK-----
+        {placeholder}
+        -----END PGP PRIVATE KEY BLOCK-----
+    asserts:
+      - equal:
+          path: stringData["init_directory_structure.sh"]
+          value: |-
+            #!/usr/bin/env bash
+
+            set -euo pipefail
+
+            set -x
+            mkdir -p /data/git/.ssh
+            chmod -R 700 /data/git/.ssh
+            [ ! -d /data/gitea/conf ] && mkdir -p /data/gitea/conf
+
+            # prepare temp directory structure
+            mkdir -p "${GITEA_TEMP}"
+            chmod ug+rwx "${GITEA_TEMP}"
+
+            if [ ! -d "${GNUPGHOME}" ]; then
+              mkdir -p "${GNUPGHOME}"
+              chmod 700 "${GNUPGHOME}"
+              chown 1000:1000 "${GNUPGHOME}"
+            fi

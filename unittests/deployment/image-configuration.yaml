@@ -57,6 +57,17 @@ tests:
       - equal:
           path: spec.template.spec.containers[0].image
           value: "gitea/gitea:1.19.3-rootless@sha256:b28e8f3089b52ebe6693295df142f8c12eff354e9a4a5bfbb5c10f296c3a537a"
+  - it: image fullOverride (does not append rootless)
+    template: templates/gitea/deployment.yaml
+    set:
+      image:
+        rootless: true
+        digest: sha256:b28e8f3089b52ebe6693295df142f8c12eff354e9a4a5bfbb5c10f296c3a537a
+        fullOverride: gitea/gitea:1.19.3
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: "gitea/gitea:1.19.3"
   - it: digest for root-based image
     template: templates/gitea/deployment.yaml
     set:
