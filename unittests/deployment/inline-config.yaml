@@ -19,15 +19,15 @@ tests:
         matchRegex:
           path: metadata.name
           pattern: .*-inline-config$
-      - matchRegex:
+      - documentIndex: 0
+        matchRegex:
           path: stringData.server
           pattern: DOMAIN=gitea\.example\.com
-        documentIndex: 0
-      - matchRegex:
+      - documentIndex: 0
+        matchRegex:
           path: stringData.server
           pattern: ROOT_URL=https://gitea\.example\.com
-        documentIndex: 0
-      - matchRegex:
+      - documentIndex: 0
+        matchRegex:
           path: stringData.server
           pattern: SSH_DOMAIN=gitea\.example\.com
-        documentIndex: 0
