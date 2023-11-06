@@ -1089,16 +1089,18 @@ gitea:
       CONN_STR: redis+cluster://:gitea@gitea-redis-cluster-headless.<namespace>.svc.cluster.local:6379/0?pool_size=100&idle_timeout=180s&
 ```
 
+<!-- prettier-ignore-start -->
 <!-- markdownlint-disable-next-line -->
-
 **Switch to rootless image by default**
+<!-- prettier-ignore-end -->
 
 If you are facing errors like `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED` due to this automatic transition:
 Have a look at [this discussion](https://gitea.com/gitea/helm-chart/issues/487#issue-220660) and either set `image.rootless: false` or manually update your `~/.ssh/known_hosts` file(s).
 
+<!-- prettier-ignore-start -->
 <!-- markdownlint-disable-next-line -->
-
 **Transitioning from a RWO to RWX Persistent Volume**
+<!-- prettier-ignore-end -->
 
 If you want to switch to a RWX volume and go for HA, you need to
 
@@ -1106,9 +1108,10 @@ If you want to switch to a RWX volume and go for HA, you need to
 2. Let the chart create a new RWX PV (or do it statically yourself)
 3. Restore the backup to the same location in the new PV
 
+<!-- prettier-ignore-start -->
 <!-- markdownlint-disable-next-line -->
-
 **Transitioning from Postgres to Postgres HA**
+<!-- prettier-ignore-end -->
 
 If you are running with a non-HA PG DB from a previous chart release, you need to set
 
@@ -1117,9 +1120,10 @@ If you are running with a non-HA PG DB from a previous chart release, you need t
 
 This is needed to stay with your existing single-instance DB (as the HA-variant is the new default).
 
+<!-- prettier-ignore-start -->
 <!-- markdownlint-disable-next-line -->
-
 **Change of env-to-ini prefix**
+<!-- prettier-ignore-end -->
 
 Before this release, the env-to-ini prefix was `ENV_TO_INI__`.
 This allowed a clear distinction between user-provided and chart-provided env-to-ini variables.
