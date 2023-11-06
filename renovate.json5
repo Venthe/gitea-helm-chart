@@ -15,9 +15,9 @@
   packageRules: [
     {
       description: "Automerge minor + patch dependency updates weekly",
-      matchManagers: ["helmv3"],
       matchUpdateTypes: ["minor", "patch", "digest"],
       automerge: true,
+      automergeType: "branch",
       automergeStrategy: "squash",
       extends: ["schedule:weekly"],
     },
