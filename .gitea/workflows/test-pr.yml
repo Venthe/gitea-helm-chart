@@ -2,9 +2,11 @@ name: check-and-test
 
 on:
   - pull_request:
+      branches:
+        - "*"
   - push:
-    branches:
-      - "renovate/*"
+      branches:
+        - "renovate/**"
 
 env:
   # renovate: datasource=github-releases depName=helm-unittest/helm-unittest
