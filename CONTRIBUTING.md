@@ -9,12 +9,7 @@ refactorings for easier maintainability or documentation improvements.
 - [`helm`](https://helm.sh/docs/intro/install/)
 - `make` is optional; you may call the commands directly
 
-When using Visual Studio Code as IDE, following plugins might be useful:
-
-- [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)
-- [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
-- [Helm Intellisense](https://marketplace.visualstudio.com/items?itemName=Tim-Koehler.helm-intellisense)
-- [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+When using Visual Studio Code as IDE, a [ready-to-use profile](.vscode/) is available.
 
 ## Documentation Requirements
 
@@ -61,7 +56,7 @@ $ helm plugin install https://github.com/helm-unittest/helm-unittest
 make unittests
 ```
 
-See [plugin documentation](https://github.com/helm-unittest/helm-unittest/blob/v0.3.3/DOCUMENT.md) for usage instructions.
+See [plugin documentation](https://github.com/helm-unittest/helm-unittest/blob/main/DOCUMENT.md) for usage instructions.
 
 ## Release process
 
