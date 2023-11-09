@@ -172,6 +172,26 @@ The Prometheus `/metrics` endpoint is disabled by default.
 ENABLED = false
 ```
 
+#### Rootless Defaults
+
+If `.Values.image.rootless: true`, then the following will occur:
+
+- `$HOME` becomes `/data/gitea/git`
+
+  [see deployment.yaml](./templates/gitea/deployment.yaml#L185)
+
+- `START_SSH_SERVER: true` (Unless explicity overwritten by `gitea.config.server.START_SSH_SERVER`)
+
+  [see \_helpers.tpl](./templates/_helpers.tpl#L347)
+
+- `SSH_LISTEN_PORT: 2222` (Unless explicity overwritten by `gitea.config.server.SSH_LISTEN_PORT`)
+
+  [see \_helpers.tpl](./templates/_helpers.tpl#L340)
+
+- (optional) Defining `SSH_LOG_LEVEL`
+
+  [see deployment.yaml](./templates/gitea/deployment.yaml#L270)
+
 ### Single-Pod Configurations
 
 If HA is not needed/desired, the following configurations can be used to deploy a single-pod Gitea instance.
@@ -216,9 +236,9 @@ If HA is not needed/desired, the following configurations can be used to deploy 
    **Do not use this configuration for production use**.
 
    <details>
-  
+
    <summary>values.yml</summary>
-  
+
    ```yaml
    redis-cluster:
      enabled: false
@@ -226,10 +246,10 @@ If HA is not needed/desired, the following configurations can be used to deploy 
      enabled: false
    postgresql-ha:
      enabled: false
-  
+
    persistence:
      enabled: false
-  
+
    gitea:
      config:
        database:
@@ -1085,12 +1105,14 @@ gitea:
 ```
 
 <!-- markdownlint-disable-next-line -->
+
 **Switch to rootless image by default**
 
 If you are facing errors like `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED` due to this automatic transition:
 Have a look at [this discussion](https://gitea.com/gitea/helm-chart/issues/487#issue-220660) and either set `image.rootless: false` or manually update your `~/.ssh/known_hosts` file(s).
 
 <!-- markdownlint-disable-next-line -->
+
 **Transitioning from a RWO to RWX Persistent Volume**
 
 If you want to switch to a RWX volume and go for HA, you need to
@@ -1100,6 +1122,7 @@ If you want to switch to a RWX volume and go for HA, you need to
 3. Restore the backup to the same location in the new PV
 
 <!-- markdownlint-disable-next-line -->
+
 **Transitioning from Postgres to Postgres HA**
 
 If you are running with a non-HA PG DB from a previous chart release, you need to set
@@ -1110,6 +1133,7 @@ If you are running with a non-HA PG DB from a previous chart release, you need t
 This is needed to stay with your existing single-instance DB (as the HA-variant is the new default).
 
 <!-- markdownlint-disable-next-line -->
+
 **Change of env-to-ini prefix**
 
 Before this release, the env-to-ini prefix was `ENV_TO_INI__`.
