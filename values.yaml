@@ -475,11 +475,25 @@ gitea:
     failureThreshold: 10
 
 ## @section redis-cluster
-## @param redis-cluster.enabled Enable redis
+## @param redis-cluster.enabled Enable redis cluster
 ## @param redis-cluster.usePassword Whether to use password authentication
 redis-cluster:
   enabled: true
   usePassword: false
+
+## @section redis
+## @param redis.enabled Enable redis standalone or replicated
+## @param redis.architecture Whether to use standalone or replication
+## @param redis.global.redis.password Required password
+## @param redis.replica.replicaCount Number of replicas under master(s)
+redis:
+  enabled: false
+  architecture: replication
+  global:
+    redis:
+      password: changeme
+  replica:
+    replicaCount: 3
 
 ## @section postgresql-ha
 #

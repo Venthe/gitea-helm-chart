@@ -132,18 +132,24 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- define "redis.dns" -}}
 {{- if (index .Values "redis-cluster").enabled -}}
 {{- printf "redis+cluster://:%s@%s-redis-cluster-headless.%s.svc.%s:%g/0?pool_size=100&idle_timeout=180s&" (index .Values "redis-cluster").global.redis.password .Release.Name .Release.Namespace .Values.clusterDomain (index .Values "redis-cluster").service.ports.redis -}}
+{{- else if (index .Values "redis").enabled -}}
+{{- printf "redis://:%s@%s-redis-headless.%s.svc.%s:%g/0?pool_size=100&idle_timeout=180s&" (index .Values "redis").global.redis.password .Release.Name .Release.Namespace .Values.clusterDomain (index .Values "redis").master.service.ports.redis -}}
 {{- end -}}
 {{- end -}}
 
 {{- define "redis.port" -}}
 {{- if (index .Values "redis-cluster").enabled -}}
 {{ (index .Values "redis-cluster").service.ports.redis }}
+{{- else if (index .Values "redis").enabled -}}
+{{ (index .Values "redis").master.service.ports.redis }}
 {{- end -}}
 {{- end -}}
 
 {{- define "redis.servicename" -}}
 {{- if (index .Values "redis-cluster").enabled -}}
 {{- printf "%s-redis-cluster-headless.%s.svc.%s" .Release.Name .Release.Namespace .Values.clusterDomain -}}
+{{- else if (index .Values "redis").enabled -}}
+{{- printf "%s-redis-headless.%s.svc.%s" .Release.Name .Release.Namespace .Values.clusterDomain -}}
 {{- end -}}
 {{- end -}}
 
@@ -287,7 +293,7 @@ https
   {{- if not (hasKey .Values.gitea.config.metrics "ENABLED") -}}
     {{- $_ := set .Values.gitea.config.metrics "ENABLED" .Values.gitea.metrics.enabled -}}
   {{- end -}}
-  {{- if (index .Values "redis-cluster").enabled -}}
+  {{- if or ((index .Values "redis-cluster").enabled) ((index .Values "redis").enabled) -}}
     {{- $_ := set .Values.gitea.config.cache "ENABLED" "true" -}}
     {{- $_ := set .Values.gitea.config.cache "ADAPTER" "redis" -}}
     {{- if not (.Values.gitea.config.cache.HOST) -}}
@@ -295,7 +301,7 @@ https
     {{- end -}}
   {{- end -}}
   {{- /* redis queue */ -}}
-  {{- if (index .Values "redis-cluster").enabled -}}
+  {{- if or ((index .Values "redis-cluster").enabled) ((index .Values "redis").enabled) -}}
     {{- $_ := set .Values.gitea.config.queue "TYPE" "redis" -}}
     {{- $_ := set .Values.gitea.config.queue "CONN_STR" (include "redis.dns" .) -}}
   {{- end -}}

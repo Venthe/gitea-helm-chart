@@ -48,3 +48,8 @@ dependencies:
     repository: oci://registry-1.docker.io/bitnamicharts
     version: 9.1.1
     condition: redis-cluster.enabled
+  # https://github.com/bitnami/charts/blob/main/bitnami/redis/Chart.yaml
+  - name: redis
+    repository: oci://registry-1.docker.io/bitnamicharts
+    version: 18.3.2
+    condition: redis.enabled
