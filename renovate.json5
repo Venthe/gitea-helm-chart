@@ -6,9 +6,6 @@
     "schedule:automergeDaily",
     "schedule:weekends",
   ],
-  automergeMajor: false,
-  automergeStrategy: "squash",
-  automergeType: "branch",
   labels: ["kind/dependency"],
   customManagers: [
     {
