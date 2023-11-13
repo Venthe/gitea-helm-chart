@@ -43,7 +43,7 @@ clusterDomain: cluster.local
 ## @param image.digest Image digest. Allows to pin the given image tag. Useful for having control over mutable tags like `latest`
 ## @param image.pullPolicy Image pull policy
 ## @param image.rootless Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher
-## @param image.fullOverride Completely overrides the image registry, path/image, tag and digest
+## @param image.fullOverride Completely overrides the image registry, path/image, tag and digest. **Adjust `image.rootless` accordingly and review [Rootless defaults](#rootless-defaults).**
 image:
   registry: ""
   repository: gitea/gitea

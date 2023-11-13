@@ -10,6 +10,7 @@
     - [Database defaults](#database-defaults)
     - [Server defaults](#server-defaults)
     - [Metrics defaults](#metrics-defaults)
+    - [Rootless defaults](#rootless-defaults)
   - [Single-Pod Configurations](#single-pod-configurations)
   - [Additional _app.ini_ settings](#additional-appini-settings)
     - [User defined environment variables in app.ini](#user-defined-environment-variables-in-appini)
@@ -174,23 +175,23 @@ ENABLED = false
 
 #### Rootless Defaults
 
-If `.Values.image.rootless: true`, then the following will occur:
+If `.Values.image.rootless: true`, then the following will occur. In case you use `.Values.image.fullOverride`, check that this works in your image:
 
 - `$HOME` becomes `/data/gitea/git`
 
-  [see deployment.yaml](./templates/gitea/deployment.yaml#L185)
+  [see deployment.yaml](./templates/gitea/deployment.yaml) template inside (init-)container "env" declarations
 
 - `START_SSH_SERVER: true` (Unless explicity overwritten by `gitea.config.server.START_SSH_SERVER`)
 
-  [see \_helpers.tpl](./templates/_helpers.tpl#L347)
+  [see \_helpers.tpl](./templates/_helpers.tpl) in `gitea.inline_configuration.defaults.server` definition
 
 - `SSH_LISTEN_PORT: 2222` (Unless explicity overwritten by `gitea.config.server.SSH_LISTEN_PORT`)
 
-  [see \_helpers.tpl](./templates/_helpers.tpl#L340)
+  [see \_helpers.tpl](./templates/_helpers.tpl) in `gitea.inline_configuration.defaults.server` definition
 
-- (optional) Defining `SSH_LOG_LEVEL`
+- Defining `SSH_LOG_LEVEL` turned off
 
-  [see deployment.yaml](./templates/gitea/deployment.yaml#L270)
+  [see deployment.yaml](./templates/gitea/deployment.yaml) template inside container "env" declarations
 
 ### Single-Pod Configurations
 
@@ -805,16 +806,16 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 
 ### Image
 
-| Name                 | Description                                                                                                                             | Value         |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `image.registry`     | image registry, e.g. gcr.io,docker.io                                                                                                   | `""`          |
-| `image.repository`   | Image to start for this pod                                                                                                             | `gitea/gitea` |
-| `image.tag`          | Visit: [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated). Defaults to `appVersion` within Chart.yaml. | `""`          |
-| `image.digest`       | Image digest. Allows to pin the given image tag. Useful for having control over mutable tags like `latest`                              | `""`          |
-| `image.pullPolicy`   | Image pull policy                                                                                                                       | `Always`      |
-| `image.rootless`     | Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher                                               | `true`        |
-| `image.fullOverride` | Completely overrides the image registry, path/image, tag and digest                                                                     | `""`          |
-| `imagePullSecrets`   | Secret to use for pulling the image                                                                                                     | `[]`          |
+| Name                 | Description                                                                                                                                                      | Value         |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `image.registry`     | image registry, e.g. gcr.io,docker.io                                                                                                                            | `""`          |
+| `image.repository`   | Image to start for this pod                                                                                                                                      | `gitea/gitea` |
+| `image.tag`          | Visit: [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated). Defaults to `appVersion` within Chart.yaml.                          | `""`          |
+| `image.digest`       | Image digest. Allows to pin the given image tag. Useful for having control over mutable tags like `latest`                                                       | `""`          |
+| `image.pullPolicy`   | Image pull policy                                                                                                                                                | `Always`      |
+| `image.rootless`     | Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher                                                                        | `true`        |
+| `image.fullOverride` | Completely overrides the image registry, path/image, tag and digest. **Adjust `image.rootless` accordingly and review [Rootless defaults](#rootless-defaults).** | `""`          |
+| `imagePullSecrets`   | Secret to use for pulling the image                                                                                                                              | `[]`          |
 
 ### Security
 
@@ -1105,14 +1106,12 @@ gitea:
 ```
 
 <!-- markdownlint-disable-next-line -->
-
 **Switch to rootless image by default**
 
 If you are facing errors like `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED` due to this automatic transition:
 Have a look at [this discussion](https://gitea.com/gitea/helm-chart/issues/487#issue-220660) and either set `image.rootless: false` or manually update your `~/.ssh/known_hosts` file(s).
 
 <!-- markdownlint-disable-next-line -->
-
 **Transitioning from a RWO to RWX Persistent Volume**
 
 If you want to switch to a RWX volume and go for HA, you need to
@@ -1122,7 +1121,6 @@ If you want to switch to a RWX volume and go for HA, you need to
 3. Restore the backup to the same location in the new PV
 
 <!-- markdownlint-disable-next-line -->
-
 **Transitioning from Postgres to Postgres HA**
 
 If you are running with a non-HA PG DB from a previous chart release, you need to set
@@ -1133,7 +1131,6 @@ If you are running with a non-HA PG DB from a previous chart release, you need t
 This is needed to stay with your existing single-instance DB (as the HA-variant is the new default).
 
 <!-- markdownlint-disable-next-line -->
-
 **Change of env-to-ini prefix**
 
 Before this release, the env-to-ini prefix was `ENV_TO_INI__`.
