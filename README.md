@@ -189,7 +189,7 @@ If `.Values.image.rootless: true`, then the following will occur. In case you us
 
   [see \_helpers.tpl](./templates/_helpers.tpl) in `gitea.inline_configuration.defaults.server` definition
 
-- Defining `SSH_LOG_LEVEL` turned off
+- `SSH_LOG_LEVEL` environment variable is not injected into the container
 
   [see deployment.yaml](./templates/gitea/deployment.yaml) template inside container "env" declarations
 
