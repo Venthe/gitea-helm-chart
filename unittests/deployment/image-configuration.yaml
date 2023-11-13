@@ -61,9 +61,13 @@ tests:
     template: templates/gitea/deployment.yaml
     set:
       image:
-        rootless: true
-        digest: sha256:b28e8f3089b52ebe6693295df142f8c12eff354e9a4a5bfbb5c10f296c3a537a
         fullOverride: gitea/gitea:1.19.3
+        # setting rootless, registry, repository, tag, and digest to prove that override works
+        rootless: true
+        registry: example.com
+        repository: example/image
+        tag: "1.0.0"
+        digest: sha256:b28e8f3089b52ebe6693295df142f8c12eff354e9a4a5bfbb5c10f296c3a537a
     asserts:
       - equal:
           path: spec.template.spec.containers[0].image
