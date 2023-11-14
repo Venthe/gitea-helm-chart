@@ -10,7 +10,7 @@
     - [Database defaults](#database-defaults)
     - [Server defaults](#server-defaults)
     - [Metrics defaults](#metrics-defaults)
-    - [Rootless defaults](#rootless-defaults)
+    - [Rootless Defaults](#rootless-defaults)
   - [Single-Pod Configurations](#single-pod-configurations)
   - [Additional _app.ini_ settings](#additional-appini-settings)
     - [User defined environment variables in app.ini](#user-defined-environment-variables-in-appini)
@@ -702,7 +702,7 @@ extraVolumes:
 extraVolumeMounts:
   - name: gitea-themes
     readOnly: true
-    mountPath: "/data/gitea/public/css"
+    mountPath: "/data/gitea/public/assets/css"
 ```
 
 The secret can be created via `terraform`:
