@@ -96,7 +96,8 @@ To do so, you need to set the following configuration values yourself:
 - `gitea.config.cache.HOST`: `<your redis connection string>`
 
 By default, the `redis-cluster` chart provisions three standalone master nodes of which each has a single replica.
-To reduce the number of pods for a default Gitea deployment, we decided to omit the replicas (`replicas: 0`) and only use the minimum required number of master pods for a functional `redis-cluster` setup.
+To reduce the number of pods for a default Gitea deployment, we opted to omit the replicas (`replicas: 0`) by default.
+Only the minimum required number of master pods for a functional `redis-cluster` deployment are provisioned.
 For a "proper" `redis-cluster` setup however, we recommend to set `replicas: 1` and `nodes: 6`.
 
 ## Object and asset storage
