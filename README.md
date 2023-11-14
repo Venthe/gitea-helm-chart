@@ -10,6 +10,7 @@
     - [Database defaults](#database-defaults)
     - [Server defaults](#server-defaults)
     - [Metrics defaults](#metrics-defaults)
+    - [Rootless defaults](#rootless-defaults)
   - [Single-Pod Configurations](#single-pod-configurations)
   - [Additional _app.ini_ settings](#additional-appini-settings)
     - [User defined environment variables in app.ini](#user-defined-environment-variables-in-appini)
@@ -172,6 +173,26 @@ The Prometheus `/metrics` endpoint is disabled by default.
 ENABLED = false
 ```
 
+#### Rootless Defaults
+
+If `.Values.image.rootless: true`, then the following will occur. In case you use `.Values.image.fullOverride`, check that this works in your image:
+
+- `$HOME` becomes `/data/gitea/git`
+
+  [see deployment.yaml](./templates/gitea/deployment.yaml) template inside (init-)container "env" declarations
+
+- `START_SSH_SERVER: true` (Unless explicity overwritten by `gitea.config.server.START_SSH_SERVER`)
+
+  [see \_helpers.tpl](./templates/_helpers.tpl) in `gitea.inline_configuration.defaults.server` definition
+
+- `SSH_LISTEN_PORT: 2222` (Unless explicity overwritten by `gitea.config.server.SSH_LISTEN_PORT`)
+
+  [see \_helpers.tpl](./templates/_helpers.tpl) in `gitea.inline_configuration.defaults.server` definition
+
+- `SSH_LOG_LEVEL` environment variable is not injected into the container
+
+  [see deployment.yaml](./templates/gitea/deployment.yaml) template inside container "env" declarations
+
 ### Single-Pod Configurations
 
 If HA is not needed/desired, the following configurations can be used to deploy a single-pod Gitea instance.
@@ -216,9 +237,9 @@ If HA is not needed/desired, the following configurations can be used to deploy 
    **Do not use this configuration for production use**.
 
    <details>
-  
+
    <summary>values.yml</summary>
-  
+
    ```yaml
    redis-cluster:
      enabled: false
@@ -226,10 +247,10 @@ If HA is not needed/desired, the following configurations can be used to deploy 
      enabled: false
    postgresql-ha:
      enabled: false
-  
+
    persistence:
      enabled: false
-  
+
    gitea:
      config:
        database:
@@ -785,15 +806,16 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 
 ### Image
 
-| Name               | Description                                                                                                                             | Value         |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `image.registry`   | image registry, e.g. gcr.io,docker.io                                                                                                   | `""`          |
-| `image.repository` | Image to start for this pod                                                                                                             | `gitea/gitea` |
-| `image.tag`        | Visit: [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated). Defaults to `appVersion` within Chart.yaml. | `""`          |
-| `image.digest`     | Image digest. Allows to pin the given image tag. Useful for having control over mutable tags like `latest`                              | `""`          |
-| `image.pullPolicy` | Image pull policy                                                                                                                       | `Always`      |
-| `image.rootless`   | Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher                                               | `true`        |
-| `imagePullSecrets` | Secret to use for pulling the image                                                                                                     | `[]`          |
+| Name                 | Description                                                                                                                                                      | Value         |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `image.registry`     | image registry, e.g. gcr.io,docker.io                                                                                                                            | `""`          |
+| `image.repository`   | Image to start for this pod                                                                                                                                      | `gitea/gitea` |
+| `image.tag`          | Visit: [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated). Defaults to `appVersion` within Chart.yaml.                          | `""`          |
+| `image.digest`       | Image digest. Allows to pin the given image tag. Useful for having control over mutable tags like `latest`                                                       | `""`          |
+| `image.pullPolicy`   | Image pull policy                                                                                                                                                | `Always`      |
+| `image.rootless`     | Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher                                                                        | `true`        |
+| `image.fullOverride` | Completely overrides the image registry, path/image, tag and digest. **Adjust `image.rootless` accordingly and review [Rootless defaults](#rootless-defaults).** | `""`          |
+| `imagePullSecrets`   | Secret to use for pulling the image                                                                                                                              | `[]`          |
 
 ### Security
 
