@@ -10,7 +10,7 @@
     - [Database defaults](#database-defaults)
     - [Server defaults](#server-defaults)
     - [Metrics defaults](#metrics-defaults)
-    - [Rootless defaults](#rootless-defaults)
+    - [Rootless Defaults](#rootless-defaults)
   - [Single-Pod Configurations](#single-pod-configurations)
   - [Additional _app.ini_ settings](#additional-appini-settings)
     - [User defined environment variables in app.ini](#user-defined-environment-variables-in-appini)
@@ -99,10 +99,8 @@ When upgrading, please refer to the [Upgrading](#upgrading) section at the botto
 
 ## High Availability
 
-⚠️ **EXPERIMENTAL** ⚠️
-
-Since version 9.0.0 this chart has experimental support for running Gitea and it's dependencies in a HA setup.
-The setup is still experimental and care must be taken for production use as Gitea core is not yet officially HA-ready.
+Since version 9.0.0 this chart supports running Gitea and it's dependencies in HA mode.
+Care must be taken for production use as not all implementation details of Gitea core are officially HA-ready yet.
 
 Deploying a HA-ready Gitea instance requires some effort including using HA-ready dependencies.
 See the [HA Setup](docs/ha-setup.md) document for more details.
@@ -990,10 +988,12 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 
 ### redis-cluster
 
-| Name                        | Description                            | Value   |
-| --------------------------- | -------------------------------------- | ------- |
-| `redis-cluster.enabled`     | Enable redis                           | `true`  |
-| `redis-cluster.usePassword` | Whether to use password authentication | `false` |
+| Name                             | Description                                  | Value   |
+| -------------------------------- | -------------------------------------------- | ------- |
+| `redis-cluster.enabled`          | Enable redis                                 | `true`  |
+| `redis-cluster.usePassword`      | Whether to use password authentication       | `false` |
+| `redis-cluster.cluster.nodes`    | Number of redis cluster master nodes         | `3`     |
+| `redis-cluster.cluster.replicas` | Number of redis cluster master node replicas | `0`     |
 
 ### PostgreSQL-ha
 
