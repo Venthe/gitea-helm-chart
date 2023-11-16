@@ -7,11 +7,13 @@
     "schedule:weekends",
   ],
   labels: ["kind/dependency"],
+  packageRules: [
     {
       "groupName": "dependencies (minor & patch)",
       "matchManagers": ["helmv3", "npm", "docker", "regex"],
       "matchUpdateTypes": ["minor", "patch"]
     },
+  ]
   customManagers: [
     {
       description: "Gitea-version of https://docs.renovatebot.com/presets-regexManagers/#regexmanagersgithubactionsversions",
