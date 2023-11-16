@@ -1045,6 +1045,15 @@ If you miss this, blindly upgrading may delete your Postgres instance and you ma
 
 <details>
 
+<summary>To 9.6.0</summary>
+
+Chart 9.6.0 ships with Gitea 1.21.0.
+While there are no breaking changes in the chart, please check the changes of the [1.21 release blog post](https://blog.gitea.com/release-of-1.21.0/).
+
+</details>
+
+<details>
+
 <summary>To 9.0.0</summary>
 
 This chart release comes with many breaking changes while aiming for a HA-ready setup.
