@@ -8,6 +8,16 @@
   ],
   labels: ["kind/dependency"],
   automergeStrategy: "squash",
+  customManagers: [
+    {
+      description: "Gitea-version of https://docs.renovatebot.com/presets-regexManagers/#regexmanagersgithubactionsversions",
+      customType: "regex",
+      fileMatch: [".gitea/workflows/.+\\.ya?ml$"],
+      matchStrings: [
+        "# renovate: datasource=(?<datasource>[a-z-.]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[a-z-0-9]+?))?\\s+[A-Za-z0-9_]+?_VERSION\\s*:\\s*[\"']?(?<currentValue>.+?)[\"']?\\s",
+      ],
+    },
+  ],
   packageRules: [
     {
       "groupName": "subcharts (minor & patch)",
@@ -18,16 +28,6 @@
       "groupName": "workflow dependencies (minor & patch)",
       "matchManagers": ["github-actions", "npm", "regex"],
       "matchUpdateTypes": ["minor", "patch", "digest"],
-    },
-  ],
-  customManagers: [
-    {
-      description: "Gitea-version of https://docs.renovatebot.com/presets-regexManagers/#regexmanagersgithubactionsversions",
-      customType: "regex",
-      fileMatch: [".gitea/workflows/.+\\.ya?ml$"],
-      matchStrings: [
-        "# renovate: datasource=(?<datasource>[a-z-.]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[a-z-0-9]+?))?\\s+[A-Za-z0-9_]+?_VERSION\\s*:\\s*[\"']?(?<currentValue>.+?)[\"']?\\s",
-      ],
     },
   ],
 }
