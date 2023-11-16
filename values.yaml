@@ -479,9 +479,14 @@ gitea:
 ## @section redis-cluster
 ## @param redis-cluster.enabled Enable redis
 ## @param redis-cluster.usePassword Whether to use password authentication
+## @param redis-cluster.cluster.nodes Number of redis cluster master nodes
+## @param redis-cluster.cluster.replicas Number of redis cluster master node replicas
 redis-cluster:
   enabled: true
   usePassword: false
+  cluster:
+    nodes: 3 # default: 6
+    replicas: 0 # default: 1
 
 ## @section postgresql-ha
 #

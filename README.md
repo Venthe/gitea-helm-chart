@@ -95,14 +95,18 @@ helm repo update
 helm install gitea gitea-charts/gitea
 ```
 
+Alternatively, the chart can also be installed from Dockerhub (since v9.6.0)
+
+```sh
+helm install gitea oci://registry-1.docker.io/giteacharts/gitea
+```
+
 When upgrading, please refer to the [Upgrading](#upgrading) section at the bottom of this document for major and breaking changes.
 
 ## High Availability
 
-⚠️ **EXPERIMENTAL** ⚠️
-
-Since version 9.0.0 this chart has experimental support for running Gitea and it's dependencies in a HA setup.
-The setup is still experimental and care must be taken for production use as Gitea core is not yet officially HA-ready.
+Since version 9.0.0 this chart supports running Gitea and it's dependencies in HA mode.
+Care must be taken for production use as not all implementation details of Gitea core are officially HA-ready yet.
 
 Deploying a HA-ready Gitea instance requires some effort including using HA-ready dependencies.
 See the [HA Setup](docs/ha-setup.md) document for more details.
@@ -990,10 +994,12 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 
 ### redis-cluster
 
-| Name                        | Description                            | Value   |
-| --------------------------- | -------------------------------------- | ------- |
-| `redis-cluster.enabled`     | Enable redis                           | `true`  |
-| `redis-cluster.usePassword` | Whether to use password authentication | `false` |
+| Name                             | Description                                  | Value   |
+| -------------------------------- | -------------------------------------------- | ------- |
+| `redis-cluster.enabled`          | Enable redis                                 | `true`  |
+| `redis-cluster.usePassword`      | Whether to use password authentication       | `false` |
+| `redis-cluster.cluster.nodes`    | Number of redis cluster master nodes         | `3`     |
+| `redis-cluster.cluster.replicas` | Number of redis cluster master node replicas | `0`     |
 
 ### PostgreSQL-ha
 
@@ -1114,14 +1120,18 @@ gitea:
       CONN_STR: redis+cluster://:gitea@gitea-redis-cluster-headless.<namespace>.svc.cluster.local:6379/0?pool_size=100&idle_timeout=180s&
 ```
 
+<!-- prettier-ignore-start -->
 <!-- markdownlint-disable-next-line -->
 **Switch to rootless image by default**
+<!-- prettier-ignore-end -->
 
 If you are facing errors like `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED` due to this automatic transition:
 Have a look at [this discussion](https://gitea.com/gitea/helm-chart/issues/487#issue-220660) and either set `image.rootless: false` or manually update your `~/.ssh/known_hosts` file(s).
 
+<!-- prettier-ignore-start -->
 <!-- markdownlint-disable-next-line -->
 **Transitioning from a RWO to RWX Persistent Volume**
+<!-- prettier-ignore-end -->
 
 If you want to switch to a RWX volume and go for HA, you need to
 
@@ -1129,8 +1139,10 @@ If you want to switch to a RWX volume and go for HA, you need to
 2. Let the chart create a new RWX PV (or do it statically yourself)
 3. Restore the backup to the same location in the new PV
 
+<!-- prettier-ignore-start -->
 <!-- markdownlint-disable-next-line -->
 **Transitioning from Postgres to Postgres HA**
+<!-- prettier-ignore-end -->
 
 If you are running with a non-HA PG DB from a previous chart release, you need to set
 
@@ -1139,8 +1151,10 @@ If you are running with a non-HA PG DB from a previous chart release, you need t
 
 This is needed to stay with your existing single-instance DB (as the HA-variant is the new default).
 
+<!-- prettier-ignore-start -->
 <!-- markdownlint-disable-next-line -->
 **Change of env-to-ini prefix**
+<!-- prettier-ignore-end -->
 
 Before this release, the env-to-ini prefix was `ENV_TO_INI__`.
 This allowed a clear distinction between user-provided and chart-provided env-to-ini variables.

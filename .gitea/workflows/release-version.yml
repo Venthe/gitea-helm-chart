@@ -41,7 +41,7 @@ jobs:
       # Using helm gpg plugin as 'helm package --sign' has issues with gpg2: https://github.com/helm/helm/issues/2843
       - name: package chart
         run: |
-          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          echo ${{ secrets.DOCKER_CHARTS_PASSWORD }} | docker login -u ${{ secrets.DOCKER_CHARTS_USERNAME }} --password-stdin
           # FIXME: use upstream after https://github.com/technosophos/helm-gpg/issues/1 is solved
           helm plugin install https://github.com/pat-s/helm-gpg
           helm dependency update
@@ -51,6 +51,10 @@ jobs:
           mv gitea*.tgz gitea/
           curl -L -o gitea/index.yaml https://dl.gitea.com/charts/index.yaml
           helm repo index gitea/ --url https://dl.gitea.com/charts --merge gitea/index.yaml
+          # push to dockerhub
+          echo ${{ secrets.DOCKER_CHARTS_PASSWORD }} | helm registry login -u ${{ secrets.DOCKER_CHARTS_USERNAME }} registry-1.docker.io --password-stdin
+          helm push gitea-${GITHUB_REF#refs/tags/v}.tgz oci://registry-1.docker.io/giteacharts
+          helm registry logout registry-1.docker.io
 
       - name: aws credential configure
         uses: https://github.com/aws-actions/configure-aws-credentials@v2
