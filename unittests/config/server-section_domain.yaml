@@ -19,7 +19,7 @@ tests:
           path: stringData.server
           pattern: \nROOT_URL=http://git.example.com
 
-################################################
+  ################################################
 
   - it: "[no ingress hosts] uses gitea http service for DOMAIN|SSH_DOMAIN|ROOT_URL"
     template: templates/gitea/config.yaml
@@ -40,7 +40,7 @@ tests:
           path: stringData.server
           pattern: \nROOT_URL=http://gitea-unittests-http.testing.svc.cluster.local
 
-################################################
+  ################################################
 
   - it: "[provided via values] uses that for DOMAIN|SSH_DOMAIN|ROOT_URL"
     template: templates/gitea/config.yaml
