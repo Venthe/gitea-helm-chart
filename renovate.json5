@@ -9,11 +9,16 @@
   labels: ["kind/dependency"],
   packageRules: [
     {
-      "groupName": "dependencies (minor & patch)",
-      "matchManagers": ["helmv3", "npm", "docker", "regex"],
-      "matchUpdateTypes": ["minor", "patch"]
+      "groupName": "subcharts (minor & patch)",
+      "matchManagers": ["helmv3"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
     },
-  ]
+    {
+      "groupName": "workflow dependencies (minor & patch)",
+      "matchManagers": ["github-actions", "npm", "regex"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+    },
+  ],
   customManagers: [
     {
       description: "Gitea-version of https://docs.renovatebot.com/presets-regexManagers/#regexmanagersgithubactionsversions",
