@@ -2,11 +2,12 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   extends: [
     "gitea>gitea/renovate-config",
-    ":maintainLockFilesWeekly",
+    ":automergeMinor",
     "schedule:automergeDaily",
     "schedule:weekends",
   ],
   labels: ["kind/dependency"],
+  automergeStrategy: "squash",
   packageRules: [
     {
       "groupName": "subcharts (minor & patch)",
