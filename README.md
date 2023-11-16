@@ -706,7 +706,7 @@ extraVolumes:
 extraVolumeMounts:
   - name: gitea-themes
     readOnly: true
-    mountPath: "/data/gitea/public/css"
+    mountPath: "/data/gitea/public/assets/css"
 ```
 
 The secret can be created via `terraform`:
@@ -1048,6 +1048,15 @@ See [CONTRIBUTORS GUIDE](CONTRIBUTING.md) for details.
 This section lists major and breaking changes of each Helm Chart version.
 Please read them carefully to upgrade successfully, especially the change of the **default database backend**!
 If you miss this, blindly upgrading may delete your Postgres instance and you may lose your data!
+
+<details>
+
+<summary>To 9.6.0</summary>
+
+Chart 9.6.0 ships with Gitea 1.21.0.
+While there are no breaking changes in the chart, please check the changes of the [1.21 release blog post](https://blog.gitea.com/release-of-1.21.0/).
+
+</details>
 
 <details>
 
