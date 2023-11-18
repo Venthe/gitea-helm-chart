@@ -24,7 +24,9 @@ jobs:
           apk add --update make nodejs npm yamllint
       - uses: actions/checkout@v4
       - name: install chart dependencies
-        run: helm dependency build
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm dependency build
       - name: lint
         run: helm lint
       - name: template
