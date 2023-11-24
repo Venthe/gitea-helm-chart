@@ -402,3 +402,9 @@ https
 {{- define "gitea.serviceAccountName" -}}
 {{ .Values.serviceAccount.name | default (include "gitea.fullname" .) }}
 {{- end -}}
+
+{{- define "deployment.env" -}}
+{{- if .Values.deployment.env }}
+{{- toYaml .Values.deployment.env }}
+{{- end }}
+{{- end -}}
