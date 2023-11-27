@@ -1,7 +1,5 @@
 # High Availability
 
-⚠️ **EXPERIMENTAL** ⚠️
-
 All components (in-memory DB, volume/asset storage, code indexer) used by Gitea must be deployed in a HA-ready fashion to achieve a full HA-ready Gitea deployment.
 The following document explains how to achieve this for all individual components.
 
@@ -96,6 +94,11 @@ To do so, you need to set the following configuration values yourself:
 - `gitea.config.cache.ENABLED`: `true`
 - `gitea.config.cache.ADAPTER`: `redis`
 - `gitea.config.cache.HOST`: `<your redis connection string>`
+
+By default, the `redis-cluster` chart provisions three standalone master nodes of which each has a single replica.
+To reduce the number of pods for a default Gitea deployment, we opted to omit the replicas (`replicas: 0`) by default.
+Only the minimum required number of master pods for a functional `redis-cluster` deployment are provisioned.
+For a "proper" `redis-cluster` setup however, we recommend to set `replicas: 1` and `nodes: 6`.
 
 ## Object and asset storage
 

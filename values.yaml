@@ -43,14 +43,16 @@ clusterDomain: cluster.local
 ## @param image.digest Image digest. Allows to pin the given image tag. Useful for having control over mutable tags like `latest`
 ## @param image.pullPolicy Image pull policy
 ## @param image.rootless Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher
+## @param image.fullOverride Completely overrides the image registry, path/image, tag and digest. **Adjust `image.rootless` accordingly and review [Rootless defaults](#rootless-defaults).**
 image:
   registry: ""
   repository: gitea/gitea
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
   digest: ""
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   rootless: true
+  fullOverride: ""
 
 ## @param imagePullSecrets Secret to use for pulling the image
 imagePullSecrets: []
@@ -477,9 +479,14 @@ gitea:
 ## @section redis-cluster
 ## @param redis-cluster.enabled Enable redis
 ## @param redis-cluster.usePassword Whether to use password authentication
+## @param redis-cluster.cluster.nodes Number of redis cluster master nodes
+## @param redis-cluster.cluster.replicas Number of redis cluster master node replicas
 redis-cluster:
   enabled: true
   usePassword: false
+  cluster:
+    nodes: 3 # default: 6
+    replicas: 0 # default: 1
 
 ## @section postgresql-ha
 #
