@@ -33,7 +33,7 @@ tests:
           kind: Secret
           apiVersion: v1
           name: gitea-unittests-gpg-key
-      - isNotEmpty:
+      - isNotNullOrEmpty:
           path: metadata.labels
       - equal:
           path: data.privateKey
