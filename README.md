@@ -3,6 +3,9 @@
 - [Introduction](#introduction)
 - [Update and versioning policy](#update-and-versioning-policy)
 - [Dependencies](#dependencies)
+  - [HA Dependencies](#ha-dependencies)
+  - [Non-HA Dependencies](#non-ha-dependencies)
+  - [Dependency Versioning](#dependency-versioning)
 - [Installing](#installing)
 - [High Availability](#high-availability)
 - [Configuration](#configuration)
@@ -79,13 +82,40 @@ Yet most often no issues will be encountered and the chart maintainers aim to co
 
 ## Dependencies
 
-Gitea can be run with an external database and cache.
-This chart provides those dependencies, which can be enabled, or disabled via configuration.
+Gitea is most performant when run with an external database and cache.
+This chart provides those dependencies as sub-chart dependencies.
+Users can also configure their own external providers via the configuration.
 
-Dependencies:
+### HA Dependencies
 
-- PostgreSQL HA ([configuration](#postgresql))
-- Redis Cluster ([configuration](#cache))
+These dependencies are enabled by default:
+
+- PostgreSQL HA ([Bitnami PostgreSQL-HA](https://github.com/bitnami/charts/blob/main/bitnami/postgresql-ha/Chart.yaml))
+- Redis-Cluster ([Bitnami Redis-Cluster](https://github.com/bitnami/charts/blob/main/bitnami/redis-cluster/Chart.yaml))
+
+### Non-HA Dependencies
+
+Alternatively, the following non-HA replacements are available:
+
+- PostgreSQL ([Bitnami PostgreSQL](postgresql](https://github.com/bitnami/charts/blob/main/bitnami/postgresql/Chart.yaml)))
+
+### Dependency Versioning
+
+Updates of sub-charts will be incorporated into the Gitea chart as they are released.
+The reasoning behind this is that new users of the chart will start with the most recent sub-chart dependency versions.
+
+If you want to stay on an older appVersion of a sub-chart dependency (e.g. PostgreSQL), you need to override the image tag in your `values.yaml` file.
+In fact, we recommend to do so right from the start to be independent of major sub-chart dependency changes as they are released.
+There is no need to update to every new PostgreSQL major version - you can happily skip some and do a larger update every few years.
+
+Unless you have an automated versioning helper like `renovate` for your tag versioning, we recommend to use a rolling tag like `:<majorVersion>-debian-11` to incorporate minor and patch updates for the respective major version as they are released.
+
+Please double-check the image repository and available tags in the sub-chart:
+
+- [PostgreSQL-HA](https://github.com/bitnami/charts/blob/main/bitnami/postgresql-ha/values.yaml#L106-L107)
+- [Redis Cluster](https://github.com/bitnami/charts/blob/d6059e1cfa130e3f206976c412ee41c69532ed2f/bitnami/redis-cluster/values.yaml#L75-L76)
+
+and look up the image tag which fits your needs on Dockerhub.
 
 ## Installing
 
@@ -1048,6 +1078,21 @@ See [CONTRIBUTORS GUIDE](CONTRIBUTING.md) for details.
 This section lists major and breaking changes of each Helm Chart version.
 Please read them carefully to upgrade successfully, especially the change of the **default database backend**!
 If you miss this, blindly upgrading may delete your Postgres instance and you may lose your data!
+
+<details>
+
+<summary>To 10.0.0</summary>
+
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable-next-line -->
+**Breaking changes**
+<!-- prettier-ignore-end -->
+
+- Update PostgreSQL sub-chart dependencies to appVersion 16.x
+- Update to sub-charts versioning approach: Users are encouraged to pin the version tag of the sub-chart dependencies to a major appVersion.
+  This avoids issues during chart upgrades and allows to incorporate new sub-chart versions as they come in. Please see the new [README section describing the versioning approach for sub-chart versions](#dependency-versioning).
+
+</details>
 
 <details>
 
