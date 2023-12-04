@@ -108,7 +108,8 @@ If you want to stay on an older appVersion of a sub-chart dependency (e.g. Postg
 In fact, we recommend to do so right from the start to be independent of major sub-chart dependency changes as they are released.
 There is no need to update to every new PostgreSQL major version - you can happily skip some and do a larger update every few years.
 
-Unless you have an automated versioning helper like `renovate` for your tag versioning, we recommend to use a rolling tag like `:<majorVersion>-debian-11` to incorporate minor and patch updates for the respective major version as they are released.
+We recommend to use a rolling tag like `:<majorVersion>-debian-11` to incorporate minor and patch updates for the respective major version as they are released.
+Alternatively you can also use a versioning helper tool like [renovate](https://github.com/renovatebot/renovate).
 
 Please double-check the image repository and available tags in the sub-chart:
 
