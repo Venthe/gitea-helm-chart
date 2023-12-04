@@ -15,7 +15,7 @@ tests:
         matchRegex:
           path: spec.template.spec.containers[0].image
           # IN CASE OF AN INTENTIONAL MAJOR BUMP, ADJUST THIS TEST
-          pattern: ^docker.io/bitnami/postgresql-repmgr:15.+$
+          pattern: ^docker.io/bitnami/postgresql-repmgr:16.+$
   - it: "[postgresql] ensures we detect major image version upgrades"
     template: charts/postgresql/templates/primary/statefulset.yaml
     set:
