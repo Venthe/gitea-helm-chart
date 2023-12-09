@@ -6,6 +6,8 @@ metadata:
   namespace: {{ $.Release.Namespace }}
   annotations:
 {{ .Values.persistence.annotations | toYaml | indent 4}}
+  labels:
+{{ .Values.persistence.labels | toYaml | indent 4}}
 spec:
   accessModes:
   {{- if gt .Values.replicaCount 1.0 }}
