@@ -27,17 +27,17 @@ tests:
           path: stringData.session
           value: PROVIDER=memory
 
-  - it: "session is configured correctly for 'memory' when redis-cluster is disabled"
+  - it: "session is configured correctly for 'memory' when redis-cluster is disabled and custom values are provided"
     template: templates/gitea/config.yaml
     set:
       redis-cluster:
         enabled: false
-      gitea.config.session.PROVIDER: fake-memory
-      gitea.config.session.PROVIDER_CONFIG: fake-memory-config
+      gitea.config.session.PROVIDER: custom-value
+      gitea.config.session.PROVIDER_CONFIG: custom-value
     asserts:
       - documentIndex: 0
         equal:
           path: stringData.session
           value: |-
-            PROVIDER=fake-memory
-            PROVIDER_CONFIG=fake-memory-config
+            PROVIDER=custom-value
+            PROVIDER_CONFIG=custom-value
