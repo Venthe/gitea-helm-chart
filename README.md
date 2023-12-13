@@ -108,13 +108,14 @@ The reasoning behind this is that new users of the chart will start with the mos
 In fact, we recommend to do so right from the start to be independent of major sub-chart dependency changes as they are released.
 There is no need to update to every new PostgreSQL major version - you can happily skip some and do larger updates when you are ready for them.
 
-We recommend to use a rolling tag like `:<majorVersion>-debian-11` to incorporate minor and patch updates for the respective major version as they are released.
+We recommend to use a rolling tag like `:<majorVersion>-debian-<debian major version>` to incorporate minor and patch updates for the respective major version as they are released.
 Alternatively you can also use a versioning helper tool like [renovate](https://github.com/renovatebot/renovate).
 
 Please double-check the image repository and available tags in the sub-chart:
 
-- [PostgreSQL-HA](https://github.com/bitnami/charts/blob/main/bitnami/postgresql-ha/values.yaml#L106-L107)
-- [Redis Cluster](https://github.com/bitnami/charts/blob/main/bitnami/redis-cluster/values.yaml#L75-L76)
+- [PostgreSQL-HA](https://hub.docker.com/r/bitnami/postgresql-repmgr/tags)
+- [PostgreSQL](https://hub.docker.com/r/bitnami/postgresql/tags)
+- [Redis Cluster](https://hub.docker.com/r/bitnami/redis-cluster/tags)
 
 and look up the image tag which fits your needs on Dockerhub.
 
