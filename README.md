@@ -11,6 +11,7 @@
     - [Server defaults](#server-defaults)
     - [Metrics defaults](#metrics-defaults)
     - [Rootless Defaults](#rootless-defaults)
+    - [Session, Cache and Queue](#session-cache-and-queue)
   - [Single-Pod Configurations](#single-pod-configurations)
   - [Additional _app.ini_ settings](#additional-appini-settings)
     - [User defined environment variables in app.ini](#user-defined-environment-variables-in-appini)
@@ -196,6 +197,16 @@ If `.Values.image.rootless: true`, then the following will occur. In case you us
 - `SSH_LOG_LEVEL` environment variable is not injected into the container
 
   [see deployment.yaml](./templates/gitea/deployment.yaml) template inside container "env" declarations
+
+#### Session, Cache and Queue
+
+The session, cache and queue settings are set to use the built-in Redis Cluster sub-chart dependency.
+If Redis Cluster is disabled, the chart will fall back to the Gitea defaults which use "memory" for `session` and `cache` and "level" for `queue`.
+
+While these will work and even not cause immediate issues after startup, **they are not recommended for production use**.
+Reasons being that a single pod will take on all the work for `session` and `cache` tasks in its available memory.
+It is likely that the pod will run out of memory or will face substantial memory spikes, depending on the workload.
+External tools such as `redis-cluster` or `memcached` handle these workloads much better.
 
 ### Single-Pod Configurations
 
