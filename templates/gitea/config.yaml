@@ -174,7 +174,7 @@ stringData:
     }
     
     # save existing envs prior to script execution. Necessary to keep order of preexisting and custom envs
-    env | (grep GITEA || [[ $? == 1 ]]) > /tmp/existing-envs
+    env | (grep -e '^GITEA__' || [[ $? == 1 ]]) > /tmp/existing-envs
     
     # MUST BE CALLED BEFORE OTHER CONFIGURATION
     env2ini::generate_initial_secrets
