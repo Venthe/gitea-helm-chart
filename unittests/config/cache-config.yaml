@@ -34,12 +34,12 @@ tests:
     set:
       redis-cluster:
         enabled: false
-      gitea.config.cache.ADAPTER: custom-value
-      gitea.config.cache.HOST: custom-value
+      gitea.config.cache.ADAPTER: custom-adapter
+      gitea.config.cache.HOST: custom-host
     asserts:
       - documentIndex: 0
         equal:
           path: stringData.cache
           value: |-
-            ADAPTER=custom-value
-            HOST=custom-value
+            ADAPTER=custom-adapter
+            HOST=custom-host

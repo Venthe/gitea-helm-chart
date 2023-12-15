@@ -34,12 +34,12 @@ tests:
     set:
       redis-cluster:
         enabled: false
-      gitea.config.queue.TYPE: custom-value
-      gitea.config.queue.CONN_STR: custom-value
+      gitea.config.queue.TYPE: custom-type
+      gitea.config.queue.CONN_STR: custom-connection-string
     asserts:
       - documentIndex: 0
         equal:
           path: stringData.queue
           value: |-
-            CONN_STR=custom-value
-            TYPE=custom-value
+            CONN_STR=custom-connection-string
+            TYPE=custom-type

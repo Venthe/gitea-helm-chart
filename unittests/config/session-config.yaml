@@ -34,12 +34,12 @@ tests:
     set:
       redis-cluster:
         enabled: false
-      gitea.config.session.PROVIDER: custom-value
-      gitea.config.session.PROVIDER_CONFIG: custom-value
+      gitea.config.session.PROVIDER: custom-provider
+      gitea.config.session.PROVIDER_CONFIG: custom-provider-config
     asserts:
       - documentIndex: 0
         equal:
           path: stringData.session
           value: |-
-            PROVIDER=custom-value
-            PROVIDER_CONFIG=custom-value
+            PROVIDER=custom-provider
+            PROVIDER_CONFIG=custom-provider-config
