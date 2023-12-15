@@ -302,6 +302,9 @@ https
     {{- if not (get .Values.gitea.config.session "PROVIDER") -}}
       {{- $_ := set .Values.gitea.config.session "PROVIDER" "memory" -}}
     {{- end -}}
+    {{- if not (get .Values.gitea.config.session "PROVIDER_CONFIG") -}}
+      {{- $_ := set .Values.gitea.config.session "PROVIDER_CONFIG" "" -}}
+    {{- end -}}
     {{- if not (get .Values.gitea.config.queue "TYPE") -}}
       {{- $_ := set .Values.gitea.config.queue "TYPE" "level" -}}
     {{- end -}}
