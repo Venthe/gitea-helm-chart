@@ -29,7 +29,7 @@ tests:
             CONN_STR=
             TYPE=level
 
-  - it: "queue is configured correctly for 'memory' when redis-cluster is disabled and custom values are provided"
+  - it: "queue can be customized when redis-cluster is disabled"
     template: templates/gitea/config.yaml
     set:
       redis-cluster:

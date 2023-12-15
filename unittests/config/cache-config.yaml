@@ -3,7 +3,7 @@ release:
   name: gitea-unittests
   namespace: testing
 tests:
-  - it: "cache is configured correctly for 'memory' when redis-cluster is enabled"
+  - it: "cache is configured correctly for redis-cluster"
     template: templates/gitea/config.yaml
     set:
       redis-cluster:
@@ -29,7 +29,7 @@ tests:
             ADAPTER=memory
             HOST=
 
-  - it: "cache is configured correctly for 'memory' when redis-cluster is disabled and custom values are provided"
+  - it: "cache can be customized when redis-cluster is disabled"
     template: templates/gitea/config.yaml
     set:
       redis-cluster:

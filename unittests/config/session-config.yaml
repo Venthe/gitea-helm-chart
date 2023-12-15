@@ -29,7 +29,7 @@ tests:
             PROVIDER=memory
             PROVIDER_CONFIG=
 
-  - it: "session is configured correctly for 'memory' when redis-cluster is disabled and custom values are provided"
+  - it: "session can be customized when redis-cluster is disabled"
     template: templates/gitea/config.yaml
     set:
       redis-cluster:
