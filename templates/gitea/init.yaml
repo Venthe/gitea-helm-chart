@@ -126,7 +126,28 @@ stringData:
       {{- if .Values.gitea.ldap }}
       {{- range $idx, $value := .Values.gitea.ldap }}
       local LDAP_NAME={{ (printf "%s" $value.name) | squote }}
-      local GITEA_AUTH_ID=$(gitea admin auth list --vertical-bars | grep -E "\|${LDAP_NAME}\s+\|" | grep -iE '\|LDAP \(via BindDN\)\s+\|' | awk -F " "  "{print \$1}")
+      local full_auth_list=$(gitea admin auth list --vertical-bars)
+      local actual_auth_table=''
+
+      # We might have distorted output due to warning logs, so we have to detect the actual user table by its headline and trim output above that line
+      local regex="(.*)(ID\s+\|Name\s+\|Type\s+\|Enabled.*)"
+      if [[ "${full_auth_list}" =~ $regex ]]; then
+        actual_auth_table=$(echo "${BASH_REMATCH[2]}" | tail -n+2) # tail'ing to drop the table headline
+      else
+        # This code block should never be reached, as long as the output table header remains the same.
+        # If this code block is reached, the regex doesn't match anymore and we probably have to adjust this script.
+
+        echo "ERROR: 'configure_ldap' was not able to determine the current list of authentication sources."
+        echo "       Please review the output of 'gitea admin auth list --vertical-bars' shown below."
+        echo "       If you think it is an issue with the Helm Chart provisioning, file an issue at https://gitea.com/gitea/helm-chart/issues."
+        echo "DEBUG: Output of 'gitea admin auth list --vertical-bars'"
+        echo "--"
+        echo "${full_auth_list}"
+        echo "--"
+        exit 1
+      fi
+
+      local GITEA_AUTH_ID=$(echo "${actual_auth_table}" | grep -E "\|${LDAP_NAME}\s+\|" | grep -iE '\|LDAP \(via BindDN\)\s+\|' | awk -F " "  "{print \$1}")
 
       if [[ -z "${GITEA_AUTH_ID}" ]]; then
         echo "No ldap configuration found with name '${LDAP_NAME}'. Installing it now..."
