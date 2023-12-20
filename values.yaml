@@ -485,7 +485,7 @@ redis-cluster:
   enabled: true
   usePassword: false
   cluster:
-    nodes: 3 # default: 6
+    nodes: 4 # default: 6
     replicas: 0 # default: 1
 
 ## @section postgresql-ha
