@@ -339,6 +339,46 @@ signing:
   #   -----END PGP PRIVATE KEY BLOCK-----
   existingSecret: ""
 
+# Configure Gitea Actions
+# - must enable persistence
+# - must define deployment.env.GITEA__ACTIONS__ENABLED and GITEA__SERVER__LOCAL_ROOT_URL
+## @section GiteaActions
+#
+## @param actions.statefulset.enabled Create an act-runner StatefulSet.
+## @param actions.job.enabled Create a job that will create and save the token in a Kubernetes Secret
+## @param actions.job.tokenImage.repository The image that can create a token via `gitea actions generate-runner-token`
+## @param actions.job.tokenImage.tag The token image tag that can create a token
+## @param actions.job.tokenImage.pullPolicy The token image pullPolicy that can create a token
+## @param actions.job.publishImage.repository The image that can create the secret via kubectl
+## @param actions.job.publishImage.tag The publish image tag that can create the secret
+## @param actions.job.publishImage.pullPolicy The publish image pullPolicy that can create the secret
+## @param actions.existingSecret Secret that contains the token
+## @param actions.existingSecretKey Secret key
+actions:
+  statefulset:
+    enabled: false
+
+  job:
+    enabled: false
+
+    annotations: {}
+    resources: {}
+
+    tokenImage:
+      repository: gitea/gitea
+      # tag: latest-rootless
+      pullPolicy: IfNotPresent
+
+    publishImage:
+      repository: bitnami/kubectl
+      # tag: latest
+      pullPolicy: IfNotPresent
+
+  ## Specify an existing token secret
+  ##
+  # existingSecret: secretName
+  # existingSecretKey: token
+
 ## @section Gitea
 #
 gitea:
