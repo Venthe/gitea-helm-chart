@@ -345,6 +345,12 @@ signing:
 ## @section GiteaActions
 #
 ## @param actions.statefulset.enabled Create an act-runner StatefulSet.
+## @param actions.statefulset.actRunnerImage.repository The Gitea act runner image
+## @param actions.statefulset.actRunnerImage.tag The Gitea act runner tag
+## @param actions.statefulset.actRunnerImage.pullPolicy The Gitea act runner pullPolicy
+## @param actions.statefulset.dindImage.repository The Docker-in-Docker image
+## @param actions.statefulset.dindImage.tag The Docker-in-Docker image tag
+## @param actions.statefulset.dindImage.pullPolicy The Docker-in-Docker pullPolicy
 ## @param actions.job.enabled Create a job that will create and save the token in a Kubernetes Secret
 ## @param actions.job.tokenImage.repository The image that can create a token via `gitea actions generate-runner-token`
 ## @param actions.job.tokenImage.tag The token image tag that can create a token
@@ -357,6 +363,20 @@ signing:
 actions:
   statefulset:
     enabled: false
+
+    annotations: {}
+    labels: {}
+    resources: {}
+
+    actRunnerImage:
+      repository: gitea/act_runner
+      # tag: latest
+      pullPolicy: IfNotPresent
+
+    dindImage:
+      repository: docker
+      # tag: 24.0.7-dind
+      pullPolicy: IfNotPresent
 
   job:
     enabled: false
