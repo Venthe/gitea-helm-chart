@@ -161,7 +161,6 @@ metadata:
   annotations:
     # helm.sh/hook: post-install
     # helm.sh/hook-delete-policy: never
-    helm.sh/resource-policy: keep
     argocd.argoproj.io/hook: Skip
     argocd.argoproj.io/hook-delete-policy: Never
   name: {{ $secretName }}
@@ -171,6 +170,6 @@ metadata:
 {{ $secret := (lookup "v1" "Secret" .Release.Namespace $secretName) -}}
 {{ if $secret -}}
 data:
-  signing.key: {{ (b64dec (index $secret.data "signing.key")) | b64enc }}
+  token: {{ (b64dec (index $secret.data "token")) | b64enc }}
 {{ end -}}
 {{- end }}
