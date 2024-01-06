@@ -888,6 +888,7 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 | `service.http.ipFamilies`               | HTTP service dual-stack familiy selection,for dual-stack parameters see official kubernetes [dual-stack concept documentation](https://kubernetes.io/docs/concepts/services-networking/dual-stack/). | `nil`       |
 | `service.http.loadBalancerSourceRanges` | Source range filter for http loadbalancer                                                                                                                                                            | `[]`        |
 | `service.http.annotations`              | HTTP service annotations                                                                                                                                                                             | `{}`        |
+| `service.http.labels`                   | HTTP service additional labels                                                                                                                                                                       | `{}`        |
 | `service.ssh.type`                      | Kubernetes service type for ssh traffic                                                                                                                                                              | `ClusterIP` |
 | `service.ssh.port`                      | Port number for ssh traffic                                                                                                                                                                          | `22`        |
 | `service.ssh.clusterIP`                 | ClusterIP setting for ssh autosetup for deployment is None                                                                                                                                           | `None`      |
@@ -900,6 +901,7 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 | `service.ssh.hostPort`                  | HostPort for ssh service                                                                                                                                                                             | `nil`       |
 | `service.ssh.loadBalancerSourceRanges`  | Source range filter for ssh loadbalancer                                                                                                                                                             | `[]`        |
 | `service.ssh.annotations`               | SSH service annotations                                                                                                                                                                              | `{}`        |
+| `service.ssh.labels`                    | SSH service additional labels                                                                                                                                                                        | `{}`        |
 
 ### Ingress
 

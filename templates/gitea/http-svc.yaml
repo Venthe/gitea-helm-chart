@@ -4,6 +4,7 @@ metadata:
   name: {{ include "gitea.fullname" . }}-http
   labels:
     {{- include "gitea.labels" . | nindent 4 }}
+    {{- toYaml .Values.service.http.labels  | nindent 4 }}
   annotations:
     {{- toYaml .Values.service.http.annotations | nindent 4 }}
 spec:

@@ -106,6 +106,7 @@ service:
   ## @param service.http.ipFamilies HTTP service dual-stack familiy selection,for dual-stack parameters see official kubernetes [dual-stack concept documentation](https://kubernetes.io/docs/concepts/services-networking/dual-stack/).
   ## @param service.http.loadBalancerSourceRanges Source range filter for http loadbalancer
   ## @param service.http.annotations HTTP service annotations
+  ## @param service.http.labels HTTP service additional labels
   http:
     type: ClusterIP
     port: 3000
@@ -118,6 +119,7 @@ service:
     ipFamilies:
     loadBalancerSourceRanges: []
     annotations: {}
+    labels: {}
   ## @param service.ssh.type Kubernetes service type for ssh traffic
   ## @param service.ssh.port Port number for ssh traffic
   ## @param service.ssh.clusterIP ClusterIP setting for ssh autosetup for deployment is None
@@ -130,6 +132,7 @@ service:
   ## @param service.ssh.hostPort HostPort for ssh service
   ## @param service.ssh.loadBalancerSourceRanges Source range filter for ssh loadbalancer
   ## @param service.ssh.annotations SSH service annotations
+  ## @param service.ssh.labels SSH service additional labels
   ssh:
     type: ClusterIP
     port: 22
@@ -143,6 +146,7 @@ service:
     hostPort:
     loadBalancerSourceRanges: []
     annotations: {}
+    labels: {}
 
 ## @section Ingress
 ## @param ingress.enabled Enable ingress
