@@ -36,12 +36,12 @@ dependencies:
   # https://github.com/bitnami/charts/blob/main/bitnami/postgresql
   - name: postgresql
     repository: oci://registry-1.docker.io/bitnamicharts
-    version: 13.2.26
+    version: 13.2.27
     condition: postgresql.enabled
   # https://github.com/bitnami/charts/blob/main/bitnami/postgresql-ha/Chart.yaml
   - name: postgresql-ha
     repository: oci://registry-1.docker.io/bitnamicharts
-    version: 12.3.5
+    version: 12.3.7
     condition: postgresql-ha.enabled
   # https://github.com/bitnami/charts/blob/main/bitnami/redis-cluster/Chart.yaml
   - name: redis-cluster
