@@ -39,7 +39,7 @@ tests:
       - equal:
           path: metadata.labels["gitea/testkey"]
           value: "testvalue"
-  
+
   - it: keeps existing labels (http)
     template: templates/gitea/http-svc.yaml
     set:
