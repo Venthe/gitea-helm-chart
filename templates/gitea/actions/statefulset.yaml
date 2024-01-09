@@ -1,19 +1,6 @@
 {{- if and (and .Values.actions.statefulset.enabled .Values.persistence.enabled) .Values.persistence.mount }}
 {{- $secretName := include "gitea.workername" (dict "global" . "worker" "actions-token") }}
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ include "gitea.fullname" . }}-act-runner-config
-  labels:
-    {{- include "gitea.labels" . | nindent 4 }}
-data:
-  config.yaml: |
-    log:
-      level: debug
-    cache:
-      enabled: false    
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -22,7 +9,7 @@ metadata:
     {{- if .Values.actions.statefulset.labels }}
     {{- toYaml .Values.actions.statefulset.labels | nindent 4 }}
     {{- end }}
-  name: act-runner
+  name: {{ include "gitea.fullname" . }}-act-runner
 spec:
   selector:
     matchLabels:

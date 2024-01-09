@@ -1,0 +1,15 @@
+{{- if and (and .Values.actions.statefulset.enabled .Values.persistence.enabled) .Values.persistence.mount }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gitea.fullname" . }}-act-runner-config
+  labels:
+    {{- include "gitea.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    log:
+      level: debug
+    cache:
+      enabled: false    
+{{- end }}
