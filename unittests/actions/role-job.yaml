@@ -1,0 +1,20 @@
+suite: actions template | role-job
+release:
+  name: gitea-unittests
+  namespace: testing
+templates:
+  - templates/gitea/actions/role-job.yaml
+tests:
+  - it: renders a role
+    template: templates/gitea/actions/role-job.yaml
+    set:
+      actions:
+        job:
+          enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - containsDocument:
+          kind: Role
+          apiVersion: rbac.authorization.k8s.io/v1
+          name: gitea-unittests-actions-token-job
