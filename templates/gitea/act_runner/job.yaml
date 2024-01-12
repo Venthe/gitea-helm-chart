@@ -12,9 +12,6 @@ metadata:
   labels:
     {{- include "gitea.labels" . | nindent 4 }}
     app.kubernetes.io/component: token-job
-  annotations:
-    # helm.sh/hook: post-install
-    # helm.sh/hook-delete-policy: hook-succeeded
   {{- with .Values.actions.job.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -26,9 +23,19 @@ spec:
         {{- include "gitea.labels" . | nindent 8 }}
         app.kubernetes.io/component: token-job
     spec:
+      initContainers:
+        - name: init-gitea
+          image: busybox:1.36.1
+          command:
+            - sh
+            - -c
+            - |
+              while ! nc -z {{ include "gitea.fullname" . }}-http {{ .Values.service.http.port }}; do
+                sleep 5
+              done
       containers:
         - name: actions-token-create
-          image: "{{ .Values.actions.job.tokenImage.repository }}:{{ .Values.actions.job.tokenImage.tag | default "latest-rootless" }}"
+          image: "{{ .Values.actions.job.tokenImage.repository }}:{{ .Values.actions.job.tokenImage.tag | default (printf "%s-rootless" .Chart.AppVersion) }}"
           imagePullPolicy: {{ .Values.actions.job.tokenImage.pullPolicy }}
           env:
             - name: GITEA_APP_INI
@@ -37,11 +44,7 @@ spec:
             - sh
             - -c
             - |
-              while ! nc -z gitea-http 3000; do
-                sleep 5
-              done
-
-              echo "Generating token..."
+              echo "Generating act_runner token via 'gitea actions generate-runner-token'..."
               mkdir -p /data/actions/
               gitea actions generate-runner-token | grep -E '^.{40}$' | tr -d '\n' > /data/actions/token
           resources:
@@ -53,7 +56,7 @@ spec:
               subPath: {{ .Values.persistence.subPath }}
               {{- end }}
         - name: actions-token-upload
-          image: "{{ .Values.actions.job.publishImage.repository }}:{{ .Values.actions.job.publishImage.tag | default "latest" }}"
+          image: "{{ .Values.actions.job.publishImage.repository }}:{{ .Values.actions.job.publishImage.tag }}"
           imagePullPolicy: {{ .Values.actions.job.publishImage.pullPolicy }}
           env:
             - name: SECRET_NAME
@@ -62,7 +65,7 @@ spec:
             - sh
             - -c
             - |
-              printf "Checking rights to update secret... "
+              printf "Checking rights to update kubernetes act_runner secret..."
               kubectl auth can-i update secret/${SECRET_NAME}
               /scripts/token.sh
           resources:

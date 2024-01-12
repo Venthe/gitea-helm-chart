@@ -6,9 +6,6 @@ metadata:
   name: {{ include "gitea.fullname" . }}-scripts
   labels:
     {{- include "gitea.labels" . | nindent 4 }}
-  annotations:
-    # helm.sh/hook: post-install
-    # helm.sh/hook-delete-policy: hook-succeeded
 data:
 {{ (.Files.Glob "scripts/*.sh").AsConfig | indent 2 }}
 {{- end }}

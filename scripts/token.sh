@@ -2,6 +2,8 @@
 
 set -eu
 
+timeout_delay=15
+
 check_token() {
   set +e
 
@@ -15,7 +17,7 @@ check_token() {
 create_token() {
   echo "Waiting for new token to be generated..."
   begin=$(date +%s)
-  end=$((begin + 300)) # 5 minutes
+  end=$((begin + timeout_delay))
   while true; do
     [ -f /data/actions/token ] && return 0
     [ "$(date +%s)" -gt $end ] && return 1
@@ -34,7 +36,7 @@ if check_token; then
 fi
 
 if ! create_token; then
-  echo "Timed out waiting for a token to appear."
+  echo "Checking for an existing act runner token in secret $SECRET_NAME timed out after $timeout_delay"
   exit 1
 fi
 

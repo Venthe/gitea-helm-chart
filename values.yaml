@@ -345,6 +345,8 @@ signing:
 ## @section GiteaActions
 #
 ## @param actions.statefulset.enabled Create an act-runner StatefulSet.
+## @param actions.statefulset.config Act runner custom configuration.
+## @param actions.statefulset.runnerLabels Act runner labels.
 ## @param actions.statefulset.actRunnerImage.repository The Gitea act runner image
 ## @param actions.statefulset.actRunnerImage.tag The Gitea act runner tag
 ## @param actions.statefulset.actRunnerImage.pullPolicy The Gitea act runner pullPolicy
@@ -368,14 +370,17 @@ actions:
     labels: {}
     resources: {}
 
+    config: ""
+    runnerLabels: ""
+
     actRunnerImage:
       repository: gitea/act_runner
-      # tag: latest
+      tag: 0.2.6
       pullPolicy: IfNotPresent
 
     dindImage:
       repository: docker
-      # tag: 24.0.7-dind
+      tag: 24.0.7-dind
       pullPolicy: IfNotPresent
 
   job:
@@ -386,12 +391,12 @@ actions:
 
     tokenImage:
       repository: gitea/gitea
-      # tag: latest-rootless
+      tag: ""
       pullPolicy: IfNotPresent
 
     publishImage:
       repository: bitnami/kubectl
-      # tag: latest
+      tag: 1.29.0
       pullPolicy: IfNotPresent
 
   ## Specify an existing token secret

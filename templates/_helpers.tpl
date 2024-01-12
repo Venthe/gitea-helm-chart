@@ -100,11 +100,25 @@ version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
 
+{{- define "gitea.labels.actRunner" -}}
+helm.sh/chart: {{ include "gitea.chart" . }}
+app: {{ include "gitea.name" . }}-act-runner
+{{ include "gitea.selectorLabels.actRunner" . }}
+app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
+version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}
+
 {{/*
 Selector labels
 */}}
 {{- define "gitea.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "gitea.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
+
+{{- define "gitea.selectorLabels.actRunner" -}}
+app.kubernetes.io/name: {{ include "gitea.name" . }}-act-runner
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
