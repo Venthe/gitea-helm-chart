@@ -3,10 +3,10 @@ release:
   name: gitea-unittests
   namespace: testing
 templates:
-  - templates/gitea/actions/config-scripts.yaml
+  - templates/gitea/act_runner/config-scripts.yaml
 tests:
   - it: renders a deployment
-    template: templates/gitea/actions/config-scripts.yaml
+    template: templates/gitea/act_runner/config-scripts.yaml
     set:
       actions:
         job:
