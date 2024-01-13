@@ -1,12 +1,12 @@
-suite: actions template | job
+suite: actions template | rolebinding-job
 release:
   name: gitea-unittests
   namespace: testing
 templates:
-  - templates/gitea/actions/job.yaml
+  - templates/gitea/act_runner/rolebinding-job.yaml
 tests:
   - it: renders a deployment
-    template: templates/gitea/actions/job.yaml
+    template: templates/gitea/act_runner/rolebinding-job.yaml
     set:
       actions:
         job:
@@ -15,6 +15,6 @@ tests:
       - hasDocuments:
           count: 1
       - containsDocument:
-          kind: Job
-          apiVersion: batch/v1
+          kind: RoleBinding
+          apiVersion: rbac.authorization.k8s.io/v1
           name: gitea-unittests-actions-token-job

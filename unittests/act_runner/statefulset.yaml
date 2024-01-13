@@ -3,10 +3,10 @@ release:
   name: gitea-unittests
   namespace: testing
 templates:
-  - templates/gitea/actions/statefulset.yaml
+  - templates/gitea/act_runner/statefulset.yaml
 tests:
   - it: renders a deployment
-    template: templates/gitea/actions/statefulset.yaml
+    template: templates/gitea/act_runner/statefulset.yaml
     set:
       actions:
         statefulset:

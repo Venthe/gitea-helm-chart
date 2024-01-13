@@ -3,10 +3,10 @@ release:
   name: gitea-unittests
   namespace: testing
 templates:
-  - templates/gitea/actions/config-act-runner.yaml
+  - templates/gitea/act_runner/config-act-runner.yaml
 tests:
   - it: renders a ConfigMap
-    template: templates/gitea/actions/config-act-runner.yaml
+    template: templates/gitea/act_runner/config-act-runner.yaml
     set:
       actions:
         statefulset:
