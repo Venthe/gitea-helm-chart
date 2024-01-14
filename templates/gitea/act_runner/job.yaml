@@ -11,16 +11,23 @@ metadata:
   name: {{ $name }}
   labels:
     {{- include "gitea.labels" . | nindent 4 }}
-    app.kubernetes.io/component: token-job
-  {{- with .Values.actions.job.annotations }}
+    {{- with .Values.actions.job.labels }}
     {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- end }}
+    app.kubernetes.io/component: token-job
+  annotations:
+    {{- with .Values.actions.job.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
 spec:
   ttlSecondsAfterFinished: 0
   template:
     metadata:
       labels:
         {{- include "gitea.labels" . | nindent 8 }}
+        {{- with .Values.actions.job.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         app.kubernetes.io/component: token-job
     spec:
       initContainers:
@@ -48,7 +55,7 @@ spec:
               mkdir -p /data/actions/
               gitea actions generate-runner-token | grep -E '^.{40}$' | tr -d '\n' > /data/actions/token
           resources:
-            {{- toYaml .Values.actions.resources | nindent 12 }}
+            {{- toYaml .Values.actions.job.resources | nindent 12 }}
           volumeMounts:
             - name: data
               mountPath: /data
@@ -69,7 +76,7 @@ spec:
               kubectl auth can-i update secret/${SECRET_NAME}
               /scripts/token.sh
           resources:
-            {{- toYaml .Values.actions.resources | nindent 12 }}
+            {{- toYaml .Values.actions.job.resources | nindent 12 }}
           volumeMounts:
             - mountPath: /scripts
               name: scripts

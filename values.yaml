@@ -344,7 +344,10 @@ signing:
 # - must define deployment.env.GITEA__ACTIONS__ENABLED and GITEA__SERVER__LOCAL_ROOT_URL
 ## @section GiteaActions
 #
-## @param actions.statefulset.enabled Create an act-runner StatefulSet.
+## @param actions.statefulset.enabled Create an act runner StatefulSet.
+## @param actions.statefulset.annotations Act runner annotations
+## @param actions.statefulset.labels Act runner labels
+## @param actions.statefulset.resources Act runner resources
 ## @param actions.statefulset.config Act runner custom configuration.
 ## @param actions.statefulset.runnerLabels Act runner labels.
 ## @param actions.statefulset.actRunnerImage.repository The Gitea act runner image
@@ -354,6 +357,9 @@ signing:
 ## @param actions.statefulset.dindImage.tag The Docker-in-Docker image tag
 ## @param actions.statefulset.dindImage.pullPolicy The Docker-in-Docker pullPolicy
 ## @param actions.job.enabled Create a job that will create and save the token in a Kubernetes Secret
+## @param actions.job.annotations Job's annotations
+## @param actions.job.labels Job's labels
+## @param actions.job.resources Job's resources
 ## @param actions.job.tokenImage.repository The image that can create a token via `gitea actions generate-runner-token`
 ## @param actions.job.tokenImage.tag The token image tag that can create a token
 ## @param actions.job.tokenImage.pullPolicy The token image pullPolicy that can create a token
@@ -387,6 +393,7 @@ actions:
     enabled: false
 
     annotations: {}
+    labels: {}
     resources: {}
 
     tokenImage:
@@ -401,8 +408,8 @@ actions:
 
   ## Specify an existing token secret
   ##
-  # existingSecret: secretName
-  # existingSecretKey: token
+  existingSecret: ""
+  existingSecretKey: ""
 
 ## @section Gitea
 #
