@@ -37,4 +37,3 @@ tests:
       - equal:
           path: spec.storageClassName
           value: "my-storage-class"
-          
