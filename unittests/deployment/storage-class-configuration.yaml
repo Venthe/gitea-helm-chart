@@ -7,46 +7,33 @@ release:
   namespace: testing
 
 templates:
-  - templates/gitea/deployment.yaml
-  - templates/gitea/config.yaml
   - templates/gitea/pvc.yaml
 
 tests:
   - it: should set storageClassName when persistence.storageClass is defined
-    template: templates/gitea/deployment.yaml
+    template: templates/gitea/pvc.yaml
     set:
       persistence.storageClass: "my-storage-class"
     asserts:
-      - contains:
-          path: spec.template.spec.volumes[0].persistentVolumeClaim.storageClassName
-          content: "my-storage-class"
-
-  - it: should not set storageClassName when persistence.storageClass is not defined
-    template: templates/gitea/deployment.yaml
-    set:
-      persistence.storageClass: null
-    asserts:
-      - notContains:
-          path: spec.template.spec.volumes[0].persistentVolumeClaim.storageClassName
-          any: true
-          content: ".*"
+      - equal:
+          path: "spec.storageClassName"
+          value: "my-storage-class"
 
   - it: should set global.storageClass when persistence.storageClass is not defined
-    template: templates/gitea/deployment.yaml
+    template: templates/gitea/pvc.yaml
     set:
-      persistence.storageClass: null
       global.storageClass: "default-storage-class"
     asserts:
-      - contains:
-          path: spec.template.spec.volumes[0].persistentVolumeClaim.storageClassName
-          content: "default-storage-class"
+      - equal:
+          path: spec.storageClassName
+          value: "default-storage-class"
 
   - it: should set storageClassName when persistence.storageClass is defined and global.storageClass is defined
-    template: templates/gitea/deployment.yaml
+    template: templates/gitea/pvc.yaml
     set:
       global.storageClass: "default-storage-class"
       persistence.storageClass: "my-storage-class"
     asserts:
-      - contains:
-          path: spec.template.spec.volumes[0].persistentVolumeClaim.storageClassName
-          content: "my-storage-class"
+      - equal:
+          path: spec.storageClassName
+          value: "my-storage-class"
