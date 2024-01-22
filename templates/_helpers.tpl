@@ -94,7 +94,7 @@ imagePullSecrets:
 Storage Class
 */}}
 {{- define "gitea.persistence.storageClass" -}}
-{{- $storageClass := .Values.global.storageClass | default .Values.persistence.storageClass }}
+{{- $storageClass := .Values.persistence.storageClass | default .Values.global.storageClass }}
 {{- if $storageClass }}
 storageClassName: {{ $storageClass | quote }}
 {{- end }}
@@ -290,23 +290,33 @@ https
   {{- if not (hasKey .Values.gitea.config.metrics "ENABLED") -}}
     {{- $_ := set .Values.gitea.config.metrics "ENABLED" .Values.gitea.metrics.enabled -}}
   {{- end -}}
-  {{- if (index .Values "redis-cluster").enabled -}}
-    {{- $_ := set .Values.gitea.config.cache "ENABLED" "true" -}}
-    {{- $_ := set .Values.gitea.config.cache "ADAPTER" "redis" -}}
-    {{- if not (.Values.gitea.config.cache.HOST) -}}
-      {{- $_ := set .Values.gitea.config.cache "HOST" (include "redis.dns" .) -}}
-    {{- end -}}
-  {{- end -}}
   {{- /* redis queue */ -}}
   {{- if (index .Values "redis-cluster").enabled -}}
     {{- $_ := set .Values.gitea.config.queue "TYPE" "redis" -}}
     {{- $_ := set .Values.gitea.config.queue "CONN_STR" (include "redis.dns" .) -}}
-  {{- end -}}
-  {{- if not (get .Values.gitea.config.session "PROVIDER") -}}
     {{- $_ := set .Values.gitea.config.session "PROVIDER" "redis" -}}
-  {{- end -}}
-  {{- if not (get .Values.gitea.config.session "PROVIDER_CONFIG") -}}
     {{- $_ := set .Values.gitea.config.session "PROVIDER_CONFIG" (include "redis.dns" .) -}}
+    {{- $_ := set .Values.gitea.config.cache "ADAPTER" "redis" -}}
+    {{- $_ := set .Values.gitea.config.cache "HOST" (include "redis.dns" .) -}}
+  {{- else -}}
+    {{- if not (get .Values.gitea.config.session "PROVIDER") -}}
+      {{- $_ := set .Values.gitea.config.session "PROVIDER" "memory" -}}
+    {{- end -}}
+    {{- if not (get .Values.gitea.config.session "PROVIDER_CONFIG") -}}
+      {{- $_ := set .Values.gitea.config.session "PROVIDER_CONFIG" "" -}}
+    {{- end -}}
+    {{- if not (get .Values.gitea.config.queue "TYPE") -}}
+      {{- $_ := set .Values.gitea.config.queue "TYPE" "level" -}}
+    {{- end -}}
+    {{- if not (get .Values.gitea.config.queue "CONN_STR") -}}
+      {{- $_ := set .Values.gitea.config.queue "CONN_STR" "" -}}
+    {{- end -}}
+    {{- if not (get .Values.gitea.config.cache "ADAPTER") -}}
+      {{- $_ := set .Values.gitea.config.cache "ADAPTER" "memory" -}}
+    {{- end -}}
+    {{- if not (get .Values.gitea.config.cache "HOST") -}}
+      {{- $_ := set .Values.gitea.config.cache "HOST" "" -}}
+    {{- end -}}
   {{- end -}}
   {{- if not .Values.gitea.config.indexer.ISSUE_INDEXER_TYPE -}}
      {{- $_ := set .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE" "db" -}}

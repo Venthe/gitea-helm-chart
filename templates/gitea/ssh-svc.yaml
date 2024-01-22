@@ -4,6 +4,9 @@ metadata:
   name: {{ include "gitea.fullname" . }}-ssh
   labels:
     {{- include "gitea.labels" . | nindent 4 }}
+    {{- if .Values.service.ssh.labels }}
+    {{- toYaml .Values.service.ssh.labels  | nindent 4 }}
+    {{- end }}
   annotations:
     {{- toYaml .Values.service.ssh.annotations | nindent 4 }}
 spec:

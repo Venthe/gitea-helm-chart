@@ -3,6 +3,9 @@
 - [Introduction](#introduction)
 - [Update and versioning policy](#update-and-versioning-policy)
 - [Dependencies](#dependencies)
+  - [HA Dependencies](#ha-dependencies)
+  - [Non-HA Dependencies](#non-ha-dependencies)
+  - [Dependency Versioning](#dependency-versioning)
 - [Installing](#installing)
 - [High Availability](#high-availability)
 - [Configuration](#configuration)
@@ -11,6 +14,7 @@
     - [Server defaults](#server-defaults)
     - [Metrics defaults](#metrics-defaults)
     - [Rootless Defaults](#rootless-defaults)
+    - [Session, Cache and Queue](#session-cache-and-queue)
   - [Single-Pod Configurations](#single-pod-configurations)
   - [Additional _app.ini_ settings](#additional-appini-settings)
     - [User defined environment variables in app.ini](#user-defined-environment-variables-in-appini)
@@ -79,13 +83,42 @@ Yet most often no issues will be encountered and the chart maintainers aim to co
 
 ## Dependencies
 
-Gitea can be run with an external database and cache.
-This chart provides those dependencies, which can be enabled, or disabled via configuration.
+Gitea is most performant when run with an external database and cache.
+This chart provides those dependencies via sub-charts.
+Users can also configure their own external providers via the configuration.
 
-Dependencies:
+### HA Dependencies
 
-- PostgreSQL HA ([configuration](#postgresql))
-- Redis Cluster ([configuration](#cache))
+These dependencies are enabled by default:
+
+- PostgreSQL HA ([Bitnami PostgreSQL-HA](https://github.com/bitnami/charts/blob/main/bitnami/postgresql-ha/Chart.yaml))
+- Redis-Cluster ([Bitnami Redis-Cluster](https://github.com/bitnami/charts/blob/main/bitnami/redis-cluster/Chart.yaml))
+
+### Non-HA Dependencies
+
+Alternatively, the following non-HA replacements are available:
+
+- PostgreSQL ([Bitnami PostgreSQL](postgresql](https://github.com/bitnami/charts/blob/main/bitnami/postgresql/Chart.yaml)))
+
+### Dependency Versioning
+
+Updates of sub-charts will be incorporated into the Gitea chart as they are released.
+The reasoning behind this is that new users of the chart will start with the most recent sub-chart dependency versions.
+
+**Note** If you want to stay on an older appVersion of a sub-chart dependency (e.g. PostgreSQL), you need to override the image tag in your `values.yaml` file.
+In fact, we recommend to do so right from the start to be independent of major sub-chart dependency changes as they are released.
+There is no need to update to every new PostgreSQL major version - you can happily skip some and do larger updates when you are ready for them.
+
+We recommend to use a rolling tag like `:<majorVersion>-debian-<debian major version>` to incorporate minor and patch updates for the respective major version as they are released.
+Alternatively you can also use a versioning helper tool like [renovate](https://github.com/renovatebot/renovate).
+
+Please double-check the image repository and available tags in the sub-chart:
+
+- [PostgreSQL-HA](https://hub.docker.com/r/bitnami/postgresql-repmgr/tags)
+- [PostgreSQL](https://hub.docker.com/r/bitnami/postgresql/tags)
+- [Redis Cluster](https://hub.docker.com/r/bitnami/redis-cluster/tags)
+
+and look up the image tag which fits your needs on Dockerhub.
 
 ## Installing
 
@@ -196,6 +229,16 @@ If `.Values.image.rootless: true`, then the following will occur. In case you us
 - `SSH_LOG_LEVEL` environment variable is not injected into the container
 
   [see deployment.yaml](./templates/gitea/deployment.yaml) template inside container "env" declarations
+
+#### Session, Cache and Queue
+
+The session, cache and queue settings are set to use the built-in Redis Cluster sub-chart dependency.
+If Redis Cluster is disabled, the chart will fall back to the Gitea defaults which use "memory" for `session` and `cache` and "level" for `queue`.
+
+While these will work and even not cause immediate issues after startup, **they are not recommended for production use**.
+Reasons being that a single pod will take on all the work for `session` and `cache` tasks in its available memory.
+It is likely that the pod will run out of memory or will face substantial memory spikes, depending on the workload.
+External tools such as `redis-cluster` or `memcached` handle these workloads much better.
 
 ### Single-Pod Configurations
 
@@ -845,6 +888,7 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 | `service.http.ipFamilies`               | HTTP service dual-stack familiy selection,for dual-stack parameters see official kubernetes [dual-stack concept documentation](https://kubernetes.io/docs/concepts/services-networking/dual-stack/). | `nil`       |
 | `service.http.loadBalancerSourceRanges` | Source range filter for http loadbalancer                                                                                                                                                            | `[]`        |
 | `service.http.annotations`              | HTTP service annotations                                                                                                                                                                             | `{}`        |
+| `service.http.labels`                   | HTTP service additional labels                                                                                                                                                                       | `{}`        |
 | `service.ssh.type`                      | Kubernetes service type for ssh traffic                                                                                                                                                              | `ClusterIP` |
 | `service.ssh.port`                      | Port number for ssh traffic                                                                                                                                                                          | `22`        |
 | `service.ssh.clusterIP`                 | ClusterIP setting for ssh autosetup for deployment is None                                                                                                                                           | `None`      |
@@ -857,6 +901,7 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 | `service.ssh.hostPort`                  | HostPort for ssh service                                                                                                                                                                             | `nil`       |
 | `service.ssh.loadBalancerSourceRanges`  | Source range filter for ssh loadbalancer                                                                                                                                                             | `[]`        |
 | `service.ssh.annotations`               | SSH service annotations                                                                                                                                                                              | `{}`        |
+| `service.ssh.labels`                    | SSH service additional labels                                                                                                                                                                        | `{}`        |
 
 ### Ingress
 
@@ -1048,6 +1093,22 @@ See [CONTRIBUTORS GUIDE](CONTRIBUTING.md) for details.
 This section lists major and breaking changes of each Helm Chart version.
 Please read them carefully to upgrade successfully, especially the change of the **default database backend**!
 If you miss this, blindly upgrading may delete your Postgres instance and you may lose your data!
+
+<details>
+
+<summary>To 10.0.0</summary>
+
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable-next-line -->
+**Breaking changes**
+<!-- prettier-ignore-end -->
+
+- Update PostgreSQL sub-chart dependencies to appVersion 16.x
+- Update to sub-charts versioning approach: Users are encouraged to pin the version tag of the sub-chart dependencies to a major appVersion.
+  This avoids issues during chart upgrades and allows to incorporate new sub-chart versions as they are released.
+  Please see the new [README section describing the versioning approach for sub-chart versions](#dependency-versioning).
+
+</details>
 
 <details>
 
