@@ -87,6 +87,18 @@ spec:
           volumeMounts:
             - mountPath: /certs/server
               name: docker-certs
+      {{- with .Values.actions.statefulset.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.actions.statefulset.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.actions.statefulset.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
         - name: act-runner-config
           configMap:
