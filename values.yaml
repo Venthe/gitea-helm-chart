@@ -348,6 +348,9 @@ signing:
 ## @param actions.statefulset.annotations Act runner annotations
 ## @param actions.statefulset.labels Act runner labels
 ## @param actions.statefulset.resources Act runner resources
+## @param actions.statefulset.nodeSelector NodeSelector for the statefulset
+## @param actions.statefulset.tolerations Tolerations for the statefulset
+## @param actions.statefulset.affinity Affinity for the statefulset
 ## @param actions.statefulset.config Act runner custom configuration.
 ## @param actions.statefulset.runnerLabels Act runner labels.
 ## @param actions.statefulset.actRunnerImage.repository The Gitea act runner image
@@ -360,6 +363,9 @@ signing:
 ## @param actions.job.annotations Job's annotations
 ## @param actions.job.labels Job's labels
 ## @param actions.job.resources Job's resources
+## @param actions.job.nodeSelector NodeSelector for the job
+## @param actions.job.tolerations Tolerations for the job
+## @param actions.job.affinity Affinity for the job
 ## @param actions.job.tokenImage.repository The image that can create a token via `gitea actions generate-runner-token`
 ## @param actions.job.tokenImage.tag The token image tag that can create a token
 ## @param actions.job.tokenImage.pullPolicy The token image pullPolicy that can create a token
@@ -375,6 +381,9 @@ actions:
     annotations: {}
     labels: {}
     resources: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
 
     config: ""
     runnerLabels: ""
@@ -395,6 +404,9 @@ actions:
     annotations: {}
     labels: {}
     resources: {}
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
 
     tokenImage:
       repository: gitea/gitea
