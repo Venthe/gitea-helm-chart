@@ -1,4 +1,4 @@
-{{- if and (and .Values.actions.statefulset.enabled .Values.persistence.enabled) .Values.persistence.mount }}
+{{- if .Values.actions.deployment.enabled }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -7,9 +7,9 @@ metadata:
   labels:
     {{- include "gitea.labels" . | nindent 4 }}
 data:
-  {{- if .Values.actions.statefulset.config }}
+  {{- if .Values.actions.deployment.config }}
   config.yaml: |
-    {{- with .Values.actions.statefulset.config -}}
+    {{- with .Values.actions.deployment.config -}}
     {{ . | nindent 4}}
     {{- end -}}
   {{- else }}

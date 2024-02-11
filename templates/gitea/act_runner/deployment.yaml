@@ -1,16 +1,16 @@
-{{- if and (and .Values.actions.statefulset.enabled .Values.persistence.enabled) .Values.persistence.mount }}
+{{- if .Values.actions.deployment.enabled }}
 {{- $secretName := include "gitea.workername" (dict "global" . "worker" "actions-token") }}
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   labels:
     {{- include "gitea.labels.actRunner" . | nindent 4 }}
-    {{- with .Values.actions.statefulset.labels }}
+    {{- with .Values.actions.deployment.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
   annotations:
-    {{- with .Values.actions.statefulset.annotations }}
+    {{- with .Values.actions.deployment.annotations }}
     {{- toYaml . | nindent 4 }}
     {{- end }}
   name: {{ include "gitea.fullname" . }}-act-runner
@@ -22,7 +22,7 @@ spec:
     metadata:
       labels:
         {{- include "gitea.labels.actRunner" . | nindent 8 }}
-        {{- with .Values.actions.statefulset.labels }}
+        {{- with .Values.actions.deployment.labels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
@@ -38,8 +38,8 @@ spec:
               done
       containers:
         - name: act-runner
-          image: "{{ .Values.actions.statefulset.actRunnerImage.repository }}:{{ .Values.actions.statefulset.actRunnerImage.tag }}"
-          imagePullPolicy: {{ .Values.actions.statefulset.actRunnerImage.pullPolicy }}
+          image: "{{ .Values.actions.deployment.actRunnerImage.repository }}:{{ .Values.actions.deployment.actRunnerImage.tag }}"
+          imagePullPolicy: {{ .Values.actions.deployment.actRunnerImage.pullPolicy }}
           workingDir: /data
           env:
             - name: DOCKER_HOST
@@ -56,22 +56,20 @@ spec:
             - name: GITEA_INSTANCE_URL
               value: "http://{{ include "gitea.fullname" . }}-http:{{ .Values.service.http.port }}"
             - name: GITEA_RUNNER_LABELS
-              value: "{{ .Values.actions.statefulset.runnerLabels | default "ubuntu-latest" }}"
+              value: "{{ .Values.actions.deployment.runnerLabels | default "ubuntu-latest" }}"
             - name: CONFIG_FILE
               value: /actrunner/config.yaml
           resources:
-            {{- toYaml .Values.actions.statefulset.resources | nindent 12 }}
+            {{- toYaml .Values.actions.deployment.resources | nindent 12 }}
           volumeMounts:
             - mountPath: /actrunner/config.yaml
               name: act-runner-config
               subPath: config.yaml
             - mountPath: /certs/server
               name: docker-certs
-            - mountPath: /data
-              name: data-act-runner
         - name: dind
-          image: "{{ .Values.actions.statefulset.dindImage.repository }}:{{ .Values.actions.statefulset.dindImage.tag }}"
-          imagePullPolicy: {{ .Values.actions.statefulset.dindImage.pullPolicy }}
+          image: "{{ .Values.actions.deployment.dindImage.repository }}:{{ .Values.actions.deployment.dindImage.tag }}"
+          imagePullPolicy: {{ .Values.actions.deployment.dindImage.pullPolicy }}
           env:
             - name: DOCKER_HOST
               value: tcp://127.0.0.1:2376
@@ -83,19 +81,19 @@ spec:
             # allowPrivilegeEscalation: true
             privileged: true
           resources:
-            {{- toYaml .Values.actions.statefulset.resources | nindent 12 }}
+            {{- toYaml .Values.actions.deployment.resources | nindent 12 }}
           volumeMounts:
             - mountPath: /certs/server
               name: docker-certs
-      {{- with .Values.actions.statefulset.nodeSelector }}
+      {{- with .Values.actions.deployment.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.actions.statefulset.affinity }}
+      {{- with .Values.actions.deployment.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.actions.statefulset.tolerations }}
+      {{- with .Values.actions.deployment.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -105,12 +103,4 @@ spec:
             name: {{ include "gitea.fullname" . }}-act-runner-config
         - name: docker-certs
           emptyDir: {}
-  volumeClaimTemplates:
-    - metadata:
-        name: data-act-runner
-      spec:
-        accessModes: [ "ReadWriteOnce" ]
-        resources:
-          requests:
-            storage: 1Mi
 {{- end }}

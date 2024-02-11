@@ -5,7 +5,7 @@ release:
 templates:
   - templates/gitea/act_runner/rolebinding-job.yaml
 tests:
-  - it: renders a deployment
+  - it: renders a RoleBinding
     template: templates/gitea/act_runner/rolebinding-job.yaml
     set:
       actions:
