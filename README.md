@@ -982,38 +982,38 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 
 ### GiteaActions
 
-| Name                                            | Description                                                                 | Value              |
-| ----------------------------------------------- | --------------------------------------------------------------------------- | ------------------ |
-| `actions.statefulset.enabled`                   | Create an act runner StatefulSet.                                           | `false`            |
-| `actions.statefulset.annotations`               | Act runner annotations                                                      | `{}`               |
-| `actions.statefulset.labels`                    | Act runner labels                                                           | `{}`               |
-| `actions.statefulset.resources`                 | Act runner resources                                                        | `{}`               |
-| `actions.statefulset.nodeSelector`              | NodeSelector for the statefulset                                            | `{}`               |
-| `actions.statefulset.tolerations`               | Tolerations for the statefulset                                             | `[]`               |
-| `actions.statefulset.affinity`                  | Affinity for the statefulset                                                | `{}`               |
-| `actions.statefulset.config`                    | Act runner custom configuration.                                            | `""`               |
-| `actions.statefulset.runnerLabels`              | Act runner labels.                                                          | `""`               |
-| `actions.statefulset.actRunnerImage.repository` | The Gitea act runner image                                                  | `gitea/act_runner` |
-| `actions.statefulset.actRunnerImage.tag`        | The Gitea act runner tag                                                    | `0.2.6`            |
-| `actions.statefulset.actRunnerImage.pullPolicy` | The Gitea act runner pullPolicy                                             | `IfNotPresent`     |
-| `actions.statefulset.dindImage.repository`      | The Docker-in-Docker image                                                  | `docker`           |
-| `actions.statefulset.dindImage.tag`             | The Docker-in-Docker image tag                                              | `24.0.7-dind`      |
-| `actions.statefulset.dindImage.pullPolicy`      | The Docker-in-Docker pullPolicy                                             | `IfNotPresent`     |
-| `actions.job.enabled`                           | Create a job that will create and save the token in a Kubernetes Secret     | `false`            |
-| `actions.job.annotations`                       | Job's annotations                                                           | `{}`               |
-| `actions.job.labels`                            | Job's labels                                                                | `{}`               |
-| `actions.job.resources`                         | Job's resources                                                             | `{}`               |
-| `actions.job.nodeSelector`                      | NodeSelector for the job                                                    | `{}`               |
-| `actions.job.tolerations`                       | Tolerations for the job                                                     | `[]`               |
-| `actions.job.affinity`                          | Affinity for the job                                                        | `{}`               |
-| `actions.job.tokenImage.repository`             | The image that can create a token via `gitea actions generate-runner-token` | `gitea/gitea`      |
-| `actions.job.tokenImage.tag`                    | The token image tag that can create a token                                 | `""`               |
-| `actions.job.tokenImage.pullPolicy`             | The token image pullPolicy that can create a token                          | `IfNotPresent`     |
-| `actions.job.publishImage.repository`           | The image that can create the secret via kubectl                            | `bitnami/kubectl`  |
-| `actions.job.publishImage.tag`                  | The publish image tag that can create the secret                            | `1.29.0`           |
-| `actions.job.publishImage.pullPolicy`           | The publish image pullPolicy that can create the secret                     | `IfNotPresent`     |
-| `actions.existingSecret`                        | Secret that contains the token                                              | `""`               |
-| `actions.existingSecretKey`                     | Secret key                                                                  | `""`               |
+| Name                                           | Description                                                                 | Value              |
+| ---------------------------------------------- | --------------------------------------------------------------------------- | ------------------ |
+| `actions.deployment.enabled`                   | Create an act runner Deployment                                             | `false`            |
+| `actions.deployment.annotations`               | Act runner annotations                                                      | `{}`               |
+| `actions.deployment.labels`                    | Act runner labels                                                           | `{}`               |
+| `actions.deployment.resources`                 | Act runner resources                                                        | `{}`               |
+| `actions.deployment.nodeSelector`              | NodeSelector for the deployment                                             | `{}`               |
+| `actions.deployment.tolerations`               | Tolerations for the deployment                                              | `[]`               |
+| `actions.deployment.affinity`                  | Affinity for the deployment                                                 | `{}`               |
+| `actions.deployment.config`                    | Act runner custom configuration                                             | `""`               |
+| `actions.deployment.runnerLabels`              | Act runner labels.                                                          | `""`               |
+| `actions.deployment.actRunnerImage.repository` | The Gitea act runner image                                                  | `gitea/act_runner` |
+| `actions.deployment.actRunnerImage.tag`        | The Gitea act runner tag                                                    | `0.2.6`            |
+| `actions.deployment.actRunnerImage.pullPolicy` | The Gitea act runner pullPolicy                                             | `IfNotPresent`     |
+| `actions.deployment.dindImage.repository`      | The Docker-in-Docker image                                                  | `docker`           |
+| `actions.deployment.dindImage.tag`             | The Docker-in-Docker image tag                                              | `24.0.7-dind`      |
+| `actions.deployment.dindImage.pullPolicy`      | The Docker-in-Docker pullPolicy                                             | `IfNotPresent`     |
+| `actions.job.enabled`                          | Create a job that will create and save the token in a Kubernetes Secret     | `false`            |
+| `actions.job.annotations`                      | Job's annotations                                                           | `{}`               |
+| `actions.job.labels`                           | Job's labels                                                                | `{}`               |
+| `actions.job.resources`                        | Job's resources                                                             | `{}`               |
+| `actions.job.nodeSelector`                     | NodeSelector for the job                                                    | `{}`               |
+| `actions.job.tolerations`                      | Tolerations for the job                                                     | `[]`               |
+| `actions.job.affinity`                         | Affinity for the job                                                        | `{}`               |
+| `actions.job.tokenImage.repository`            | The image that can create a token via `gitea actions generate-runner-token` | `gitea/gitea`      |
+| `actions.job.tokenImage.tag`                   | The token image tag that can create a token                                 | `""`               |
+| `actions.job.tokenImage.pullPolicy`            | The token image pullPolicy that can create a token                          | `IfNotPresent`     |
+| `actions.job.publishImage.repository`          | The image that can create the secret via kubectl                            | `bitnami/kubectl`  |
+| `actions.job.publishImage.tag`                 | The publish image tag that can create the secret                            | `1.29.0`           |
+| `actions.job.publishImage.pullPolicy`          | The publish image pullPolicy that can create the secret                     | `IfNotPresent`     |
+| `actions.existingSecret`                       | Secret that contains the token                                              | `""`               |
+| `actions.existingSecretKey`                    | Secret key                                                                  | `""`               |
 
 ### Gitea
 
