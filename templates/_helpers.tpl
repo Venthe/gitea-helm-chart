@@ -3,26 +3,6 @@
 Expand the name of the chart.
 */}}
 
-{{- /* multiple replicas assertions */ -}}
-{{- if gt .Values.replicaCount 1.0 -}}
-  {{- fail "When using multiple replicas, a RWX file system is required" -}}
-  {{- if eq (get (.Values.persistence.accessModes 0) "ReadWriteOnce") -}}
-    {{- fail "When using multiple replicas, a RWX file system is required" -}}
-  {{- end }}
-  
-  {{- if eq (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE") "bleve" -}}
-    {{- fail "When using multiple replicas, the repo indexer must be set to 'meilisearch' or 'elasticsearch'" -}}
-  {{- end }}
-  
-  {{- if and (eq .Values.gitea.config.indexer.REPO_INDEXER_TYPE "bleve") (eq .Values.gitea.config.indexer.REPO_INDEXER_ENABLED "true") -}}
-    {{- fail "When using multiple replicas, the repo indexer must be set to 'meilisearch' or 'elasticsearch'" -}}
-  {{- end }}
-  
-  {{- if eq .Values.gitea.config.indexer.ISSUE_INDEXER_TYPE "bleve" -}}
-    {{- (printf "DEBUG: When using multiple replicas, the repo indexer must be set to 'meilisearch' or 'elasticsearch'") | fail -}}
-  {{- end }}
-{{- end }}
-
 {{- define "gitea.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
