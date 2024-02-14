@@ -1,20 +1,20 @@
-suite: actions template | deployment
+suite: actions template | statefulset
 release:
   name: gitea-unittests
   namespace: testing
 templates:
-  - templates/gitea/act_runner/deployment.yaml
+  - templates/gitea/act_runner/statefulset.yaml
 tests:
-  - it: renders a Deployment
-    template: templates/gitea/act_runner/deployment.yaml
+  - it: renders a deployment
+    template: templates/gitea/act_runner/statefulset.yaml
     set:
       actions:
-        deployment:
+        statefulset:
           enabled: true
     asserts:
       - hasDocuments:
           count: 1
       - containsDocument:
-          kind: Deployment
+          kind: StatefulSet
           apiVersion: apps/v1
           name: gitea-unittests-act-runner

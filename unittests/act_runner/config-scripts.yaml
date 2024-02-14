@@ -5,7 +5,7 @@ release:
 templates:
   - templates/gitea/act_runner/config-scripts.yaml
 tests:
-  - it: renders a ConfigMap
+  - it: renders a deployment
     template: templates/gitea/act_runner/config-scripts.yaml
     set:
       actions:
