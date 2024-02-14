@@ -5,7 +5,7 @@ release:
 templates:
   - templates/gitea/act_runner/job.yaml
 tests:
-  - it: renders a Job
+  - it: renders a deployment
     template: templates/gitea/act_runner/job.yaml
     set:
       actions:

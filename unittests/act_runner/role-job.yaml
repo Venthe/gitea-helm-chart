@@ -5,7 +5,7 @@ release:
 templates:
   - templates/gitea/act_runner/role-job.yaml
 tests:
-  - it: renders a Role
+  - it: renders a role
     template: templates/gitea/act_runner/role-job.yaml
     set:
       actions:
