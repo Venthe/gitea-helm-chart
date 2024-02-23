@@ -1,4 +1,4 @@
-{{- if and (and .Values.actions.statefulset.enabled .Values.persistence.enabled) .Values.persistence.mount }}
+{{- if .Values.actions.enabled }}
 ---
 apiVersion: v1
 kind: ConfigMap

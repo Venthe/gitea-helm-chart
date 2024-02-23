@@ -1,4 +1,4 @@
-{{- if and (and .Values.actions.statefulset.enabled .Values.persistence.enabled) .Values.persistence.mount }}
+{{- if .Values.actions.enabled }}
 {{- $secretName := include "gitea.workername" (dict "global" . "worker" "actions-token") }}
 ---
 apiVersion: apps/v1
@@ -38,8 +38,8 @@ spec:
               done
       containers:
         - name: act-runner
-          image: "{{ .Values.actions.statefulset.actRunnerImage.repository }}:{{ .Values.actions.statefulset.actRunnerImage.tag }}"
-          imagePullPolicy: {{ .Values.actions.statefulset.actRunnerImage.pullPolicy }}
+          image: "{{ .Values.actions.statefulset.actRunner.repository }}:{{ .Values.actions.statefulset.actRunner.tag }}"
+          imagePullPolicy: {{ .Values.actions.statefulset.actRunner.pullPolicy }}
           workingDir: /data
           env:
             - name: DOCKER_HOST
@@ -52,7 +52,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: "{{ .Values.actions.existingSecret | default $secretName }}"
-                  key: "{{ .Values.actions.existingSecret | default "token" }}"
+                  key: "{{ .Values.actions.existingSecretKey | default "token" }}"
             - name: GITEA_INSTANCE_URL
               value: "http://{{ include "gitea.fullname" . }}-http:{{ .Values.service.http.port }}"
             - name: GITEA_RUNNER_LABELS
@@ -70,8 +70,8 @@ spec:
             - mountPath: /data
               name: data-act-runner
         - name: dind
-          image: "{{ .Values.actions.statefulset.dindImage.repository }}:{{ .Values.actions.statefulset.dindImage.tag }}"
-          imagePullPolicy: {{ .Values.actions.statefulset.dindImage.pullPolicy }}
+          image: "{{ .Values.actions.statefulset.dind.repository }}:{{ .Values.actions.statefulset.dind.tag }}"
+          imagePullPolicy: {{ .Values.actions.statefulset.dind.pullPolicy }}
           env:
             - name: DOCKER_HOST
               value: tcp://127.0.0.1:2376

@@ -332,11 +332,11 @@ signing:
   existingSecret: ""
 
 # Configure Gitea Actions
-# - must enable persistence
+# - must enable persistence if the job is enabled
 # - must define deployment.env.GITEA__ACTIONS__ENABLED and GITEA__SERVER__LOCAL_ROOT_URL
-## @section GiteaActions
+## @section Gitea Actions
 #
-## @param actions.statefulset.enabled Create an act runner StatefulSet.
+## @param actions.enabled Create an act runner StatefulSet.
 ## @param actions.statefulset.annotations Act runner annotations
 ## @param actions.statefulset.labels Act runner labels
 ## @param actions.statefulset.resources Act runner resources
@@ -345,12 +345,12 @@ signing:
 ## @param actions.statefulset.affinity Affinity for the statefulset
 ## @param actions.statefulset.config Act runner custom configuration.
 ## @param actions.statefulset.runnerLabels Act runner labels.
-## @param actions.statefulset.actRunnerImage.repository The Gitea act runner image
-## @param actions.statefulset.actRunnerImage.tag The Gitea act runner tag
-## @param actions.statefulset.actRunnerImage.pullPolicy The Gitea act runner pullPolicy
-## @param actions.statefulset.dindImage.repository The Docker-in-Docker image
-## @param actions.statefulset.dindImage.tag The Docker-in-Docker image tag
-## @param actions.statefulset.dindImage.pullPolicy The Docker-in-Docker pullPolicy
+## @param actions.statefulset.actRunner.repository The Gitea act runner image
+## @param actions.statefulset.actRunner.tag The Gitea act runner tag
+## @param actions.statefulset.actRunner.pullPolicy The Gitea act runner pullPolicy
+## @param actions.statefulset.dind.repository The Docker-in-Docker image
+## @param actions.statefulset.dind.tag The Docker-in-Docker image tag
+## @param actions.statefulset.dind.pullPolicy The Docker-in-Docker pullPolicy
 ## @param actions.job.enabled Create a job that will create and save the token in a Kubernetes Secret
 ## @param actions.job.annotations Job's annotations
 ## @param actions.job.labels Job's labels
@@ -358,18 +358,17 @@ signing:
 ## @param actions.job.nodeSelector NodeSelector for the job
 ## @param actions.job.tolerations Tolerations for the job
 ## @param actions.job.affinity Affinity for the job
-## @param actions.job.tokenImage.repository The image that can create a token via `gitea actions generate-runner-token`
-## @param actions.job.tokenImage.tag The token image tag that can create a token
-## @param actions.job.tokenImage.pullPolicy The token image pullPolicy that can create a token
-## @param actions.job.publishImage.repository The image that can create the secret via kubectl
-## @param actions.job.publishImage.tag The publish image tag that can create the secret
-## @param actions.job.publishImage.pullPolicy The publish image pullPolicy that can create the secret
+## @param actions.job.token.repository The image that can create a token via `gitea actions generate-runner-token`
+## @param actions.job.token.tag The token image tag that can create a token
+## @param actions.job.token.pullPolicy The token image pullPolicy that can create a token
+## @param actions.job.publish.repository The image that can create the secret via kubectl
+## @param actions.job.publish.tag The publish image tag that can create the secret
+## @param actions.job.publish.pullPolicy The publish image pullPolicy that can create the secret
 ## @param actions.existingSecret Secret that contains the token
 ## @param actions.existingSecretKey Secret key
 actions:
+  enabled: false
   statefulset:
-    enabled: false
-
     annotations: {}
     labels: {}
     resources: {}
@@ -380,14 +379,14 @@ actions:
     config: ""
     runnerLabels: ""
 
-    actRunnerImage:
+    actRunner:
       repository: gitea/act_runner
       tag: 0.2.6
       pullPolicy: IfNotPresent
 
-    dindImage:
+    dind:
       repository: docker
-      tag: 24.0.7-dind
+      tag: 25.0.2-dind
       pullPolicy: IfNotPresent
 
   job:
@@ -400,12 +399,12 @@ actions:
     tolerations: []
     affinity: {}
 
-    tokenImage:
+    token:
       repository: gitea/gitea
       tag: ""
       pullPolicy: IfNotPresent
 
-    publishImage:
+    publish:
       repository: bitnami/kubectl
       tag: 1.29.0
       pullPolicy: IfNotPresent

@@ -42,8 +42,8 @@ spec:
               done
       containers:
         - name: actions-token-create
-          image: "{{ .Values.actions.job.tokenImage.repository }}:{{ .Values.actions.job.tokenImage.tag | default (printf "%s-rootless" .Chart.AppVersion) }}"
-          imagePullPolicy: {{ .Values.actions.job.tokenImage.pullPolicy }}
+          image: "{{ .Values.actions.job.token.repository }}:{{ .Values.actions.job.token.tag | default (printf "%s-rootless" .Chart.AppVersion) }}"
+          imagePullPolicy: {{ .Values.actions.job.token.pullPolicy }}
           env:
             - name: GITEA_APP_INI
               value: /data/gitea/conf/app.ini
@@ -63,8 +63,8 @@ spec:
               subPath: {{ .Values.persistence.subPath }}
               {{- end }}
         - name: actions-token-upload
-          image: "{{ .Values.actions.job.publishImage.repository }}:{{ .Values.actions.job.publishImage.tag }}"
-          imagePullPolicy: {{ .Values.actions.job.publishImage.pullPolicy }}
+          image: "{{ .Values.actions.job.publish.repository }}:{{ .Values.actions.job.publish.tag }}"
+          imagePullPolicy: {{ .Values.actions.job.publish.pullPolicy }}
           env:
             - name: SECRET_NAME
               value: {{ $secretName }}
