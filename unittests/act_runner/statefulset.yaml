@@ -5,12 +5,11 @@ release:
 templates:
   - templates/gitea/act_runner/statefulset.yaml
 tests:
-  - it: renders a deployment
+  - it: renders a StatefulSet
     template: templates/gitea/act_runner/statefulset.yaml
     set:
       actions:
-        statefulset:
-          enabled: true
+        enabled: true
     asserts:
       - hasDocuments:
           count: 1

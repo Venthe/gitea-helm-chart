@@ -9,8 +9,7 @@ tests:
     template: templates/gitea/act_runner/config-act-runner.yaml
     set:
       actions:
-        statefulset:
-          enabled: true
+        enabled: true
     asserts:
       - hasDocuments:
           count: 1
