@@ -57,7 +57,7 @@ jobs:
           helm registry logout registry-1.docker.io
 
       - name: aws credential configure
-        uses: https://github.com/aws-actions/configure-aws-credentials@v2
+        uses: https://github.com/aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
