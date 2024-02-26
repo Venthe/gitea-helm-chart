@@ -39,4 +39,4 @@ tests:
         matchRegex:
           path: spec.template.spec.containers[0].image
           # IN CASE OF AN INTENTIONAL MAJOR BUMP, ADJUST THIS TEST
-          pattern: ^registry-1.docker.io/bitnami/redis-cluster:7.+$
+          pattern: ^docker.io/bitnami/redis-cluster:7.+$
