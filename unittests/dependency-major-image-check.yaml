@@ -15,7 +15,7 @@ tests:
         matchRegex:
           path: spec.template.spec.containers[0].image
           # IN CASE OF AN INTENTIONAL MAJOR BUMP, ADJUST THIS TEST
-          pattern: ^docker.io/bitnami/postgresql-repmgr:16.+$
+          pattern: bitnami/postgresql-repmgr:16.+$
   - it: "[postgresql] ensures we detect major image version upgrades"
     template: charts/postgresql/templates/primary/statefulset.yaml
     set:
@@ -28,7 +28,7 @@ tests:
         matchRegex:
           path: spec.template.spec.containers[0].image
           # IN CASE OF AN INTENTIONAL MAJOR BUMP, ADJUST THIS TEST
-          pattern: ^registry-1.docker.io/bitnami/postgresql:16.+$
+          pattern: bitnami/postgresql:16.+$
   - it: "[redis-cluster] ensures we detect major image version upgrades"
     template: charts/redis-cluster/templates/redis-statefulset.yaml
     set:
@@ -39,4 +39,4 @@ tests:
         matchRegex:
           path: spec.template.spec.containers[0].image
           # IN CASE OF AN INTENTIONAL MAJOR BUMP, ADJUST THIS TEST
-          pattern: ^docker.io/bitnami/redis-cluster:7.+$
+          pattern: bitnami/redis-cluster:7.+$
