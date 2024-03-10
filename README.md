@@ -50,7 +50,7 @@
   - [ReadinessProbe](#readinessprobe)
   - [StartupProbe](#startupprobe)
   - [redis-cluster](#redis-cluster)
-  - [PostgreSQL-ha](#postgresql-ha)
+  - [PostgreSQL HA](#postgresql-ha)
   - [PostgreSQL](#postgresql)
   - [Advanced](#advanced)
 - [Contributing](#contributing)
@@ -979,7 +979,7 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 | ------------------------ | ----------------------------------------------------------------- | ------------------ |
 | `signing.enabled`        | Enable commit/action signing                                      | `false`            |
 | `signing.gpgHome`        | GPG home directory                                                | `/data/git/.gnupg` |
-| `signing.privateKey`     | Inline private gpg key for signed Gitea actions                   | `""`               |
+| `signing.privateKey`     | Inline private gpg key for signed internal Git activity           | `""`               |
 | `signing.existingSecret` | Use an existing secret to store the value of `signing.privateKey` | `""`               |
 
 ### Gitea
@@ -1046,11 +1046,11 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 | `redis-cluster.cluster.nodes`    | Number of redis cluster master nodes         | `3`     |
 | `redis-cluster.cluster.replicas` | Number of redis cluster master node replicas | `0`     |
 
-### PostgreSQL-ha
+### PostgreSQL HA
 
 | Name                                        | Description                                                      | Value       |
 | ------------------------------------------- | ---------------------------------------------------------------- | ----------- |
-| `postgresql-ha.enabled`                     | Enable PostgreSQL-ha                                             | `true`      |
+| `postgresql-ha.enabled`                     | Enable PostgreSQL HA                                             | `true`      |
 | `postgresql-ha.postgresql.password`         | Password for the `gitea` user (overrides `auth.password`)        | `changeme4` |
 | `postgresql-ha.global.postgresql.database`  | Name for a custom database to create (overrides `auth.database`) | `gitea`     |
 | `postgresql-ha.global.postgresql.username`  | Name for a custom user to create (overrides `auth.username`)     | `gitea`     |
@@ -1059,7 +1059,7 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 | `postgresql-ha.postgresql.postgresPassword` | postgres Password                                                | `changeme1` |
 | `postgresql-ha.pgpool.adminPassword`        | pgpool adminPassword                                             | `changeme3` |
 | `postgresql-ha.service.ports.postgresql`    | PostgreSQL service port (overrides `service.ports.postgresql`)   | `5432`      |
-| `postgresql-ha.primary.persistence.size`    | PVC Storage Request for PostgreSQL-ha volume                     | `10Gi`      |
+| `postgresql-ha.primary.persistence.size`    | PVC Storage Request for PostgreSQL HA volume                     | `10Gi`      |
 
 ### PostgreSQL
 
