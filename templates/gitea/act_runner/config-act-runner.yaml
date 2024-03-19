@@ -7,16 +7,8 @@ metadata:
   labels:
     {{- include "gitea.labels" . | nindent 4 }}
 data:
-  {{- if .Values.actions.statefulset.config }}
   config.yaml: |
-    {{- with .Values.actions.statefulset.config -}}
+    {{- with .Values.actions.statefulset.actRunner.config -}}
     {{ . | nindent 4}}
     {{- end -}}
-  {{- else }}
-  config.yaml: |
-    log:
-      level: debug
-    cache:
-      enabled: false
-  {{- end }}
 {{- end }}
