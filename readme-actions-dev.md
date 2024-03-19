@@ -1,19 +1,8 @@
 # Gitea Actions
 
-In order to use the Gitea Actions act-runner you must:
-
-- set the following environment variables to `deployment.env` (modify LOCAL_ROOT_URL if you used a different service name):
-
-```yaml
-deployment:
-  env:
-  - name: GITEA__ACTIONS__ENABLED
-    value: 'true'
-  - name: GITEA__SERVER__LOCAL_ROOT_URL
-    value: http://gitea-http:3000
-```
-
+In order to use the Gitea Actions act-runner you must either:
 - enable persistence (used for automatic deployment to be able to store the token in a place accessible for the Job)
+- create a secret containing the act runner token and reference it as a `existingSecret`
 
 In order to use Gitea Actions, you must log on the server that's running Gitea and run the command:
     `gitea actions generate-runner-token`
@@ -37,7 +26,7 @@ the command `gitea actions generate-runner-token`. After generating the token, y
 
 ```yaml
 actions:
-  job:
+  provisioning:
     enabled: false
   existingSecret: "secret-name"
   existingSecretKey: "secret-key"
