@@ -68,6 +68,12 @@ spec:
               value: /data
             - name: GITEA_TEMP
               value: /tmp/gitea
+            {{- if .Values.actions.enabled }}
+            - name: GITEA__ACTIONS__ENABLED
+              value: {{ .Values.gitea.config.actions.GITEA__ACTIONS__ENABLED | quote }}
+            - name: GITEA__SERVER__LOCAL_ROOT_URL
+              value: {{ .Values.gitea.config.actions.GITEA__SERVER__LOCAL_ROOT_URL | quote }}
+            {{- end }}
             {{- if .Values.deployment.env }}
             {{- toYaml .Values.deployment.env | nindent 12 }}
             {{- end }}
@@ -103,6 +109,12 @@ spec:
               value: /data
             - name: GITEA_TEMP
               value: /tmp/gitea
+            {{- if .Values.actions.enabled }}
+            - name: GITEA__ACTIONS__ENABLED
+              value: {{ .Values.gitea.config.actions.GITEA__ACTIONS__ENABLED | quote }}
+            - name: GITEA__SERVER__LOCAL_ROOT_URL
+              value: {{ .Values.gitea.config.actions.GITEA__SERVER__LOCAL_ROOT_URL | quote }}
+            {{- end }}
             {{- if .Values.deployment.env }}
             {{- toYaml .Values.deployment.env | nindent 12 }}
             {{- end }}
@@ -240,6 +252,12 @@ spec:
             - name: GITEA_ADMIN_PASSWORD
               value: {{ .Values.gitea.admin.password | quote }}
             {{- end }}
+            {{- if .Values.actions.enabled }}
+            - name: GITEA__ACTIONS__ENABLED
+              value: {{ .Values.gitea.config.actions.GITEA__ACTIONS__ENABLED | quote }}
+            - name: GITEA__SERVER__LOCAL_ROOT_URL
+              value: {{ .Values.gitea.config.actions.GITEA__SERVER__LOCAL_ROOT_URL | quote }}
+            {{- end }}
             {{- if .Values.deployment.env }}
             {{- toYaml .Values.deployment.env | nindent 12 }}
             {{- end }}
@@ -288,6 +306,12 @@ spec:
             {{- if .Values.signing.enabled }}
             - name: GNUPGHOME
               value: {{ .Values.signing.gpgHome }}
+            {{- end }}
+            {{- if .Values.actions.enabled }}
+            - name: GITEA__ACTIONS__ENABLED
+              value: {{ .Values.gitea.config.actions.GITEA__ACTIONS__ENABLED | quote }}
+            - name: GITEA__SERVER__LOCAL_ROOT_URL
+              value: {{ .Values.gitea.config.actions.GITEA__SERVER__LOCAL_ROOT_URL | quote }}
             {{- end }}
             {{- if .Values.deployment.env }}
             {{- toYaml .Values.deployment.env | nindent 12 }}

@@ -333,7 +333,6 @@ signing:
 
 # Configure Gitea Actions
 # - must enable persistence if the job is enabled
-# - must define deployment.env.GITEA__ACTIONS__ENABLED and GITEA__SERVER__LOCAL_ROOT_URL
 ## @section Gitea Actions
 #
 ## @param actions.enabled Create an act runner StatefulSet.
@@ -343,27 +342,26 @@ signing:
 ## @param actions.statefulset.nodeSelector NodeSelector for the statefulset
 ## @param actions.statefulset.tolerations Tolerations for the statefulset
 ## @param actions.statefulset.affinity Affinity for the statefulset
-## @param actions.statefulset.config Act runner custom configuration.
-## @param actions.statefulset.runnerLabels Act runner labels.
 ## @param actions.statefulset.actRunner.repository The Gitea act runner image
 ## @param actions.statefulset.actRunner.tag The Gitea act runner tag
 ## @param actions.statefulset.actRunner.pullPolicy The Gitea act runner pullPolicy
+## @param actions.statefulset.actRunner.config [default: Too complex. See values.yaml] Act runner custom configuration. See [Act Runner documentation](https://docs.gitea.com/usage/actions/act-runner#configuration) for details.
 ## @param actions.statefulset.dind.repository The Docker-in-Docker image
 ## @param actions.statefulset.dind.tag The Docker-in-Docker image tag
 ## @param actions.statefulset.dind.pullPolicy The Docker-in-Docker pullPolicy
-## @param actions.job.enabled Create a job that will create and save the token in a Kubernetes Secret
-## @param actions.job.annotations Job's annotations
-## @param actions.job.labels Job's labels
-## @param actions.job.resources Job's resources
-## @param actions.job.nodeSelector NodeSelector for the job
-## @param actions.job.tolerations Tolerations for the job
-## @param actions.job.affinity Affinity for the job
-## @param actions.job.token.repository The image that can create a token via `gitea actions generate-runner-token`
-## @param actions.job.token.tag The token image tag that can create a token
-## @param actions.job.token.pullPolicy The token image pullPolicy that can create a token
-## @param actions.job.publish.repository The image that can create the secret via kubectl
-## @param actions.job.publish.tag The publish image tag that can create the secret
-## @param actions.job.publish.pullPolicy The publish image pullPolicy that can create the secret
+## @param actions.provisioning.enabled Create a job that will create and save the token in a Kubernetes Secret
+## @param actions.provisioning.annotations Job's annotations
+## @param actions.provisioning.labels Job's labels
+## @param actions.provisioning.resources Job's resources
+## @param actions.provisioning.nodeSelector NodeSelector for the job
+## @param actions.provisioning.tolerations Tolerations for the job
+## @param actions.provisioning.affinity Affinity for the job
+## @param actions.provisioning.token.repository The image that can create a token via `gitea actions generate-runner-token`
+## @param actions.provisioning.token.tag The token image tag that can create a token
+## @param actions.provisioning.token.pullPolicy The token image pullPolicy that can create a token
+## @param actions.provisioning.publish.repository The image that can create the secret via kubectl
+## @param actions.provisioning.publish.tag The publish image tag that can create the secret
+## @param actions.provisioning.publish.pullPolicy The publish image pullPolicy that can create the secret
 ## @param actions.existingSecret Secret that contains the token
 ## @param actions.existingSecretKey Secret key
 actions:
@@ -376,20 +374,26 @@ actions:
     tolerations: []
     affinity: {}
 
-    config: ""
-    runnerLabels: ""
-
     actRunner:
       repository: gitea/act_runner
       tag: 0.2.6
       pullPolicy: IfNotPresent
+
+      config: |
+        log:
+          level: debug
+        cache:
+          enabled: false
+        runner:
+          labels:
+            - "ubuntu-latest"
 
     dind:
       repository: docker
       tag: 25.0.2-dind
       pullPolicy: IfNotPresent
 
-  job:
+  provisioning:
     enabled: false
 
     annotations: {}

@@ -9,7 +9,7 @@ tests:
     template: templates/gitea/act_runner/rolebinding-job.yaml
     set:
       actions:
-        job:
+        provisioning:
           enabled: true
       persistence:
         enabled: true

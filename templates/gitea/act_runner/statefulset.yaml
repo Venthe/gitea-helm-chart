@@ -55,8 +55,6 @@ spec:
                   key: "{{ .Values.actions.existingSecretKey | default "token" }}"
             - name: GITEA_INSTANCE_URL
               value: "http://{{ include "gitea.fullname" . }}-http:{{ .Values.service.http.port }}"
-            - name: GITEA_RUNNER_LABELS
-              value: "{{ .Values.actions.statefulset.runnerLabels | default "ubuntu-latest" }}"
             - name: CONFIG_FILE
               value: /actrunner/config.yaml
           resources:
@@ -80,7 +78,6 @@ spec:
             - name: DOCKER_CERT_PATH
               value: /certs/server
           securityContext:
-            # allowPrivilegeEscalation: true
             privileged: true
           resources:
             {{- toYaml .Values.actions.statefulset.resources | nindent 12 }}
