@@ -11,12 +11,12 @@ on:
 
 env:
   # renovate: datasource=github-releases depName=helm-unittest/helm-unittest
-  HELM_UNITTEST_VERSION: "v0.4.2"
+  HELM_UNITTEST_VERSION: "v0.4.4"
 
 jobs:
   check-and-test:
     runs-on: ubuntu-latest
-    container: alpine/helm:3.14.2
+    container: alpine/helm:3.14.3
     steps:
       - name: install tools
         run: |
