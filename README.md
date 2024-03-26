@@ -3,6 +3,9 @@
 - [Introduction](#introduction)
 - [Update and versioning policy](#update-and-versioning-policy)
 - [Dependencies](#dependencies)
+  - [HA Dependencies](#ha-dependencies)
+  - [Non-HA Dependencies](#non-ha-dependencies)
+  - [Dependency Versioning](#dependency-versioning)
 - [Installing](#installing)
 - [High Availability](#high-availability)
 - [Configuration](#configuration)
@@ -10,6 +13,8 @@
     - [Database defaults](#database-defaults)
     - [Server defaults](#server-defaults)
     - [Metrics defaults](#metrics-defaults)
+    - [Rootless Defaults](#rootless-defaults)
+    - [Session, Cache and Queue](#session-cache-and-queue)
   - [Single-Pod Configurations](#single-pod-configurations)
   - [Additional _app.ini_ settings](#additional-appini-settings)
     - [User defined environment variables in app.ini](#user-defined-environment-variables-in-appini)
@@ -45,7 +50,7 @@
   - [ReadinessProbe](#readinessprobe)
   - [StartupProbe](#startupprobe)
   - [redis-cluster](#redis-cluster)
-  - [PostgreSQL-ha](#postgresql-ha)
+  - [PostgreSQL HA](#postgresql-ha)
   - [PostgreSQL](#postgresql)
   - [Advanced](#advanced)
 - [Contributing](#contributing)
@@ -78,13 +83,42 @@ Yet most often no issues will be encountered and the chart maintainers aim to co
 
 ## Dependencies
 
-Gitea can be run with an external database and cache.
-This chart provides those dependencies, which can be enabled, or disabled via configuration.
+Gitea is most performant when run with an external database and cache.
+This chart provides those dependencies via sub-charts.
+Users can also configure their own external providers via the configuration.
 
-Dependencies:
+### HA Dependencies
 
-- PostgreSQL HA ([configuration](#postgresql))
-- Redis Cluster ([configuration](#cache))
+These dependencies are enabled by default:
+
+- PostgreSQL HA ([Bitnami PostgreSQL-HA](https://github.com/bitnami/charts/blob/main/bitnami/postgresql-ha/Chart.yaml))
+- Redis-Cluster ([Bitnami Redis-Cluster](https://github.com/bitnami/charts/blob/main/bitnami/redis-cluster/Chart.yaml))
+
+### Non-HA Dependencies
+
+Alternatively, the following non-HA replacements are available:
+
+- PostgreSQL ([Bitnami PostgreSQL](postgresql](https://github.com/bitnami/charts/blob/main/bitnami/postgresql/Chart.yaml)))
+
+### Dependency Versioning
+
+Updates of sub-charts will be incorporated into the Gitea chart as they are released.
+The reasoning behind this is that new users of the chart will start with the most recent sub-chart dependency versions.
+
+**Note** If you want to stay on an older appVersion of a sub-chart dependency (e.g. PostgreSQL), you need to override the image tag in your `values.yaml` file.
+In fact, we recommend to do so right from the start to be independent of major sub-chart dependency changes as they are released.
+There is no need to update to every new PostgreSQL major version - you can happily skip some and do larger updates when you are ready for them.
+
+We recommend to use a rolling tag like `:<majorVersion>-debian-<debian major version>` to incorporate minor and patch updates for the respective major version as they are released.
+Alternatively you can also use a versioning helper tool like [renovate](https://github.com/renovatebot/renovate).
+
+Please double-check the image repository and available tags in the sub-chart:
+
+- [PostgreSQL-HA](https://hub.docker.com/r/bitnami/postgresql-repmgr/tags)
+- [PostgreSQL](https://hub.docker.com/r/bitnami/postgresql/tags)
+- [Redis Cluster](https://hub.docker.com/r/bitnami/redis-cluster/tags)
+
+and look up the image tag which fits your needs on Dockerhub.
 
 ## Installing
 
@@ -94,14 +128,18 @@ helm repo update
 helm install gitea gitea-charts/gitea
 ```
 
+Alternatively, the chart can also be installed from Dockerhub (since v9.6.0)
+
+```sh
+helm install gitea oci://registry-1.docker.io/giteacharts/gitea
+```
+
 When upgrading, please refer to the [Upgrading](#upgrading) section at the bottom of this document for major and breaking changes.
 
 ## High Availability
 
-⚠️ **EXPERIMENTAL** ⚠️
-
-Since version 9.0.0 this chart has experimental support for running Gitea and it's dependencies in a HA setup.
-The setup is still experimental and care must be taken for production use as Gitea core is not yet officially HA-ready.
+Since version 9.0.0 this chart supports running Gitea and it's dependencies in HA mode.
+Care must be taken for production use as not all implementation details of Gitea core are officially HA-ready yet.
 
 Deploying a HA-ready Gitea instance requires some effort including using HA-ready dependencies.
 See the [HA Setup](docs/ha-setup.md) document for more details.
@@ -172,6 +210,36 @@ The Prometheus `/metrics` endpoint is disabled by default.
 ENABLED = false
 ```
 
+#### Rootless Defaults
+
+If `.Values.image.rootless: true`, then the following will occur. In case you use `.Values.image.fullOverride`, check that this works in your image:
+
+- `$HOME` becomes `/data/gitea/git`
+
+  [see deployment.yaml](./templates/gitea/deployment.yaml) template inside (init-)container "env" declarations
+
+- `START_SSH_SERVER: true` (Unless explicity overwritten by `gitea.config.server.START_SSH_SERVER`)
+
+  [see \_helpers.tpl](./templates/_helpers.tpl) in `gitea.inline_configuration.defaults.server` definition
+
+- `SSH_LISTEN_PORT: 2222` (Unless explicity overwritten by `gitea.config.server.SSH_LISTEN_PORT`)
+
+  [see \_helpers.tpl](./templates/_helpers.tpl) in `gitea.inline_configuration.defaults.server` definition
+
+- `SSH_LOG_LEVEL` environment variable is not injected into the container
+
+  [see deployment.yaml](./templates/gitea/deployment.yaml) template inside container "env" declarations
+
+#### Session, Cache and Queue
+
+The session, cache and queue settings are set to use the built-in Redis Cluster sub-chart dependency.
+If Redis Cluster is disabled, the chart will fall back to the Gitea defaults which use "memory" for `session` and `cache` and "level" for `queue`.
+
+While these will work and even not cause immediate issues after startup, **they are not recommended for production use**.
+Reasons being that a single pod will take on all the work for `session` and `cache` tasks in its available memory.
+It is likely that the pod will run out of memory or will face substantial memory spikes, depending on the workload.
+External tools such as `redis-cluster` or `memcached` handle these workloads much better.
+
 ### Single-Pod Configurations
 
 If HA is not needed/desired, the following configurations can be used to deploy a single-pod Gitea instance.
@@ -216,9 +284,9 @@ If HA is not needed/desired, the following configurations can be used to deploy 
    **Do not use this configuration for production use**.
 
    <details>
-  
+
    <summary>values.yml</summary>
-  
+
    ```yaml
    redis-cluster:
      enabled: false
@@ -226,10 +294,10 @@ If HA is not needed/desired, the following configurations can be used to deploy 
      enabled: false
    postgresql-ha:
      enabled: false
-  
+
    persistence:
      enabled: false
-  
+
    gitea:
      config:
        database:
@@ -681,7 +749,7 @@ extraVolumes:
 extraVolumeMounts:
   - name: gitea-themes
     readOnly: true
-    mountPath: "/data/gitea/public/css"
+    mountPath: "/data/gitea/public/assets/css"
 ```
 
 The secret can be created via `terraform`:
@@ -785,15 +853,16 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 
 ### Image
 
-| Name               | Description                                                                                                                             | Value         |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `image.registry`   | image registry, e.g. gcr.io,docker.io                                                                                                   | `""`          |
-| `image.repository` | Image to start for this pod                                                                                                             | `gitea/gitea` |
-| `image.tag`        | Visit: [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated). Defaults to `appVersion` within Chart.yaml. | `""`          |
-| `image.digest`     | Image digest. Allows to pin the given image tag. Useful for having control over mutable tags like `latest`                              | `""`          |
-| `image.pullPolicy` | Image pull policy                                                                                                                       | `Always`      |
-| `image.rootless`   | Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher                                               | `true`        |
-| `imagePullSecrets` | Secret to use for pulling the image                                                                                                     | `[]`          |
+| Name                 | Description                                                                                                                                                      | Value          |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `image.registry`     | image registry, e.g. gcr.io,docker.io                                                                                                                            | `""`           |
+| `image.repository`   | Image to start for this pod                                                                                                                                      | `gitea/gitea`  |
+| `image.tag`          | Visit: [Image tag](https://hub.docker.com/r/gitea/gitea/tags?page=1&ordering=last_updated). Defaults to `appVersion` within Chart.yaml.                          | `""`           |
+| `image.digest`       | Image digest. Allows to pin the given image tag. Useful for having control over mutable tags like `latest`                                                       | `""`           |
+| `image.pullPolicy`   | Image pull policy                                                                                                                                                | `IfNotPresent` |
+| `image.rootless`     | Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher                                                                        | `true`         |
+| `image.fullOverride` | Completely overrides the image registry, path/image, tag and digest. **Adjust `image.rootless` accordingly and review [Rootless defaults](#rootless-defaults).** | `""`           |
+| `imagePullSecrets`   | Secret to use for pulling the image                                                                                                                              | `[]`           |
 
 ### Security
 
@@ -819,6 +888,7 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 | `service.http.ipFamilies`               | HTTP service dual-stack familiy selection,for dual-stack parameters see official kubernetes [dual-stack concept documentation](https://kubernetes.io/docs/concepts/services-networking/dual-stack/). | `nil`       |
 | `service.http.loadBalancerSourceRanges` | Source range filter for http loadbalancer                                                                                                                                                            | `[]`        |
 | `service.http.annotations`              | HTTP service annotations                                                                                                                                                                             | `{}`        |
+| `service.http.labels`                   | HTTP service additional labels                                                                                                                                                                       | `{}`        |
 | `service.ssh.type`                      | Kubernetes service type for ssh traffic                                                                                                                                                              | `ClusterIP` |
 | `service.ssh.port`                      | Port number for ssh traffic                                                                                                                                                                          | `22`        |
 | `service.ssh.clusterIP`                 | ClusterIP setting for ssh autosetup for deployment is None                                                                                                                                           | `None`      |
@@ -831,6 +901,7 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 | `service.ssh.hostPort`                  | HostPort for ssh service                                                                                                                                                                             | `nil`       |
 | `service.ssh.loadBalancerSourceRanges`  | Source range filter for ssh loadbalancer                                                                                                                                                             | `[]`        |
 | `service.ssh.annotations`               | SSH service annotations                                                                                                                                                                              | `{}`        |
+| `service.ssh.labels`                    | SSH service additional labels                                                                                                                                                                        | `{}`        |
 
 ### Ingress
 
@@ -908,7 +979,7 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 | ------------------------ | ----------------------------------------------------------------- | ------------------ |
 | `signing.enabled`        | Enable commit/action signing                                      | `false`            |
 | `signing.gpgHome`        | GPG home directory                                                | `/data/git/.gnupg` |
-| `signing.privateKey`     | Inline private gpg key for signed Gitea actions                   | `""`               |
+| `signing.privateKey`     | Inline private gpg key for signed internal Git activity           | `""`               |
 | `signing.existingSecret` | Use an existing secret to store the value of `signing.privateKey` | `""`               |
 
 ### Gitea
@@ -968,16 +1039,18 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 
 ### redis-cluster
 
-| Name                        | Description                            | Value   |
-| --------------------------- | -------------------------------------- | ------- |
-| `redis-cluster.enabled`     | Enable redis                           | `true`  |
-| `redis-cluster.usePassword` | Whether to use password authentication | `false` |
+| Name                             | Description                                  | Value   |
+| -------------------------------- | -------------------------------------------- | ------- |
+| `redis-cluster.enabled`          | Enable redis                                 | `true`  |
+| `redis-cluster.usePassword`      | Whether to use password authentication       | `false` |
+| `redis-cluster.cluster.nodes`    | Number of redis cluster master nodes         | `3`     |
+| `redis-cluster.cluster.replicas` | Number of redis cluster master node replicas | `0`     |
 
-### PostgreSQL-ha
+### PostgreSQL HA
 
 | Name                                        | Description                                                      | Value       |
 | ------------------------------------------- | ---------------------------------------------------------------- | ----------- |
-| `postgresql-ha.enabled`                     | Enable PostgreSQL-ha                                             | `true`      |
+| `postgresql-ha.enabled`                     | Enable PostgreSQL HA                                             | `true`      |
 | `postgresql-ha.postgresql.password`         | Password for the `gitea` user (overrides `auth.password`)        | `changeme4` |
 | `postgresql-ha.global.postgresql.database`  | Name for a custom database to create (overrides `auth.database`) | `gitea`     |
 | `postgresql-ha.global.postgresql.username`  | Name for a custom user to create (overrides `auth.username`)     | `gitea`     |
@@ -986,7 +1059,7 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 | `postgresql-ha.postgresql.postgresPassword` | postgres Password                                                | `changeme1` |
 | `postgresql-ha.pgpool.adminPassword`        | pgpool adminPassword                                             | `changeme3` |
 | `postgresql-ha.service.ports.postgresql`    | PostgreSQL service port (overrides `service.ports.postgresql`)   | `5432`      |
-| `postgresql-ha.primary.persistence.size`    | PVC Storage Request for PostgreSQL-ha volume                     | `10Gi`      |
+| `postgresql-ha.primary.persistence.size`    | PVC Storage Request for PostgreSQL HA volume                     | `10Gi`      |
 
 ### PostgreSQL
 
@@ -1020,6 +1093,31 @@ See [CONTRIBUTORS GUIDE](CONTRIBUTING.md) for details.
 This section lists major and breaking changes of each Helm Chart version.
 Please read them carefully to upgrade successfully, especially the change of the **default database backend**!
 If you miss this, blindly upgrading may delete your Postgres instance and you may lose your data!
+
+<details>
+
+<summary>To 10.0.0</summary>
+
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable-next-line -->
+**Breaking changes**
+<!-- prettier-ignore-end -->
+
+- Update PostgreSQL sub-chart dependencies to appVersion 16.x
+- Update to sub-charts versioning approach: Users are encouraged to pin the version tag of the sub-chart dependencies to a major appVersion.
+  This avoids issues during chart upgrades and allows to incorporate new sub-chart versions as they are released.
+  Please see the new [README section describing the versioning approach for sub-chart versions](#dependency-versioning).
+
+</details>
+
+<details>
+
+<summary>To 9.6.0</summary>
+
+Chart 9.6.0 ships with Gitea 1.21.0.
+While there are no breaking changes in the chart, please check the changes of the [1.21 release blog post](https://blog.gitea.com/release-of-1.21.0/).
+
+</details>
 
 <details>
 
@@ -1083,14 +1181,18 @@ gitea:
       CONN_STR: redis+cluster://:gitea@gitea-redis-cluster-headless.<namespace>.svc.cluster.local:6379/0?pool_size=100&idle_timeout=180s&
 ```
 
+<!-- prettier-ignore-start -->
 <!-- markdownlint-disable-next-line -->
 **Switch to rootless image by default**
+<!-- prettier-ignore-end -->
 
 If you are facing errors like `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED` due to this automatic transition:
 Have a look at [this discussion](https://gitea.com/gitea/helm-chart/issues/487#issue-220660) and either set `image.rootless: false` or manually update your `~/.ssh/known_hosts` file(s).
 
+<!-- prettier-ignore-start -->
 <!-- markdownlint-disable-next-line -->
 **Transitioning from a RWO to RWX Persistent Volume**
+<!-- prettier-ignore-end -->
 
 If you want to switch to a RWX volume and go for HA, you need to
 
@@ -1098,8 +1200,10 @@ If you want to switch to a RWX volume and go for HA, you need to
 2. Let the chart create a new RWX PV (or do it statically yourself)
 3. Restore the backup to the same location in the new PV
 
+<!-- prettier-ignore-start -->
 <!-- markdownlint-disable-next-line -->
 **Transitioning from Postgres to Postgres HA**
+<!-- prettier-ignore-end -->
 
 If you are running with a non-HA PG DB from a previous chart release, you need to set
 
@@ -1108,8 +1212,10 @@ If you are running with a non-HA PG DB from a previous chart release, you need t
 
 This is needed to stay with your existing single-instance DB (as the HA-variant is the new default).
 
+<!-- prettier-ignore-start -->
 <!-- markdownlint-disable-next-line -->
 **Change of env-to-ini prefix**
+<!-- prettier-ignore-end -->
 
 Before this release, the env-to-ini prefix was `ENV_TO_INI__`.
 This allowed a clear distinction between user-provided and chart-provided env-to-ini variables.

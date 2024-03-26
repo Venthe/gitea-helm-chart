@@ -3,26 +3,6 @@
 Expand the name of the chart.
 */}}
 
-{{- /* multiple replicas assertions */ -}}
-{{- if gt .Values.replicaCount 1.0 -}}
-  {{- fail "When using multiple replicas, a RWX file system is required" -}}
-  {{- if eq (get (.Values.persistence.accessModes 0) "ReadWriteOnce") -}}
-    {{- fail "When using multiple replicas, a RWX file system is required" -}}
-  {{- end }}
-  
-  {{- if eq (get .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE") "bleve" -}}
-    {{- fail "When using multiple replicas, the repo indexer must be set to 'meilisearch' or 'elasticsearch'" -}}
-  {{- end }}
-  
-  {{- if and (eq .Values.gitea.config.indexer.REPO_INDEXER_TYPE "bleve") (eq .Values.gitea.config.indexer.REPO_INDEXER_ENABLED "true") -}}
-    {{- fail "When using multiple replicas, the repo indexer must be set to 'meilisearch' or 'elasticsearch'" -}}
-  {{- end }}
-  
-  {{- if eq .Values.gitea.config.indexer.ISSUE_INDEXER_TYPE "bleve" -}}
-    {{- (printf "DEBUG: When using multiple replicas, the repo indexer must be set to 'meilisearch' or 'elasticsearch'") | fail -}}
-  {{- end }}
-{{- end }}
-
 {{- define "gitea.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
@@ -56,6 +36,7 @@ Create chart name and version as used by the chart label.
 Create image name and tag used by the deployment.
 */}}
 {{- define "gitea.image" -}}
+{{- $fullOverride := .Values.image.fullOverride | default "" -}}
 {{- $registry := .Values.global.imageRegistry | default .Values.image.registry -}}
 {{- $repository := .Values.image.repository -}}
 {{- $separator := ":" -}}
@@ -65,7 +46,9 @@ Create image name and tag used by the deployment.
 {{- if .Values.image.digest }}
     {{- $digest = (printf "@%s" (.Values.image.digest | toString)) -}}
 {{- end -}}
-{{- if $registry }}
+{{- if $fullOverride }}
+    {{- printf "%s" $fullOverride -}}
+{{- else if $registry }}
     {{- printf "%s/%s%s%s%s%s" $registry $repository $separator $tag $rootless $digest -}}
 {{- else -}}
     {{- printf "%s%s%s%s%s" $repository $separator $tag $rootless $digest -}}
@@ -91,7 +74,7 @@ imagePullSecrets:
 Storage Class
 */}}
 {{- define "gitea.persistence.storageClass" -}}
-{{- $storageClass := .Values.global.storageClass | default .Values.persistence.storageClass }}
+{{- $storageClass := .Values.persistence.storageClass | default .Values.global.storageClass }}
 {{- if $storageClass }}
 storageClassName: {{ $storageClass | quote }}
 {{- end }}
@@ -154,7 +137,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{- define "gitea.default_domain" -}}
-{{- printf "%s-gitea.%s.svc.%s" (include "gitea.fullname" .) .Release.Namespace .Values.clusterDomain | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-http.%s.svc.%s" (include "gitea.fullname" .) .Release.Namespace .Values.clusterDomain -}}
 {{- end -}}
 
 {{- define "gitea.ldap_settings" -}}
@@ -304,12 +287,29 @@ https
   {{- if or ((index .Values "redis-cluster").enabled) ((index .Values "redis").enabled) -}}
     {{- $_ := set .Values.gitea.config.queue "TYPE" "redis" -}}
     {{- $_ := set .Values.gitea.config.queue "CONN_STR" (include "redis.dns" .) -}}
-  {{- end -}}
-  {{- if not (get .Values.gitea.config.session "PROVIDER") -}}
     {{- $_ := set .Values.gitea.config.session "PROVIDER" "redis" -}}
-  {{- end -}}
-  {{- if not (get .Values.gitea.config.session "PROVIDER_CONFIG") -}}
     {{- $_ := set .Values.gitea.config.session "PROVIDER_CONFIG" (include "redis.dns" .) -}}
+    {{- $_ := set .Values.gitea.config.cache "ADAPTER" "redis" -}}
+    {{- $_ := set .Values.gitea.config.cache "HOST" (include "redis.dns" .) -}}
+  {{- else -}}
+    {{- if not (get .Values.gitea.config.session "PROVIDER") -}}
+      {{- $_ := set .Values.gitea.config.session "PROVIDER" "memory" -}}
+    {{- end -}}
+    {{- if not (get .Values.gitea.config.session "PROVIDER_CONFIG") -}}
+      {{- $_ := set .Values.gitea.config.session "PROVIDER_CONFIG" "" -}}
+    {{- end -}}
+    {{- if not (get .Values.gitea.config.queue "TYPE") -}}
+      {{- $_ := set .Values.gitea.config.queue "TYPE" "level" -}}
+    {{- end -}}
+    {{- if not (get .Values.gitea.config.queue "CONN_STR") -}}
+      {{- $_ := set .Values.gitea.config.queue "CONN_STR" "" -}}
+    {{- end -}}
+    {{- if not (get .Values.gitea.config.cache "ADAPTER") -}}
+      {{- $_ := set .Values.gitea.config.cache "ADAPTER" "memory" -}}
+    {{- end -}}
+    {{- if not (get .Values.gitea.config.cache "HOST") -}}
+      {{- $_ := set .Values.gitea.config.cache "HOST" "" -}}
+    {{- end -}}
   {{- end -}}
   {{- if not .Values.gitea.config.indexer.ISSUE_INDEXER_TYPE -}}
      {{- $_ := set .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE" "db" -}}

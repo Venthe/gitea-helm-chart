@@ -43,14 +43,16 @@ clusterDomain: cluster.local
 ## @param image.digest Image digest. Allows to pin the given image tag. Useful for having control over mutable tags like `latest`
 ## @param image.pullPolicy Image pull policy
 ## @param image.rootless Wether or not to pull the rootless version of Gitea, only works on Gitea 1.14.x or higher
+## @param image.fullOverride Completely overrides the image registry, path/image, tag and digest. **Adjust `image.rootless` accordingly and review [Rootless defaults](#rootless-defaults).**
 image:
   registry: ""
   repository: gitea/gitea
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
   digest: ""
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   rootless: true
+  fullOverride: ""
 
 ## @param imagePullSecrets Secret to use for pulling the image
 imagePullSecrets: []
@@ -104,6 +106,7 @@ service:
   ## @param service.http.ipFamilies HTTP service dual-stack familiy selection,for dual-stack parameters see official kubernetes [dual-stack concept documentation](https://kubernetes.io/docs/concepts/services-networking/dual-stack/).
   ## @param service.http.loadBalancerSourceRanges Source range filter for http loadbalancer
   ## @param service.http.annotations HTTP service annotations
+  ## @param service.http.labels HTTP service additional labels
   http:
     type: ClusterIP
     port: 3000
@@ -116,6 +119,7 @@ service:
     ipFamilies:
     loadBalancerSourceRanges: []
     annotations: {}
+    labels: {}
   ## @param service.ssh.type Kubernetes service type for ssh traffic
   ## @param service.ssh.port Port number for ssh traffic
   ## @param service.ssh.clusterIP ClusterIP setting for ssh autosetup for deployment is None
@@ -128,6 +132,7 @@ service:
   ## @param service.ssh.hostPort HostPort for ssh service
   ## @param service.ssh.loadBalancerSourceRanges Source range filter for ssh loadbalancer
   ## @param service.ssh.annotations SSH service annotations
+  ## @param service.ssh.labels SSH service additional labels
   ssh:
     type: ClusterIP
     port: 22
@@ -141,6 +146,7 @@ service:
     hostPort:
     loadBalancerSourceRanges: []
     annotations: {}
+    labels: {}
 
 ## @section Ingress
 ## @param ingress.enabled Enable ingress
@@ -317,7 +323,7 @@ initContainers:
 #
 ## @param signing.enabled Enable commit/action signing
 ## @param signing.gpgHome GPG home directory
-## @param signing.privateKey Inline private gpg key for signed Gitea actions
+## @param signing.privateKey Inline private gpg key for signed internal Git activity
 ## @param signing.existingSecret Use an existing secret to store the value of `signing.privateKey`
 signing:
   enabled: false
@@ -477,9 +483,14 @@ gitea:
 ## @section redis-cluster
 ## @param redis-cluster.enabled Enable redis cluster
 ## @param redis-cluster.usePassword Whether to use password authentication
+## @param redis-cluster.cluster.nodes Number of redis cluster master nodes
+## @param redis-cluster.cluster.replicas Number of redis cluster master node replicas
 redis-cluster:
   enabled: true
   usePassword: false
+  cluster:
+    nodes: 3 # default: 6
+    replicas: 0 # default: 1
 
 ## @section redis
 ## @param redis.enabled Enable redis standalone or replicated
@@ -495,9 +506,9 @@ redis:
   replica:
     replicaCount: 1
 
-## @section postgresql-ha
+## @section PostgreSQL HA
 #
-## @param postgresql-ha.enabled Enable postgresql-ha
+## @param postgresql-ha.enabled Enable PostgreSQL HA
 ## @param postgresql-ha.postgresql.password Password for the `gitea` user (overrides `auth.password`)
 ## @param postgresql-ha.global.postgresql.database Name for a custom database to create (overrides `auth.database`)
 ## @param postgresql-ha.global.postgresql.username Name for a custom user to create (overrides `auth.username`)
@@ -505,8 +516,8 @@ redis:
 ## @param postgresql-ha.postgresql.repmgrPassword Repmgr Password
 ## @param postgresql-ha.postgresql.postgresPassword postgres Password
 ## @param postgresql-ha.pgpool.adminPassword pgpool adminPassword
-## @param postgresql-ha.service.ports.postgresql postgresql service port (overrides `service.ports.postgresql`)
-## @param postgresql-ha.primary.persistence.size PVC Storage Request for postgresql-ha volume
+## @param postgresql-ha.service.ports.postgresql PostgreSQL service port (overrides `service.ports.postgresql`)
+## @param postgresql-ha.primary.persistence.size PVC Storage Request for PostgreSQL HA volume
 postgresql-ha:
   global:
     postgresql:

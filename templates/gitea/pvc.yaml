@@ -6,6 +6,8 @@ metadata:
   namespace: {{ $.Release.Namespace }}
   annotations:
 {{ .Values.persistence.annotations | toYaml | indent 4}}
+  labels:
+{{ .Values.persistence.labels | toYaml | indent 4}}
 spec:
   accessModes:
   {{- if gt .Values.replicaCount 1.0 }}
@@ -14,9 +16,7 @@ spec:
     {{- .Values.persistence.accessModes | toYaml | nindent 4 }}
   {{- end }}
   volumeMode: Filesystem
-  {{- if .Values.persistence.storageClass }}
-  storageClassName: {{ .Values.persistence.storageClass }}
-  {{- end }}
+  {{- include "gitea.persistence.storageClass" . | nindent 2 }}
   {{- with .Values.persistence.volumeName }}
   volumeName: {{ . }}
   {{- end }}
