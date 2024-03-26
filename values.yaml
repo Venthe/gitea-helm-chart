@@ -488,12 +488,12 @@ redis-cluster:
 ## @param redis.replica.replicaCount Number of replicas under master(s)
 redis:
   enabled: false
-  architecture: replication
+  architecture: standalone
   global:
     redis:
       password: changeme
   replica:
-    replicaCount: 3
+    replicaCount: 1
 
 ## @section postgresql-ha
 #
