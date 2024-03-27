@@ -276,13 +276,6 @@ https
   {{- if not (hasKey .Values.gitea.config.metrics "ENABLED") -}}
     {{- $_ := set .Values.gitea.config.metrics "ENABLED" .Values.gitea.metrics.enabled -}}
   {{- end -}}
-  {{- if or ((index .Values "redis-cluster").enabled) ((index .Values "redis").enabled) -}}
-    {{- $_ := set .Values.gitea.config.cache "ENABLED" "true" -}}
-    {{- $_ := set .Values.gitea.config.cache "ADAPTER" "redis" -}}
-    {{- if not (.Values.gitea.config.cache.HOST) -}}
-      {{- $_ := set .Values.gitea.config.cache "HOST" (include "redis.dns" .) -}}
-    {{- end -}}
-  {{- end -}}
   {{- /* redis queue */ -}}
   {{- if or ((index .Values "redis-cluster").enabled) ((index .Values "redis").enabled) -}}
     {{- $_ := set .Values.gitea.config.queue "TYPE" "redis" -}}
