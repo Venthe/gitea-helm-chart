@@ -1041,10 +1041,19 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 
 | Name                             | Description                                  | Value   |
 | -------------------------------- | -------------------------------------------- | ------- |
-| `redis-cluster.enabled`          | Enable redis                                 | `true`  |
+| `redis-cluster.enabled`          | Enable redis cluster                         | `true`  |
 | `redis-cluster.usePassword`      | Whether to use password authentication       | `false` |
 | `redis-cluster.cluster.nodes`    | Number of redis cluster master nodes         | `3`     |
 | `redis-cluster.cluster.replicas` | Number of redis cluster master node replicas | `0`     |
+
+### redis
+
+| Name                          | Description                              | Value        |
+| ----------------------------- | ---------------------------------------- | ------------ |
+| `redis.enabled`               | Enable redis standalone or replicated    | `false`      |
+| `redis.architecture`          | Whether to use standalone or replication | `standalone` |
+| `redis.global.redis.password` | Required password                        | `changeme`   |
+| `redis.replica.replicaCount`  | Number of replicas under master(s)       | `1`          |
 
 ### PostgreSQL HA
 
