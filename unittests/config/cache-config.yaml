@@ -8,6 +8,8 @@ tests:
     set:
       redis-cluster:
         enabled: true
+      redis:
+        enabled: false
     asserts:
       - documentIndex: 0
         equal:
@@ -16,10 +18,27 @@ tests:
             ADAPTER=redis
             HOST=redis+cluster://:@gitea-unittests-redis-cluster-headless.testing.svc.cluster.local:6379/0?pool_size=100&idle_timeout=180s&
 
-  - it: "cache is configured correctly for 'memory' when redis-cluster is disabled"
+  - it: "cache is configured correctly for redis"
     template: templates/gitea/config.yaml
     set:
       redis-cluster:
+        enabled: false
+      redis:
+        enabled: true
+    asserts:
+      - documentIndex: 0
+        equal:
+          path: stringData.cache
+          value: |-
+            ADAPTER=redis
+            HOST=redis://:changeme@gitea-unittests-redis-headless.testing.svc.cluster.local:6379/0?pool_size=100&idle_timeout=180s&
+
+  - it: "cache is configured correctly for 'memory' when redis (or redis-cluster) is disabled"
+    template: templates/gitea/config.yaml
+    set:
+      redis-cluster:
+        enabled: false
+      redis:
         enabled: false
     asserts:
       - documentIndex: 0
@@ -29,10 +48,12 @@ tests:
             ADAPTER=memory
             HOST=
 
-  - it: "cache can be customized when redis-cluster is disabled"
+  - it: "cache can be customized when redis (or redis-cluster) is disabled"
     template: templates/gitea/config.yaml
     set:
       redis-cluster:
+        enabled: false
+      redis:
         enabled: false
       gitea.config.cache.ADAPTER: custom-adapter
       gitea.config.cache.HOST: custom-host

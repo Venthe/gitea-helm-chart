@@ -34,6 +34,8 @@ tests:
     set:
       redis-cluster:
         enabled: true
+      redis:
+        enabled: false
     asserts:
       - documentIndex: 0
         matchRegex:
