@@ -14,4 +14,12 @@ spec:
       {{- include "gitea.selectorLabels" . | nindent 6 }}
   endpoints:
   - port: http
+{{- if and (.Values.gitea.config.metrics) (.Values.gitea.config.metrics.TOKEN) }}
+    authorization:
+      type: Bearer
+      credentials:
+        name: {{ include "gitea.metrics-secret-name" . }}
+        key: token
+        optional: true
+{{- end -}}
 {{- end -}}
