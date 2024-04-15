@@ -90,3 +90,17 @@ tests:
           path: spec.loadBalancerIP
       - notExists:
           path: spec.loadBalancerSourceRanges
+
+  - it: does not render loadBalancerClass by default even when type is LoadBalancer
+    template: templates/gitea/http-svc.yaml
+    set:
+      service:
+        http:
+          type: LoadBalancer
+          loadBalancerIP: "1.2.3.4"
+    asserts:
+      - notExists:
+          path: spec.loadBalancerClass
+      - equal:
+          path: spec.loadBalancerIP
+          value: "1.2.3.4"
