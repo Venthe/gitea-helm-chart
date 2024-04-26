@@ -728,7 +728,9 @@ gitea:
 
 ### Secure Metrics Endpoint
 
-Metrics endpoint `/metrics` can be secured using `Bearer` token authentication. Providing non-empty `TOKEN` value will also add authentication parameters to `ServiceMonitor`.
+Metrics endpoint `/metrics` can be secured by using `Bearer` token authentication.
+
+**Note:** Providing non-empty `TOKEN` value will also require authentication for `ServiceMonitor`.
 
 ```yaml
 gitea:
