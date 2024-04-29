@@ -8,6 +8,9 @@ metadata:
     {{- end }}
   labels:
     {{- include "gitea.labels" . | nindent 4 }}
+    {{- if .Values.deployment.labels }}
+    {{- toYaml .Values.deployment.labels | nindent 4 }}
+    {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
