@@ -15,3 +15,17 @@ tests:
           kind: Deployment
           apiVersion: apps/v1
           name: gitea-unittests
+  - it: deployment labels are set
+    template: templates/gitea/deployment.yaml
+    set:
+      deployment.labels:
+        hello: world
+    asserts:
+      - isSubset:
+          path: metadata.labels
+          content:
+            hello: world
+      - isSubset:
+          path: spec.template.metadata.labels
+          content:
+            hello: world
