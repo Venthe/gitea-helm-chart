@@ -56,7 +56,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: init-directories
-          image: {{ include "gitea.image" . }}
+          image: "{{ include "gitea.image" . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/usr/sbin/init_directory_structure.sh"]
           env:
@@ -91,7 +91,7 @@ spec:
           resources:
             {{- toYaml .Values.initContainers.resources | nindent 12 }}
         - name: init-app-ini
-          image: {{ include "gitea.image" . }}
+          image: "{{ include "gitea.image" . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/usr/sbin/config_environment.sh"]
           env:
@@ -132,7 +132,7 @@ spec:
             {{- toYaml .Values.initContainers.resources | nindent 12 }}
         {{- if .Values.signing.enabled }}
         - name: configure-gpg
-          image: {{ include "gitea.image" . }}
+          image: "{{ include "gitea.image" . }}"
           command: ["/usr/sbin/configure_gpg_environment.sh"]
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
@@ -163,7 +163,7 @@ spec:
             {{- toYaml .Values.initContainers.resources | nindent 12 }}
         {{- end }}
         - name: configure-gitea
-          image: {{ include "gitea.image" . }}
+          image: "{{ include "gitea.image" . }}"
           command: ["/usr/sbin/configure_gitea.sh"]
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
@@ -259,7 +259,7 @@ spec:
       terminationGracePeriodSeconds: {{ .Values.deployment.terminationGracePeriodSeconds }}
       containers:
         - name: {{ .Chart.Name }}
-          image: {{ include "gitea.image" . }}
+          image: "{{ include "gitea.image" . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             # SSH Port values have to be set here as well for openssh configuration
@@ -347,7 +347,7 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- with .Values.topologySpreadConstraints }}
-      topologySpreadConstraints:
+      topologySpreadConstraints: 
         {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- with .Values.tolerations }}
