@@ -58,6 +58,36 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
+      {{- if and .Values.gitea.ca.enabled .Values.gitea.ca.existingSecrets }}
+        - image: "{{ include "gitea.image" . }}"
+          name: cp-etc-ssl-to-emptydir
+          command: ["/bin/bash"]
+          args:
+          - -c
+          - cp -R /etc/ssl/* /usr/local/etc/ssl
+          volumeMounts:
+          - name: etc-ssl
+            mountPath: /usr/local/etc/ssl
+          {{- range .Values.gitea.ca.existingSecrets }}
+          - name: tls-ca-{{ . }}
+            mountPath: /etc/ssl/certs/ca-{{ . }}.crt
+            subPath: ca-{{ . }}.crt
+          {{- end }}
+        - image: "{{ include "gitea.image" . }}"
+          name: update-ca-certificates
+          command: ["/bin/bash"]
+          args:
+          - -c
+          - update-ca-certificates
+          volumeMounts:
+          - name: etc-ssl
+            mountPath: /etc/ssl
+          {{- range .Values.gitea.ca.existingSecrets }}
+          - name: tls-ca-{{ . }}
+            mountPath: /usr/local/share/ca-certificates/ca-{{ . }}.crt
+            subPath: ca-{{ . }}.crt
+          {{- end }}
+        {{- end }}
         - name: init-directories
           image: "{{ include "gitea.image" . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -88,6 +118,10 @@ spec:
               {{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
               {{- end }}
+            {{- if and .Values.gitea.ca.enabled .Values.gitea.ca.existingSecrets }}
+            - name: etc-ssl
+              mountPath: /etc/ssl
+            {{- end }}
             {{- include "gitea.init-additional-mounts" . | nindent 12 }}
           securityContext:
             {{- toYaml .Values.containerSecurityContext | nindent 12 }}
@@ -128,6 +162,10 @@ spec:
             - name: additional-config-sources-{{ $idx }}
               mountPath: "/env-to-ini-mounts/additionals/{{ $idx }}/"
             {{- end }}
+            {{- if and .Values.gitea.ca.enabled .Values.gitea.ca.existingSecrets }}
+            - name: etc-ssl
+              mountPath: /etc/ssl
+            {{- end }}
             {{- include "gitea.init-additional-mounts" . | nindent 12 }}
           securityContext:
             {{- toYaml .Values.containerSecurityContext | nindent 12 }}
@@ -159,6 +197,10 @@ spec:
             - name: gpg-private-key
               mountPath: /raw
               readOnly: true
+            {{- if and .Values.gitea.ca.enabled .Values.gitea.ca.existingSecrets }}
+            - name: etc-ssl
+              mountPath: /etc/ssl
+            {{- end }}
             {{- if .Values.extraVolumeMounts }}
             {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
             {{- end }}
@@ -256,6 +298,10 @@ spec:
               {{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
               {{- end }}
+            {{- if and .Values.gitea.ca.enabled .Values.gitea.ca.existingSecrets }}
+            - name: etc-ssl
+              mountPath: /etc/ssl
+            {{- end }}
             {{- include "gitea.init-additional-mounts" . | nindent 12 }}
           resources:
             {{- toYaml .Values.initContainers.resources | nindent 12 }}
@@ -336,6 +382,20 @@ spec:
               {{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
               {{- end }}
+            {{- if and .Values.gitea.tls.enabled .Values.gitea.tls.existingSecret }}
+            - name: server-tls
+              mountPath: {{ .Values.gitea.config.server.KEY_FILE }}
+              subPath: {{ base .Values.gitea.config.server.KEY_FILE }}
+              readOnly: true
+            - name: server-tls
+              mountPath: {{ .Values.gitea.config.server.CERT_FILE }}
+              subPath: {{ base .Values.gitea.config.server.CERT_FILE }}
+              readOnly: true
+            {{- end }}
+            {{- if and .Values.gitea.ca.enabled .Values.gitea.ca.existingSecrets }}
+            - name: etc-ssl
+              mountPath: /etc/ssl
+            {{- end }}
             {{- include "gitea.container-additional-mounts" . | nindent 12 }}
       {{- with .Values.global.hostAliases }}
       hostAliases:
@@ -390,6 +450,23 @@ spec:
               - key: privateKey
                 path: private.asc
             defaultMode: 0100
+        {{- end }}
+        {{- if and .Values.gitea.tls.enabled .Values.gitea.tls.existingSecret }}
+        - name: server-tls
+          secret:
+            secretName: {{ .Values.gitea.tls.existingSecret }}
+        {{- end }}
+        {{- if and .Values.gitea.ca.enabled .Values.gitea.ca.existingSecrets }}
+        - name: etc-ssl
+          emptyDir: {}
+        {{- range .Values.gitea.ca.existingSecrets }}
+        - name: tls-ca-{{ . }}
+          secret:
+            secretName: {{ . }}
+            items:
+            - key: ca.crt
+              path: ca-{{ . }}.crt
+        {{- end }}
         {{- end }}
   {{- if .Values.persistence.enabled }}
     {{- if .Values.persistence.mount }}

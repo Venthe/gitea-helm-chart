@@ -479,6 +479,14 @@ gitea:
     periodSeconds: 10
     successThreshold: 1
     failureThreshold: 10
+  
+  tls:
+    enabled: false
+    existingSecret: ""
+
+  ca:
+    enabled: false
+    existingSecrets: []
 
 ## @section redis-cluster
 ## @param redis-cluster.enabled Enable redis

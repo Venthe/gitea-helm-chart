@@ -308,7 +308,7 @@ https
     {{- $_ := set .Values.gitea.config.server "HTTP_PORT" .Values.service.http.port -}}
   {{- end -}}
   {{- if not .Values.gitea.config.server.PROTOCOL -}}
-    {{- $_ := set .Values.gitea.config.server "PROTOCOL" "http" -}}
+    {{- $_ := set .Values.gitea.config.server "PROTOCOL" (ternary "https" "http" .Values.gitea.tls.enabled) -}}
   {{- end -}}
   {{- if not (.Values.gitea.config.server.DOMAIN) -}}
     {{- if gt (len .Values.ingress.hosts) 0 -}}
@@ -343,6 +343,12 @@ https
   {{- end -}}
   {{- if not (hasKey .Values.gitea.config.server "ENABLE_PPROF") -}}
     {{- $_ := set .Values.gitea.config.server "ENABLE_PPROF" false -}}
+  {{- end -}}
+  {{- if and (not (hasKey .Values.gitea.config.server "CERT_FILE")) .Values.gitea.tls.enabled -}}
+    {{- $_ := set .Values.gitea.config.server "CERT_FILE" "/etc/server-tls/tls.crt" -}}
+  {{- end -}}
+  {{- if and (not (hasKey .Values.gitea.config.server "KEY_FILE")) .Values.gitea.tls.enabled -}}
+    {{- $_ := set .Values.gitea.config.server "KEY_FILE" "/etc/server-tls/tls.key" -}}
   {{- end -}}
 {{- end -}}
 
