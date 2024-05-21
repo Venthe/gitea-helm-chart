@@ -1,0 +1,68 @@
+suite: deployment template (ca enabled)
+release:
+  name: gitea-unittests
+  namespace: testing
+templates:
+  - templates/gitea/deployment.yaml
+  - templates/gitea/config.yaml
+tests:
+  - it: confirms CA secrets are mounted to the correct location
+    template: templates/gitea/deployment.yaml
+    set:
+      gitea.ca.enabled: true
+      gitea.ca.existingSecrets: 
+      - my-postgres-ca
+      - my-redis-ca
+    asserts:
+      - contains:
+          path: spec.template.spec.initContainers[2].volumeMounts
+          content:
+            name: etc-ssl
+            mountPath: /etc/ssl
+      - contains:
+          path: spec.template.spec.initContainers[3].volumeMounts
+          content:
+            name: etc-ssl
+            mountPath: /etc/ssl
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: etc-ssl
+            mountPath: /etc/ssl
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: etc-ssl
+            emptyDir: {}
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: tls-ca-my-postgres-ca
+            secret:
+              secretName: my-postgres-ca
+              items:
+              - key: ca.crt
+                path: ca-my-postgres-ca.crt
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: tls-ca-my-redis-ca
+            secret:
+              secretName: my-redis-ca
+              items:
+              - key: ca.crt
+                path: ca-my-redis-ca.crt
+  - it: confirms CA initContainers are present
+    template: templates/gitea/deployment.yaml
+    set:
+      gitea.ca.enabled: true
+      gitea.ca.existingSecrets: 
+      - my-postgres-ca
+      - my-redis-ca
+    asserts:
+      - equal:
+          path: spec.template.spec.initContainers[0].name
+          value: cp-etc-ssl-to-emptydir
+      - equal:
+          path: spec.template.spec.initContainers[1].name
+          value: update-ca-certificates

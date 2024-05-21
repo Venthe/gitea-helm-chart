@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
+suite: deployment template (TLS enabled)
+release:
+  name: gitea-unittests
+  namespace: testing
+templates:
+  - templates/gitea/deployment.yaml
+  - templates/gitea/config.yaml
+tests:
+  - it: confirms TLS secret is mounted to the correct location
+    template: templates/gitea/deployment.yaml
+    set:
+      gitea.tls.enabled: true
+      gitea.tls.existingSecret: my-gitea-tls
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: server-tls
+            mountPath: /etc/server-tls/tls.key
+            subPath: tls.key
+            readOnly: true
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: server-tls
+            mountPath: /etc/server-tls/tls.crt
+            subPath: tls.crt
+            readOnly: true
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: server-tls
+            secret:
+              secretName: my-gitea-tls
