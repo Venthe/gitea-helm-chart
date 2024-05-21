@@ -33,3 +33,26 @@ tests:
             name: server-tls
             secret:
               secretName: my-gitea-tls
+  - it: inline config server.PROTOCOL is set to https with TLS enabled
+    template: templates/gitea/config.yaml
+    documentSelector:
+      path: metadata.name
+      value: gitea-unittests-inline-config
+    set:
+      gitea.tls.enabled: true
+      gitea.tls.existingSecret: my-gitea-tl
+    asserts:
+      - documentIndex: 0
+        matchRegex:
+          path: stringData.server
+          pattern: PROTOCOL=https
+  - it: inline config server.PROTOCOL is NOT set to https by default
+    template: templates/gitea/config.yaml
+    documentSelector:
+      path: metadata.name
+      value: gitea-unittests-inline-config
+    asserts:
+      - documentIndex: 0
+        matchRegex:
+          path: stringData.server
+          pattern: PROTOCOL=http
