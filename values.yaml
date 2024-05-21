@@ -480,10 +480,18 @@ gitea:
     successThreshold: 1
     failureThreshold: 10
   
+  ## @section TLS
+  #
+  ## @param gitea.tls.enabled Enable gitea serving TLS (HTTPS)
+  ## @param gitea.tls.existingSecret An existing k8s TLS secret, with the keys tls.crt and tls.key 
   tls:
     enabled: false
     existingSecret: ""
 
+  ## @section CA
+  #
+  ## @param gitea.ca.enabled Enable gitea trusting additional CAs
+  ## @param gitea.ca.existingSecrets A list of existing k8s TLS secret, with the key ca.crt
   ca:
     enabled: false
     existingSecrets: []

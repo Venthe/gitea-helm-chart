@@ -1037,6 +1037,20 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 | `gitea.startupProbe.successThreshold`    | Success threshold for startup probe             | `1`     |
 | `gitea.startupProbe.failureThreshold`    | Failure threshold for startup probe             | `10`    |
 
+### TLS
+
+| Name                       | Description                                                    | Value   |
+| -------------------------- | -------------------------------------------------------------- | ------- |
+| `gitea.tls.enabled`        | Enable gitea serving TLS (HTTPS)                               | `false` |
+| `gitea.tls.existingSecret` | An existing k8s TLS secret, with the keys tls.crt and tls.key  | `""`    |
+
+### CA
+
+| Name                       | Description                                            | Value   |
+| -------------------------- | ------------------------------------------------------ | ------- |
+| `gitea.ca.enabled`         | Enable gitea trusting additional CAs                   | `false` |
+| `gitea.ca.existingSecrets` | A list of existing k8s TLS secret, with the key ca.crt | `[]`    |
+
 ### redis-cluster
 
 | Name                             | Description                                  | Value   |
