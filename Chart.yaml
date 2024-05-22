@@ -35,15 +35,15 @@ dependencies:
   # https://github.com/bitnami/charts/blob/main/bitnami/postgresql
   - name: postgresql
     repository: oci://registry-1.docker.io/bitnamicharts
-    version: 15.2.12
+    version: 15.4.0
     condition: postgresql.enabled
   # https://github.com/bitnami/charts/blob/main/bitnami/postgresql-ha/Chart.yaml
   - name: postgresql-ha
     repository: oci://registry-1.docker.io/bitnamicharts
-    version: 14.0.10
+    version: 14.1.0
     condition: postgresql-ha.enabled
   # https://github.com/bitnami/charts/blob/main/bitnami/redis-cluster/Chart.yaml
   - name: redis-cluster
     repository: oci://registry-1.docker.io/bitnamicharts
-    version: 10.0.2
+    version: 10.0.6
     condition: redis-cluster.enabled
