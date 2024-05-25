@@ -413,6 +413,9 @@ gitea:
   ## @param gitea.additionalConfigFromEnvs Additional configuration sources from environment variables
   additionalConfigFromEnvs: []
 
+  ## @param gitea.inlineConfigExistingSecret Existing secret for inline-config
+  inlineConfigExistingSecret: ""
+
   ## @param gitea.podAnnotations Annotations for the Gitea pod
   podAnnotations: {}
 

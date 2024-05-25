@@ -375,7 +375,11 @@ spec:
         {{- end }}
         - name: inline-config-sources
           secret:
+            {{- if .Values.gitea.inlineConfigExistingSecret }}
+            secretName: {{ .Values.gitea.inlineConfigExistingSecret }}
+            {{- else }} 
             secretName: {{ include "gitea.fullname" . }}-inline-config
+            {{- end }} 
         {{- range $idx, $value := .Values.gitea.additionalConfigSources }}
         - name: additional-config-sources-{{ $idx }}
           {{- toYaml $value | nindent 10 }}

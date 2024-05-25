@@ -998,6 +998,7 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 | `gitea.config.server.SSH_LISTEN_PORT`  | SSH port for rootless Gitea image                                         | `2222`               |
 | `gitea.additionalConfigSources`        | Additional configuration from secret or configmap                         | `[]`                 |
 | `gitea.additionalConfigFromEnvs`       | Additional configuration sources from environment variables               | `[]`                 |
+| `gitea.inlineConfigExistingSecret`     | Existing secret for inline-config                                         | `""`                 |
 | `gitea.podAnnotations`                 | Annotations for the Gitea pod                                             | `{}`                 |
 | `gitea.ssh.logLevel`                   | Configure OpenSSH's log level. Only available for root-based Gitea image. | `INFO`               |
 
