@@ -104,3 +104,15 @@ tests:
       - equal:
           path: spec.loadBalancerIP
           value: "1.2.3.4"
+
+  - it: both ssh and http services exist
+    templates:
+      - templates/gitea/ssh-svc.yaml
+      - templates/gitea/http-svc.yaml
+    asserts:
+      - matchRegex:
+          path: metadata.name
+          pattern: "^gitea-unittests-(?:ssh|http)$"
+      - matchRegex:
+          path: spec.ports[0].name
+          pattern: "^(?:ssh|http)$"
