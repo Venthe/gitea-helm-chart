@@ -12,7 +12,7 @@ tests:
       persistence.create: true
       persistence.storageClass: "{{ .Values.global.persistence.storageClass }}"
     asserts:
-      - iskind:
+      - isKind:
           of: PersistentVolumeClaim
       - equal:
           path: spec.storageClassName
