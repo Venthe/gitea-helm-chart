@@ -23,7 +23,7 @@ tests:
       - equal:
           path: spec.rules[0].host
           value: "gitea.example.com"
-  - it: Ingress Cass using TPL
+  - it: Ingress Class using TPL
     set:
       global.ingress.className: "ingress-class"
       ingress.className: "{{ .Values.global.ingress.className }}"
