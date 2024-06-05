@@ -15,7 +15,7 @@ tests:
           hosts:
             - "{{ .Values.global.giteaHostName }}"
     asserts:
-      - iskind:
+      - isKind:
           of: Ingress
       - equal:
           path: spec.tls[0].hosts[0]
@@ -34,7 +34,7 @@ tests:
           hosts:
             - "some-host"
     asserts:
-      - iskind:
+      - isKind:
           of: Ingress
       - equal:
           path: spec.tls[0].hosts[0]
