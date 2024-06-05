@@ -15,7 +15,7 @@ spec:
   {{- end }}
   volumeMode: Filesystem
   {{- if .Values.persistence.storageClass }}
-  storageClassName: {{ .Values.persistence.storageClass }}
+  storageClassName: {{ tpl .Values.persistence.storageClass . }}
   {{- end }}
   {{- with .Values.persistence.volumeName }}
   volumeName: {{ . }}
