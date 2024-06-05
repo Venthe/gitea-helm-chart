@@ -1,0 +1,23 @@
+suite: ingress template
+release:
+  name: gitea-unittests
+  namespace: testing
+templates:
+  - templates/gitea/ingress.yaml
+tests:
+  - it: hostname using TPL
+    set:
+      global.giteaHostName: "gitea.example.com"
+      ingress.enabled: true
+      ingress.hosts[0].host: "{{ .Values.global.giteaHostName }}"
+      ingress.tls:
+        - secretName: gitea-tls
+          hosts:
+            - "{{ .Values.global.giteaHostName }}"
+    asserts:
+      - equal:
+          path: spec.tls[0].hosts[0]
+          value: "gitea.example.com"
+      - equal:
+          path: spec.rules[0].host
+          value: "gitea.example.com"

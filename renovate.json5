@@ -1,0 +1,25 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["gitea>gitea/renovate-config"],
+  labels: ["kind/dependency"],
+  customManagers: [
+      {
+        description: 'Gitea-version of https://docs.renovatebot.com/presets-regexManagers/#regexmanagersgithubactionsversions',
+        customType: 'regex',
+        fileMatch: ['.gitea/workflows/.+\\.ya?ml$'],
+        matchStrings: [
+          '# renovate: datasource=(?<datasource>[a-z-.]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[a-z-0-9]+?))?\\s+[A-Za-z0-9_]+?_VERSION\\s*:\\s*["\']?(?<currentValue>.+?)["\']?\\s',
+        ],
+      },
+    ],
+  packageRules: [
+    {
+      description: "Automerge minor + patch dependency updates weekly",
+      matchManagers: ["helmv3"],
+      matchUpdateTypes: ["minor", "patch", "digest"],
+      automerge: true,
+      automergeStrategy: "squash",
+      extends: ["schedule:weekly"],
+    },
+  ],
+}

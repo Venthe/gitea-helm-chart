@@ -3,7 +3,7 @@ name: gitea
 description: Gitea Helm chart for Kubernetes
 type: application
 version: 0.0.0
-appVersion: 1.20.3
+appVersion: 1.20.5
 icon: https://gitea.com/assets/img/logo.svg
 
 keywords:
@@ -33,18 +33,18 @@ maintainers:
 
 # Bitnami charts are served from GitHub CDN - See https://github.com/bitnami/charts/issues/10539 for details
 dependencies:
-  # Chart release date: 2023-07 (https://github.com/bitnami/charts/blob/main/bitnami/postgresql/Chart.yaml)
+  # https://github.com/bitnami/charts/blob/main/bitnami/postgresql
   - name: postgresql
     repository: oci://registry-1.docker.io/bitnamicharts
-    version: 12.10.0
+    version: 12.12.10
     condition: postgresql.enabled
-  # Chart release date: 2023-07 (https://github.com/bitnami/charts/blob/main/bitnami/postgresql-ha/Chart.yaml)
+  # https://github.com/bitnami/charts/blob/main/bitnami/postgresql-ha/Chart.yaml
   - name: postgresql-ha
     repository: oci://registry-1.docker.io/bitnamicharts
-    version: 11.9.0
+    version: 11.9.4
     condition: postgresql-ha.enabled
-  # Chart release date: 2023-07 (https://github.com/bitnami/charts/blob/main/bitnami/redis-cluster/Chart.yaml)
+  # https://github.com/bitnami/charts/blob/main/bitnami/redis-cluster/Chart.yaml
   - name: redis-cluster
     repository: oci://registry-1.docker.io/bitnamicharts
-    version: 8.6.9
+    version: 9.1.1
     condition: redis-cluster.enabled

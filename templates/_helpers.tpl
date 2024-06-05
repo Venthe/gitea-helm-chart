@@ -57,13 +57,18 @@ Create image name and tag used by the deployment.
 */}}
 {{- define "gitea.image" -}}
 {{- $registry := .Values.global.imageRegistry | default .Values.image.registry -}}
-{{- $name := .Values.image.repository -}}
+{{- $repository := .Values.image.repository -}}
+{{- $separator := ":" -}}
 {{- $tag := .Values.image.tag | default .Chart.AppVersion -}}
 {{- $rootless := ternary "-rootless" "" (.Values.image.rootless) -}}
-{{- if $registry -}}
-  {{- printf "%s/%s:%s%s" $registry $name $tag $rootless -}}
+{{- $digest := "" -}}
+{{- if .Values.image.digest }}
+    {{- $digest = (printf "@%s" (.Values.image.digest | toString)) -}}
+{{- end -}}
+{{- if $registry }}
+    {{- printf "%s/%s%s%s%s%s" $registry $repository $separator $tag $rootless $digest -}}
 {{- else -}}
-  {{- printf "%s:%s%s" $name $tag $rootless -}}
+    {{- printf "%s%s%s%s%s" $repository $separator $tag $rootless $digest -}}
 {{- end -}}
 {{- end -}}
 
@@ -114,7 +119,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{- define "postgresql-ha.dns" -}}
 {{- if (index .Values "postgresql-ha").enabled -}}
-{{- printf "%s-postgresql-ha-postgresql.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain (index .Values "postgresql-ha" "service" "ports" "postgresql") -}}
+{{- printf "%s-postgresql-ha-pgpool.%s.svc.%s:%g" .Release.Name .Release.Namespace .Values.clusterDomain (index .Values "postgresql-ha" "service" "ports" "postgresql") -}}
 {{- end -}}
 {{- end -}}
 
@@ -314,7 +319,7 @@ https
   {{- end -}}
   {{- if not (.Values.gitea.config.server.DOMAIN) -}}
     {{- if gt (len .Values.ingress.hosts) 0 -}}
-      {{- $_ := set .Values.gitea.config.server "DOMAIN" (index .Values.ingress.hosts 0).host -}}
+      {{- $_ := set .Values.gitea.config.server "DOMAIN" ( tpl (index .Values.ingress.hosts 0).host $) -}}
     {{- else -}}
       {{- $_ := set .Values.gitea.config.server "DOMAIN" (include "gitea.default_domain" .) -}}
     {{- end -}}
