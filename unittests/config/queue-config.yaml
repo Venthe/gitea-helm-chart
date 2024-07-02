@@ -48,7 +48,7 @@ tests:
             CONN_STR=
             TYPE=level
 
-  - it: "queue can be customized when redis (and redis-cluster) is disabled"
+  - it: "queue can be customized when redis (and redis-cluster) are disabled"
     template: templates/gitea/config.yaml
     set:
       redis-cluster:

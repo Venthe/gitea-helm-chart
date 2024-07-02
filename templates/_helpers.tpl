@@ -114,7 +114,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 
 {{- define "redis.dns" -}}
 {{- if and ((index .Values "redis-cluster").enabled) ((index .Values "redis").enabled) -}}
-{{- fail "redis AND redis-cluster can't be both enabled" -}}
+{{- fail "redis and redis-cluster cannot be enabled at the same time. Please only choose one." -}}
 {{- else if (index .Values "redis-cluster").enabled -}}
 {{- printf "redis+cluster://:%s@%s-redis-cluster-headless.%s.svc.%s:%g/0?pool_size=100&idle_timeout=180s&" (index .Values "redis-cluster").global.redis.password .Release.Name .Release.Namespace .Values.clusterDomain (index .Values "redis-cluster").service.ports.redis -}}
 {{- else if (index .Values "redis").enabled -}}
