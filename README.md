@@ -50,6 +50,7 @@
   - [ReadinessProbe](#readinessprobe)
   - [StartupProbe](#startupprobe)
   - [redis-cluster](#redis-cluster)
+  - [redis](#redis)
   - [PostgreSQL HA](#postgresql-ha)
   - [PostgreSQL](#postgresql)
   - [Advanced](#advanced)
@@ -98,7 +99,8 @@ These dependencies are enabled by default:
 
 Alternatively, the following non-HA replacements are available:
 
-- PostgreSQL ([Bitnami PostgreSQL](postgresql](https://github.com/bitnami/charts/blob/main/bitnami/postgresql/Chart.yaml)))
+- PostgreSQL ([Bitnami PostgreSQL](<Postgresql](https://github.com/bitnami/charts/blob/main/bitnami/postgresql/Chart.yaml)>))
+- Redis ([Bitnami Redis](<Redis](https://github.com/bitnami/charts/blob/main/bitnami/redis/Chart.yaml)>))
 
 ### Dependency Versioning
 
@@ -117,6 +119,7 @@ Please double-check the image repository and available tags in the sub-chart:
 - [PostgreSQL-HA](https://hub.docker.com/r/bitnami/postgresql-repmgr/tags)
 - [PostgreSQL](https://hub.docker.com/r/bitnami/postgresql/tags)
 - [Redis Cluster](https://hub.docker.com/r/bitnami/redis-cluster/tags)
+- [Redis](https://hub.docker.com/r/bitnami/redis/tags)
 
 and look up the image tag which fits your needs on Dockerhub.
 
@@ -253,6 +256,8 @@ If HA is not needed/desired, the following configurations can be used to deploy 
    ```yaml
    redis-cluster:
      enabled: false
+   redis:
+     enabled: true
    postgresql:
      enabled: true
    postgresql-ha:
