@@ -7,7 +7,7 @@ on:
 
 env:
   # renovate: datasource=docker depName=alpine/helm
-  HELM_VERSION: "3.14.3"
+  HELM_VERSION: "3.15.2"
 
 jobs:
   generate-chart-publish:
@@ -19,15 +19,18 @@ jobs:
           apt update -y
           apt install -y curl ca-certificates curl gnupg
           # helm
-          curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | tee /usr/share/keyrings/helm.gpg > /dev/null
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list
+          curl -O https://get.helm.sh/helm-v${{ env.HELM_VERSION }}-linux-amd64.tar.gz
+          tar -xzf helm-v${{ env.HELM_VERSION }}-linux-amd64.tar.gz
+          mv linux-amd64/helm /usr/local/bin/
+          rm -rf linux-amd64 helm-v${{ env.HELM_VERSION }}-linux-amd64.tar.gz
+          helm version
           # docker
           install -m 0755 -d /etc/apt/keyrings
-          curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
           chmod a+r /etc/apt/keyrings/docker.gpg
-          echo "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+          echo "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
           apt update -y
-          apt install -y python helm=${{ env.HELM_VERSION }}-1 python3-pip apt-transport-https docker-ce-cli
+          apt install -y python3 python3-pip apt-transport-https docker-ce-cli
           pip install awscli
 
       - name: Import GPG key

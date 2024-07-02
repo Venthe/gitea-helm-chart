@@ -40,7 +40,7 @@ Create image name and tag used by the deployment.
 {{- $registry := .Values.global.imageRegistry | default .Values.image.registry -}}
 {{- $repository := .Values.image.repository -}}
 {{- $separator := ":" -}}
-{{- $tag := .Values.image.tag | default .Chart.AppVersion -}}
+{{- $tag := .Values.image.tag | default .Chart.AppVersion | toString -}}
 {{- $rootless := ternary "-rootless" "" (.Values.image.rootless) -}}
 {{- $digest := "" -}}
 {{- if .Values.image.digest }}
@@ -74,7 +74,7 @@ imagePullSecrets:
 Storage Class
 */}}
 {{- define "gitea.persistence.storageClass" -}}
-{{- $storageClass := .Values.persistence.storageClass | default .Values.global.storageClass }}
+{{- $storageClass :=  (tpl ( default "" .Values.persistence.storageClass) .) | default (tpl ( default "" .Values.global.storageClass) .) }}
 {{- if $storageClass }}
 storageClassName: {{ $storageClass | quote }}
 {{- end }}
