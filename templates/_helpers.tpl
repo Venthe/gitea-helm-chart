@@ -392,3 +392,11 @@ https
 {{- define "gitea.serviceAccountName" -}}
 {{ .Values.serviceAccount.name | default (include "gitea.fullname" .) }}
 {{- end -}}
+
+{{- define "gitea.admin.passwordMode" -}}
+{{- if has .Values.gitea.admin.passwordMode (tuple "keepUpdated" "initialOnlyNoReset" "initialOnlyRequireReset") -}}
+{{ .Values.gitea.admin.passwordMode }}
+{{- else -}}
+{{ printf "gitea.admin.passwordMode must be set to one of 'keepUpdated', 'initialOnlyNoReset', or 'initialOnlyRequireReset'. Received: '%s'" .Values.gitea.admin.passwordMode | fail }}
+{{- end -}}
+{{- end -}}
