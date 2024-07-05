@@ -568,6 +568,20 @@ gitea:
     existingSecret: gitea-admin-secret
 ```
 
+Whether you use the existing Secret or specify a user name and password, there are three modes for how the admin user password is created or set.
+
+- `keepUpdated` (the default) will set the admin user password, and reset it to the defined value every time the pod is recreated.
+- `initialOnlyNoReset` will set the admin user password when creating it, but never try to update the password.
+- `initialOnlyRequireReset` will set the admin user password when creating it, never update it, and require that the password be changed at the initial login.
+
+These modes can be set like the following:
+
+```yaml
+gitea:
+  admin:
+    passwordMode: initialOnlyRequireReset
+```
+
 ### LDAP Settings
 
 Like the admin user the LDAP settings can be updated.
