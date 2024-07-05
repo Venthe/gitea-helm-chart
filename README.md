@@ -1053,12 +1053,12 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 
 ### redis
 
-| Name                          | Description                              | Value        |
-| ----------------------------- | ---------------------------------------- | ------------ |
-| `redis.enabled`               | Enable redis standalone or replicated    | `false`      |
-| `redis.architecture`          | Whether to use standalone or replication | `standalone` |
-| `redis.global.redis.password` | Required password                        | `changeme`   |
-| `redis.replica.replicaCount`  | Number of replicas under master(s)       | `1`          |
+| Name                          | Description                                | Value        |
+| ----------------------------- | ------------------------------------------ | ------------ |
+| `redis.enabled`               | Enable redis standalone or replicated      | `false`      |
+| `redis.architecture`          | Whether to use standalone or replication   | `standalone` |
+| `redis.global.redis.password` | Required password                          | `changeme`   |
+| `redis.master.count`          | Number of Redis master instances to deploy | `1`          |
 
 ### PostgreSQL HA
 
