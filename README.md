@@ -247,7 +247,7 @@ External tools such as `redis-cluster` or `memcached` handle these workloads muc
 
 If HA is not needed/desired, the following configurations can be used to deploy a single-pod Gitea instance.
 
-1. For a production-ready single-pod Gitea instance without external dependencies (using the chart dependency `postgresql`):
+1. For a production-ready single-pod Gitea instance without external dependencies (using the chart dependency `postgresql` and `redis`):
 
    <details>
 
@@ -270,12 +270,6 @@ If HA is not needed/desired, the following configurations can be used to deploy 
      config:
        database:
          DB_TYPE: postgres
-       session:
-         PROVIDER: db
-       cache:
-         ADAPTER: memory
-       queue:
-         TYPE: level
        indexer:
          ISSUE_INDEXER_TYPE: bleve
          REPO_INDEXER_ENABLED: true
@@ -294,6 +288,8 @@ If HA is not needed/desired, the following configurations can be used to deploy 
 
    ```yaml
    redis-cluster:
+     enabled: false
+   redis:
      enabled: false
    postgresql:
      enabled: false
