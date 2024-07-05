@@ -1044,6 +1044,8 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 
 ### redis-cluster
 
+Redis cluster and [Redis](#redis) cannot be enabled at the same time.
+
 | Name                             | Description                                  | Value   |
 | -------------------------------- | -------------------------------------------- | ------- |
 | `redis-cluster.enabled`          | Enable redis cluster                         | `true`  |
@@ -1052,6 +1054,8 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 | `redis-cluster.cluster.replicas` | Number of redis cluster master node replicas | `0`     |
 
 ### redis
+
+Redis and [Redis cluster](#redis-cluster) cannot be enabled at the same time.
 
 | Name                          | Description                                | Value        |
 | ----------------------------- | ------------------------------------------ | ------------ |

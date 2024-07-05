@@ -485,6 +485,9 @@ gitea:
 ## @param redis-cluster.usePassword Whether to use password authentication
 ## @param redis-cluster.cluster.nodes Number of redis cluster master nodes
 ## @param redis-cluster.cluster.replicas Number of redis cluster master node replicas
+## @descriptionStart
+## Redis cluster and [Redis](#redis) cannot be enabled at the same time.
+## @descriptionEnd
 redis-cluster:
   enabled: true
   usePassword: false
@@ -497,6 +500,9 @@ redis-cluster:
 ## @param redis.architecture Whether to use standalone or replication
 ## @param redis.global.redis.password Required password
 ## @param redis.master.count Number of Redis master instances to deploy
+## @descriptionStart
+## Redis and [Redis cluster](#redis-cluster) cannot be enabled at the same time.
+## @descriptionEnd
 redis:
   enabled: false
   architecture: standalone
