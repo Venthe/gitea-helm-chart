@@ -50,6 +50,7 @@
   - [ReadinessProbe](#readinessprobe)
   - [StartupProbe](#startupprobe)
   - [redis-cluster](#redis-cluster)
+  - [redis](#redis)
   - [PostgreSQL HA](#postgresql-ha)
   - [PostgreSQL](#postgresql)
   - [Advanced](#advanced)
@@ -98,7 +99,8 @@ These dependencies are enabled by default:
 
 Alternatively, the following non-HA replacements are available:
 
-- PostgreSQL ([Bitnami PostgreSQL](postgresql](https://github.com/bitnami/charts/blob/main/bitnami/postgresql/Chart.yaml)))
+- PostgreSQL ([Bitnami PostgreSQL](<Postgresql](https://github.com/bitnami/charts/blob/main/bitnami/postgresql/Chart.yaml)>))
+- Redis ([Bitnami Redis](<Redis](https://github.com/bitnami/charts/blob/main/bitnami/redis/Chart.yaml)>))
 
 ### Dependency Versioning
 
@@ -117,6 +119,7 @@ Please double-check the image repository and available tags in the sub-chart:
 - [PostgreSQL-HA](https://hub.docker.com/r/bitnami/postgresql-repmgr/tags)
 - [PostgreSQL](https://hub.docker.com/r/bitnami/postgresql/tags)
 - [Redis Cluster](https://hub.docker.com/r/bitnami/redis-cluster/tags)
+- [Redis](https://hub.docker.com/r/bitnami/redis/tags)
 
 and look up the image tag which fits your needs on Dockerhub.
 
@@ -244,7 +247,7 @@ External tools such as `redis-cluster` or `memcached` handle these workloads muc
 
 If HA is not needed/desired, the following configurations can be used to deploy a single-pod Gitea instance.
 
-1. For a production-ready single-pod Gitea instance without external dependencies (using the chart dependency `postgresql`):
+1. For a production-ready single-pod Gitea instance without external dependencies (using the chart dependency `postgresql` and `redis`):
 
    <details>
 
@@ -253,6 +256,8 @@ If HA is not needed/desired, the following configurations can be used to deploy 
    ```yaml
    redis-cluster:
      enabled: false
+   redis:
+     enabled: true
    postgresql:
      enabled: true
    postgresql-ha:
@@ -265,12 +270,6 @@ If HA is not needed/desired, the following configurations can be used to deploy 
      config:
        database:
          DB_TYPE: postgres
-       session:
-         PROVIDER: db
-       cache:
-         ADAPTER: memory
-       queue:
-         TYPE: level
        indexer:
          ISSUE_INDEXER_TYPE: bleve
          REPO_INDEXER_ENABLED: true
@@ -289,6 +288,8 @@ If HA is not needed/desired, the following configurations can be used to deploy 
 
    ```yaml
    redis-cluster:
+     enabled: false
+   redis:
      enabled: false
    postgresql:
      enabled: false
@@ -1054,12 +1055,25 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 
 ### redis-cluster
 
+Redis cluster and [Redis](#redis) cannot be enabled at the same time.
+
 | Name                             | Description                                  | Value   |
 | -------------------------------- | -------------------------------------------- | ------- |
-| `redis-cluster.enabled`          | Enable redis                                 | `true`  |
+| `redis-cluster.enabled`          | Enable redis cluster                         | `true`  |
 | `redis-cluster.usePassword`      | Whether to use password authentication       | `false` |
 | `redis-cluster.cluster.nodes`    | Number of redis cluster master nodes         | `3`     |
 | `redis-cluster.cluster.replicas` | Number of redis cluster master node replicas | `0`     |
+
+### redis
+
+Redis and [Redis cluster](#redis-cluster) cannot be enabled at the same time.
+
+| Name                          | Description                                | Value        |
+| ----------------------------- | ------------------------------------------ | ------------ |
+| `redis.enabled`               | Enable redis standalone or replicated      | `false`      |
+| `redis.architecture`          | Whether to use standalone or replication   | `standalone` |
+| `redis.global.redis.password` | Required password                          | `changeme`   |
+| `redis.master.count`          | Number of Redis master instances to deploy | `1`          |
 
 ### PostgreSQL HA
 
