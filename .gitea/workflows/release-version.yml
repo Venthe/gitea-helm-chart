@@ -6,32 +6,24 @@ on:
       - "*"
 
 env:
-  # renovate: datasource=docker depName=alpine/helm
-  HELM_VERSION: "3.15.2"
+  # renovate: datasource=github-releases depName=sigstore/cosign
+  COSIGN_VERSION: "v2.2.4"
 
 jobs:
   generate-chart-publish:
     runs-on: ubuntu-latest
+    container: alpine/helm:3.15.2
     steps:
-      - uses: actions/checkout@v4
       - name: install tools
         run: |
-          apt update -y
-          apt install -y curl ca-certificates curl gnupg
-          # helm
-          curl -O https://get.helm.sh/helm-v${{ env.HELM_VERSION }}-linux-amd64.tar.gz
-          tar -xzf helm-v${{ env.HELM_VERSION }}-linux-amd64.tar.gz
-          mv linux-amd64/helm /usr/local/bin/
-          rm -rf linux-amd64 helm-v${{ env.HELM_VERSION }}-linux-amd64.tar.gz
-          helm version
-          # docker
-          install -m 0755 -d /etc/apt/keyrings
-          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-          chmod a+r /etc/apt/keyrings/docker.gpg
-          echo "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-          apt update -y
-          apt install -y python3 python3-pip apt-transport-https docker-ce-cli
-          pip install awscli
+          apk add --no-cache --update nodejs git curl ca-certificates gnupg aws-cli
+          aws --version
+          # cosign - the -L is important. Otherwise, the file would be empty.
+          curl -O -L "https://github.com/sigstore/cosign/releases/download/${{ env.COSIGN_VERSION }}/cosign-linux-amd64"
+          mv cosign-linux-amd64 /usr/local/bin/cosign
+          chmod +x /usr/local/bin/cosign
+          cosign version
+      - uses: actions/checkout@v4
 
       - name: Import GPG key
         id: import_gpg
@@ -41,22 +33,19 @@ jobs:
           passphrase: ${{ secrets.GPGSIGN_PASSPHRASE }}
           fingerprint: CC64B1DB67ABBEECAB24B6455FC346329753F4B0
 
-      # Using helm gpg plugin as 'helm package --sign' has issues with gpg2: https://github.com/helm/helm/issues/2843
       - name: package chart
+        env:
+          GPGSIGN_KEY_NAME: "Teabot"
         run: |
-          echo ${{ secrets.DOCKER_CHARTS_PASSWORD }} | docker login -u ${{ secrets.DOCKER_CHARTS_USERNAME }} --password-stdin
-          # FIXME: use upstream after https://github.com/technosophos/helm-gpg/issues/1 is solved
-          helm plugin install https://github.com/pat-s/helm-gpg
+          # https://github.com/helm/helm/issues/2843#issuecomment-1462927026
+          gpg --export-secret-keys > ~/.gnupg/secring.gpg
+
           helm dependency build
-          helm package --version "${GITHUB_REF#refs/tags/v}" ./
+          helm package --sign --key "${GPGSIGN_KEY_NAME}" --keyring ~/.gnupg/secring.gpg --version "${GITHUB_REF#refs/tags/v}" ./
           mkdir gitea
-          mv gitea*.tgz gitea/
+          mv gitea-${GITHUB_REF#refs/tags/v}.tgz* gitea/
           curl -s -L -o gitea/index.yaml https://dl.gitea.com/charts/index.yaml
           helm repo index gitea/ --url https://dl.gitea.com/charts --merge gitea/index.yaml
-          # push to dockerhub
-          echo ${{ secrets.DOCKER_CHARTS_PASSWORD }} | helm registry login -u ${{ secrets.DOCKER_CHARTS_USERNAME }} registry-1.docker.io --password-stdin
-          helm push gitea/gitea-${GITHUB_REF#refs/tags/v}.tgz oci://registry-1.docker.io/giteacharts
-          helm registry logout registry-1.docker.io
 
       - name: aws credential configure
         uses: https://github.com/aws-actions/configure-aws-credentials@v4
@@ -68,3 +57,33 @@ jobs:
       - name: Copy files to S3 and clear cache
         run: |
           aws s3 sync gitea/ s3://${{ secrets.AWS_S3_BUCKET}}/charts/
+
+      - name: Push to DockerHub
+        env:
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSPHRASE }}
+        shell: bash
+        run: |
+          set -o pipefail
+          echo "${{ secrets.COSIGN_KEY }}" > /tmp/cosign.key
+
+          # We have to login to two different endpoints:
+          #   - index.docker.io: Used by "helm push"
+          #   - registry-1.docker.io: Used by "cosign sign"
+          echo ${{ secrets.DOCKER_CHARTS_PASSWORD }} | helm registry login https://index.docker.io/v1/ -u ${{ secrets.DOCKER_CHARTS_USERNAME }} --password-stdin
+          echo ${{ secrets.DOCKER_CHARTS_PASSWORD }} | helm registry login https://registry-1.docker.io/v2/ -u ${{ secrets.DOCKER_CHARTS_USERNAME }} --password-stdin
+
+          helm push gitea/gitea-${GITHUB_REF#refs/tags/v}.tgz "oci://registry-1.docker.io/${{ secrets.DOCKER_CHARTS_USERNAME }}" 2>&1 | tee /tmp/oci-metadata.txt
+
+          # Cosign relies on the native Docker config.json location. As we don't want to install Docker solely for `docker login`, we simply copy the authentication file to the right location :)
+          mkdir -p ~/.docker/
+          cp $(helm env HELM_REGISTRY_CONFIG) ~/.docker/
+
+          # Build full artifact url including tag and digest, using /tmp/oci-metadata.txt that contains something like:
+          #   Pushed: registry-1.docker.io/<username>/gitea:<tag>
+          #   Digest: <digest>
+          cosign sign --key /tmp/cosign.key --yes "$(grep -F 'Pushed' /tmp/oci-metadata.txt | cut -d ' ' -f2)@$(grep -F 'Digest' /tmp/oci-metadata.txt | cut -d ' ' -f2)"
+
+          # Cleanup authentication files
+          rm $(helm env HELM_REGISTRY_CONFIG)
+          rm -rf ~/.docker/
+          rm /tmp/cosign.key /tmp/oci-metadata.txt
