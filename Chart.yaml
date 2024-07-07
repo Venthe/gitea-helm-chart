@@ -50,5 +50,5 @@ dependencies:
   # https://github.com/bitnami/charts/blob/main/bitnami/redis/Chart.yaml
   - name: redis
     repository: oci://registry-1.docker.io/bitnamicharts
-    version: 19.6.0
+    version: 19.6.1
     condition: redis.enabled
