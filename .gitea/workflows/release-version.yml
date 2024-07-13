@@ -7,7 +7,7 @@ on:
 
 env:
   # renovate: datasource=docker depName=alpine/helm
-  HELM_VERSION: "3.14.4"
+  HELM_VERSION: "3.15.2"
 
 jobs:
   generate-chart-publish:
@@ -49,7 +49,6 @@ jobs:
           helm plugin install https://github.com/pat-s/helm-gpg
           helm dependency build
           helm package --version "${GITHUB_REF#refs/tags/v}" ./
-          helm gpg sign "gitea-${GITHUB_REF#refs/tags/v}.tgz"
           mkdir gitea
           mv gitea*.tgz gitea/
           curl -s -L -o gitea/index.yaml https://dl.gitea.com/charts/index.yaml

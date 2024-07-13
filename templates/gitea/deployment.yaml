@@ -243,6 +243,8 @@ spec:
             - name: GITEA_ADMIN_PASSWORD
               value: {{ .Values.gitea.admin.password | quote }}
             {{- end }}
+            - name: GITEA_ADMIN_PASSWORD_MODE
+              value: {{ include "gitea.admin.passwordMode" $ }}
             {{- if .Values.deployment.env }}
             {{- toYaml .Values.deployment.env | nindent 12 }}
             {{- end }}

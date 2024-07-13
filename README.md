@@ -50,6 +50,7 @@
   - [ReadinessProbe](#readinessprobe)
   - [StartupProbe](#startupprobe)
   - [redis-cluster](#redis-cluster)
+  - [redis](#redis)
   - [PostgreSQL HA](#postgresql-ha)
   - [PostgreSQL](#postgresql)
   - [Advanced](#advanced)
@@ -98,7 +99,8 @@ These dependencies are enabled by default:
 
 Alternatively, the following non-HA replacements are available:
 
-- PostgreSQL ([Bitnami PostgreSQL](postgresql](https://github.com/bitnami/charts/blob/main/bitnami/postgresql/Chart.yaml)))
+- PostgreSQL ([Bitnami PostgreSQL](<Postgresql](https://github.com/bitnami/charts/blob/main/bitnami/postgresql/Chart.yaml)>))
+- Redis ([Bitnami Redis](<Redis](https://github.com/bitnami/charts/blob/main/bitnami/redis/Chart.yaml)>))
 
 ### Dependency Versioning
 
@@ -117,6 +119,7 @@ Please double-check the image repository and available tags in the sub-chart:
 - [PostgreSQL-HA](https://hub.docker.com/r/bitnami/postgresql-repmgr/tags)
 - [PostgreSQL](https://hub.docker.com/r/bitnami/postgresql/tags)
 - [Redis Cluster](https://hub.docker.com/r/bitnami/redis-cluster/tags)
+- [Redis](https://hub.docker.com/r/bitnami/redis/tags)
 
 and look up the image tag which fits your needs on Dockerhub.
 
@@ -244,7 +247,7 @@ External tools such as `redis-cluster` or `memcached` handle these workloads muc
 
 If HA is not needed/desired, the following configurations can be used to deploy a single-pod Gitea instance.
 
-1. For a production-ready single-pod Gitea instance without external dependencies (using the chart dependency `postgresql`):
+1. For a production-ready single-pod Gitea instance without external dependencies (using the chart dependency `postgresql` and `redis`):
 
    <details>
 
@@ -253,6 +256,8 @@ If HA is not needed/desired, the following configurations can be used to deploy 
    ```yaml
    redis-cluster:
      enabled: false
+   redis:
+     enabled: true
    postgresql:
      enabled: true
    postgresql-ha:
@@ -265,12 +270,6 @@ If HA is not needed/desired, the following configurations can be used to deploy 
      config:
        database:
          DB_TYPE: postgres
-       session:
-         PROVIDER: db
-       cache:
-         ADAPTER: memory
-       queue:
-         TYPE: level
        indexer:
          ISSUE_INDEXER_TYPE: bleve
          REPO_INDEXER_ENABLED: true
@@ -289,6 +288,8 @@ If HA is not needed/desired, the following configurations can be used to deploy 
 
    ```yaml
    redis-cluster:
+     enabled: false
+   redis:
      enabled: false
    postgresql:
      enabled: false
@@ -566,6 +567,20 @@ stringData:
 gitea:
   admin:
     existingSecret: gitea-admin-secret
+```
+
+Whether you use the existing Secret or specify a user name and password, there are three modes for how the admin user password is created or set.
+
+- `keepUpdated` (the default) will set the admin user password, and reset it to the defined value every time the pod is recreated.
+- `initialOnlyNoReset` will set the admin user password when creating it, but never try to update the password.
+- `initialOnlyRequireReset` will set the admin user password when creating it, never update it, and require that the password be changed at the initial login.
+
+These modes can be set like the following:
+
+```yaml
+gitea:
+  admin:
+    passwordMode: initialOnlyRequireReset
 ```
 
 ### LDAP Settings
@@ -986,22 +1001,23 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 
 ### Gitea
 
-| Name                                   | Description                                                               | Value                |
-| -------------------------------------- | ------------------------------------------------------------------------- | -------------------- |
-| `gitea.admin.username`                 | Username for the Gitea admin user                                         | `gitea_admin`        |
-| `gitea.admin.existingSecret`           | Use an existing secret to store admin user credentials                    | `nil`                |
-| `gitea.admin.password`                 | Password for the Gitea admin user                                         | `r8sA8CPHD9!bt6d`    |
-| `gitea.admin.email`                    | Email for the Gitea admin user                                            | `gitea@local.domain` |
-| `gitea.metrics.enabled`                | Enable Gitea metrics                                                      | `false`              |
-| `gitea.metrics.serviceMonitor.enabled` | Enable Gitea metrics service monitor                                      | `false`              |
-| `gitea.ldap`                           | LDAP configuration                                                        | `[]`                 |
-| `gitea.oauth`                          | OAuth configuration                                                       | `[]`                 |
-| `gitea.config.server.SSH_PORT`         | SSH port for rootlful Gitea image                                         | `22`                 |
-| `gitea.config.server.SSH_LISTEN_PORT`  | SSH port for rootless Gitea image                                         | `2222`               |
-| `gitea.additionalConfigSources`        | Additional configuration from secret or configmap                         | `[]`                 |
-| `gitea.additionalConfigFromEnvs`       | Additional configuration sources from environment variables               | `[]`                 |
-| `gitea.podAnnotations`                 | Annotations for the Gitea pod                                             | `{}`                 |
-| `gitea.ssh.logLevel`                   | Configure OpenSSH's log level. Only available for root-based Gitea image. | `INFO`               |
+| Name                                   | Description                                                                                                                   | Value                |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| `gitea.admin.username`                 | Username for the Gitea admin user                                                                                             | `gitea_admin`        |
+| `gitea.admin.existingSecret`           | Use an existing secret to store admin user credentials                                                                        | `nil`                |
+| `gitea.admin.password`                 | Password for the Gitea admin user                                                                                             | `r8sA8CPHD9!bt6d`    |
+| `gitea.admin.email`                    | Email for the Gitea admin user                                                                                                | `gitea@local.domain` |
+| `gitea.admin.passwordMode`             | Mode for how to set/update the admin user password. Options are: initialOnlyNoReset, initialOnlyRequireReset, and keepUpdated | `keepUpdated`        |
+| `gitea.metrics.enabled`                | Enable Gitea metrics                                                                                                          | `false`              |
+| `gitea.metrics.serviceMonitor.enabled` | Enable Gitea metrics service monitor                                                                                          | `false`              |
+| `gitea.ldap`                           | LDAP configuration                                                                                                            | `[]`                 |
+| `gitea.oauth`                          | OAuth configuration                                                                                                           | `[]`                 |
+| `gitea.config.server.SSH_PORT`         | SSH port for rootlful Gitea image                                                                                             | `22`                 |
+| `gitea.config.server.SSH_LISTEN_PORT`  | SSH port for rootless Gitea image                                                                                             | `2222`               |
+| `gitea.additionalConfigSources`        | Additional configuration from secret or configmap                                                                             | `[]`                 |
+| `gitea.additionalConfigFromEnvs`       | Additional configuration sources from environment variables                                                                   | `[]`                 |
+| `gitea.podAnnotations`                 | Annotations for the Gitea pod                                                                                                 | `{}`                 |
+| `gitea.ssh.logLevel`                   | Configure OpenSSH's log level. Only available for root-based Gitea image.                                                     | `INFO`               |
 
 ### LivenessProbe
 
@@ -1041,12 +1057,25 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 
 ### redis-cluster
 
+Redis cluster and [Redis](#redis) cannot be enabled at the same time.
+
 | Name                             | Description                                  | Value   |
 | -------------------------------- | -------------------------------------------- | ------- |
-| `redis-cluster.enabled`          | Enable redis                                 | `true`  |
+| `redis-cluster.enabled`          | Enable redis cluster                         | `true`  |
 | `redis-cluster.usePassword`      | Whether to use password authentication       | `false` |
 | `redis-cluster.cluster.nodes`    | Number of redis cluster master nodes         | `3`     |
 | `redis-cluster.cluster.replicas` | Number of redis cluster master node replicas | `0`     |
+
+### redis
+
+Redis and [Redis cluster](#redis-cluster) cannot be enabled at the same time.
+
+| Name                          | Description                                | Value        |
+| ----------------------------- | ------------------------------------------ | ------------ |
+| `redis.enabled`               | Enable redis standalone or replicated      | `false`      |
+| `redis.architecture`          | Whether to use standalone or replication   | `standalone` |
+| `redis.global.redis.password` | Required password                          | `changeme`   |
+| `redis.master.count`          | Number of Redis master instances to deploy | `1`          |
 
 ### PostgreSQL HA
 
