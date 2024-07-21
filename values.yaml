@@ -107,6 +107,7 @@ service:
   ## @param service.http.loadBalancerSourceRanges Source range filter for http loadbalancer
   ## @param service.http.annotations HTTP service annotations
   ## @param service.http.labels HTTP service additional labels
+  ## @param service.http.loadBalancerClass Loadbalancer class
   http:
     type: ClusterIP
     port: 3000
@@ -120,6 +121,7 @@ service:
     loadBalancerSourceRanges: []
     annotations: {}
     labels: {}
+    loadBalancerClass:
   ## @param service.ssh.type Kubernetes service type for ssh traffic
   ## @param service.ssh.port Port number for ssh traffic
   ## @param service.ssh.clusterIP ClusterIP setting for ssh autosetup for deployment is None
@@ -133,6 +135,7 @@ service:
   ## @param service.ssh.loadBalancerSourceRanges Source range filter for ssh loadbalancer
   ## @param service.ssh.annotations SSH service annotations
   ## @param service.ssh.labels SSH service additional labels
+  ## @param service.ssh.loadBalancerClass Loadbalancer class
   ssh:
     type: ClusterIP
     port: 22
@@ -147,6 +150,7 @@ service:
     loadBalancerSourceRanges: []
     annotations: {}
     labels: {}
+    loadBalancerClass:
 
 ## @section Ingress
 ## @param ingress.enabled Enable ingress

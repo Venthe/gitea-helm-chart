@@ -12,6 +12,9 @@ metadata:
 spec:
   type: {{ .Values.service.ssh.type }}
   {{- if eq .Values.service.ssh.type "LoadBalancer" }}
+  {{- if .Values.service.ssh.loadBalancerClass }}
+  loadBalancerClass: {{ .Values.service.ssh.loadBalancerClass }}
+  {{- end }}
   {{- if .Values.service.ssh.loadBalancerIP }}
   loadBalancerIP: {{ .Values.service.ssh.loadBalancerIP }}
   {{- end -}}
