@@ -16,7 +16,7 @@ env:
 jobs:
   check-and-test:
     runs-on: ubuntu-latest
-    container: alpine/helm:3.15.2
+    container: alpine/helm:3.15.3
     steps:
       - name: install tools
         run: |
