@@ -30,6 +30,14 @@
       ],
       datasourceTemplate: 'github-releases',
     },
+    {
+      'description': 'Automatically detect new Gitea releases',
+      'customType': 'regex',
+      'fileMatch': ['(^|/)Chart\\.yaml$'],
+      'matchStrings': [
+        '# renovate datasource=(?<datasource>\\S+) depName=(?<depName>\\S+) extractVersion=(?<extractVersion>\\S+)\\nappVersion:\\s?(?<currentValue>\\S+)\\n',
+      ],
+    },
   ],
   packageRules: [
     {
@@ -55,6 +63,13 @@
         'patch',
         'digest',
       ],
+    },
+    {
+      description: 'Override changelog url for Helm image, to have release notes in our PRs',
+      matchDepNames: [
+        'alpine/helm',
+      ],
+      changelogUrl: 'https://github.com/helm/helm',
     },
   ],
 }
