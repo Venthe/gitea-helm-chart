@@ -333,14 +333,8 @@ https
   {{- if not .Values.gitea.config.indexer.ISSUE_INDEXER_TYPE -}}
      {{- $_ := set .Values.gitea.config.indexer "ISSUE_INDEXER_TYPE" "db" -}}
   {{- end -}}
-  {{- if not .Values.gitea.config.actions.GITEA__ACTIONS__ENABLED -}}
-     {{- $_ := set .Values.gitea.config.actions "GITEA__ACTIONS__ENABLED" "true" -}}
-  {{- end -}}
-  {{- if not .Values.gitea.config.actions.GITEA__SERVER__LOCAL_ROOT_URL -}}
-     {{- $_ := set .Values.gitea.config.actions "GITEA__SERVER__LOCAL_ROOT_URL" (printf "http://%s-http:%.0f" (include "gitea.fullname" .) .Values.service.http.port) -}}
-  {{- end -}}
-  {{- if not .Values.gitea.config.actions.GITEA__INSTANCE__URL -}}
-     {{- $_ := set .Values.gitea.config.actions "GITEA__INSTANCE__URL" (printf "http://%s-http:%.0f" (include "gitea.fullname" .) .Values.service.http.port) -}}
+  {{- if not .Values.gitea.config.actions.ENABLED -}}
+     {{- $_ := set .Values.gitea.config.actions "ENABLED" "false" -}}
   {{- end -}}
 {{- end -}}
 
@@ -360,6 +354,9 @@ https
   {{- end -}}
   {{- if not .Values.gitea.config.server.ROOT_URL -}}
     {{- $_ := set .Values.gitea.config.server "ROOT_URL" (printf "%s://%s" (include "gitea.public_protocol" .) .Values.gitea.config.server.DOMAIN) -}}
+  {{- end -}}
+  {{- if not .Values.gitea.config.server.LOCAL_ROOT_URL -}}
+     {{- $_ := set .Values.gitea.config.server "LOCAL_ROOT_URL" (printf "http://%s-http:%.0f" (include "gitea.fullname" .) .Values.service.http.port) -}}
   {{- end -}}
   {{- if not .Values.gitea.config.server.SSH_DOMAIN -}}
     {{- $_ := set .Values.gitea.config.server "SSH_DOMAIN" .Values.gitea.config.server.DOMAIN -}}

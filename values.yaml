@@ -401,6 +401,12 @@ actions:
       tag: 25.0.2-dind
       pullPolicy: IfNotPresent
 
+  init:
+    image:
+      repository: busybox
+      # Overrides the image tag whose default is the chart appVersion.
+      tag: "1.36.1"
+
   provisioning:
     enabled: false
 
@@ -411,15 +417,12 @@ actions:
     tolerations: []
     affinity: {}
 
-    token:
-      repository: gitea/gitea
-      tag: ""
-      pullPolicy: IfNotPresent
-
     publish:
       repository: bitnami/kubectl
       tag: 1.29.0
       pullPolicy: IfNotPresent
+
+    ttlSecondsAfterFinished: 300
 
   ## Specify an existing token secret
   ##

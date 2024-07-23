@@ -20,7 +20,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
-  ttlSecondsAfterFinished: 300
+  ttlSecondsAfterFinished: {{ .Values.actions.provisioning.ttlSecondsAfterFinished }}
   template:
     metadata:
       labels:
@@ -32,7 +32,7 @@ spec:
     spec:
       initContainers:
         - name: init-gitea
-          image: busybox:1.36.1
+          image: "{{ .Values.actions.init.repository }}:{{ .Values.actions.init.tag }}"
           command:
             - sh
             - -c
@@ -42,8 +42,8 @@ spec:
               done
       containers:
         - name: actions-token-create
-          image: "{{ .Values.actions.provisioning.token.repository }}:{{ .Values.actions.provisioning.token.tag | default (printf "%s-rootless" .Chart.AppVersion) }}"
-          imagePullPolicy: {{ .Values.actions.provisioning.token.pullPolicy }}
+          image: "{{ include "gitea.image" . }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: GITEA_APP_INI
               value: /data/gitea/conf/app.ini

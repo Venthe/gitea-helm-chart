@@ -28,7 +28,7 @@ spec:
     spec:
       initContainers:
         - name: init-gitea
-          image: busybox:1.36.1
+          image: "{{ .Values.actions.init.repository }}:{{ .Values.actions.init.tag }}"
           command:
             - sh
             - -c
@@ -54,7 +54,7 @@ spec:
                   name: "{{ .Values.actions.existingSecret | default $secretName }}"
                   key: "{{ .Values.actions.existingSecretKey | default "token" }}"
             - name: GITEA_INSTANCE_URL
-              value: "http://{{ include "gitea.fullname" . }}-http:{{ .Values.service.http.port }}"
+              value: {{ .Values.gitea.config.server.LOCAL_ROOT_URL | quote }}
             - name: CONFIG_FILE
               value: /actrunner/config.yaml
           resources:
