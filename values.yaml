@@ -344,6 +344,8 @@ signing:
 ## @section Gitea Actions
 #
 ## @param actions.enabled Create an act runner StatefulSet.
+## @param actions.init.image.repository The image used for the init containers
+## @param actions.init.image.tag The image tag used for the init containers
 ## @param actions.statefulset.annotations Act runner annotations
 ## @param actions.statefulset.labels Act runner labels
 ## @param actions.statefulset.resources Act runner resources
@@ -364,9 +366,7 @@ signing:
 ## @param actions.provisioning.nodeSelector NodeSelector for the job
 ## @param actions.provisioning.tolerations Tolerations for the job
 ## @param actions.provisioning.affinity Affinity for the job
-## @param actions.provisioning.token.repository The image that can create a token via `gitea actions generate-runner-token`
-## @param actions.provisioning.token.tag The token image tag that can create a token
-## @param actions.provisioning.token.pullPolicy The token image pullPolicy that can create a token
+## @param actions.provisioning.ttlSecondsAfterFinished ttl for the job after finished in order to allow helm to properly recognize that the job completed
 ## @param actions.provisioning.publish.repository The image that can create the secret via kubectl
 ## @param actions.provisioning.publish.tag The publish image tag that can create the secret
 ## @param actions.provisioning.publish.pullPolicy The publish image pullPolicy that can create the secret
