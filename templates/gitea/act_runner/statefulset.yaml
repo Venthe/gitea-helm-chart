@@ -28,7 +28,7 @@ spec:
     spec:
       initContainers:
         - name: init-gitea
-          image: "{{ .Values.actions.init.repository }}:{{ .Values.actions.init.tag }}"
+          image: "{{ .Values.actions.init.image.repository }}:{{ .Values.actions.init.image.tag }}"
           command:
             - sh
             - -c
