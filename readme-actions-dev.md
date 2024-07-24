@@ -1,6 +1,7 @@
 # Gitea Actions
 
 In order to use the Gitea Actions act-runner you must either:
+
 - enable persistence (used for automatic deployment to be able to store the token in a place accessible for the Job)
 - create a secret containing the act runner token and reference it as a `existingSecret`
 
