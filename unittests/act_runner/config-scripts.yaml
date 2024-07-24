@@ -21,3 +21,5 @@ tests:
           kind: ConfigMap
           apiVersion: v1
           name: gitea-unittests-scripts
+      - isNotNullOrEmpty:
+          path: data["token.sh"]

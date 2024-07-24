@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json
 suite: actions template | config-act-runner
 release:
   name: gitea-unittests
@@ -10,6 +11,16 @@ tests:
     set:
       actions:
         enabled: true
+        statefulset:
+          actRunner:
+            config: |
+              log:
+                level: info
+              cache:
+                enabled: false
+              runner:
+                labels:
+                  - "ubuntu-latest"
     asserts:
       - hasDocuments:
           count: 1
@@ -17,3 +28,13 @@ tests:
           kind: ConfigMap
           apiVersion: v1
           name: gitea-unittests-act-runner-config
+      - equal:
+          path: data["config.yaml"]
+          value: |
+            log:
+              level: info
+            cache:
+              enabled: false
+            runner:
+              labels:
+                - "ubuntu-latest"

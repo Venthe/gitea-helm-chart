@@ -2,6 +2,9 @@ suite: actions template | job
 release:
   name: gitea-unittests
   namespace: testing
+chart:
+  # Override appVersion to be consistent with used digest :)
+  appVersion: 1.19.3
 templates:
   - templates/gitea/act_runner/job.yaml
 tests:
@@ -21,3 +24,25 @@ tests:
           kind: Job
           apiVersion: batch/v1
           name: gitea-unittests-actions-token-job
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: "gitea/gitea:1.19.3-rootless"
+  - it: tag override
+    template: templates/gitea/act_runner/job.yaml
+    set:
+      image.tag: "1.19.4"
+      actions:
+        provisioning:
+          enabled: true
+          publish:
+            tag: "1.29.0"
+      persistence:
+        enabled: true
+        mount: true
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: "gitea/gitea:1.19.4-rootless"
+      - equal:
+          path: spec.template.spec.containers[1].image
+          value: "bitnami/kubectl:1.29.0"

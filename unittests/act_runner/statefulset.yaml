@@ -17,3 +17,11 @@ tests:
           kind: StatefulSet
           apiVersion: apps/v1
           name: gitea-unittests-act-runner
+      - equal:
+          path: spec.template.spec.containers[0].env[3]
+          value:
+            name: GITEA_RUNNER_REGISTRATION_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: "gitea-unittests-actions-token"
+                key: "token"
