@@ -976,6 +976,7 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 | `persistence.storageClass`                        | Name of the storage class to use                                                                      | `nil`                  |
 | `persistence.subPath`                             | Subdirectory of the volume to mount at                                                                | `nil`                  |
 | `persistence.volumeName`                          | Name of persistent volume in PVC                                                                      | `""`                   |
+| `extraContainers`                                 | Additional sidecar containers to run in the pod                                                       | `[]`                   |
 | `extraVolumes`                                    | Additional volumes to mount to the Gitea deployment                                                   | `[]`                   |
 | `extraContainerVolumeMounts`                      | Mounts that are only mapped into the Gitea runtime/main container, to e.g. override custom templates. | `[]`                   |
 | `extraInitVolumeMounts`                           | Mounts that are only mapped into the init-containers. Can be used for additional preconfiguration.    | `[]`                   |

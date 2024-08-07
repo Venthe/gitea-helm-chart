@@ -263,6 +263,9 @@ spec:
             {{- toYaml .Values.initContainers.resources | nindent 12 }}
       terminationGracePeriodSeconds: {{ .Values.deployment.terminationGracePeriodSeconds }}
       containers:
+        {{- if .Values.extraContainers }}
+        {{- toYaml .Values.extraContainers | nindent 8 }}
+        {{- end }}
         - name: {{ .Chart.Name }}
           image: "{{ include "gitea.image" . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}

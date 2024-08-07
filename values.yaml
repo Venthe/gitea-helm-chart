@@ -280,6 +280,12 @@ persistence:
   annotations:
     helm.sh/resource-policy: keep
 
+## @param extraContainers Additional sidecar containers to run in the pod
+extraContainers: []
+#  - name: sidecar-bob
+#    image: busybox
+#    command: [/bin/sh, -c, 'echo "Hello world"; sleep 86400']
+
 ## @param extraVolumes Additional volumes to mount to the Gitea deployment
 extraVolumes: []
 # - name: postgres-ssl-vol
