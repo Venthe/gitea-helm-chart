@@ -263,9 +263,6 @@ spec:
             {{- toYaml .Values.initContainers.resources | nindent 12 }}
       terminationGracePeriodSeconds: {{ .Values.deployment.terminationGracePeriodSeconds }}
       containers:
-        {{- if .Values.extraContainers }}
-        {{- toYaml .Values.extraContainers | nindent 8 }}
-        {{- end }}
         - name: {{ .Chart.Name }}
           image: "{{ include "gitea.image" . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -342,6 +339,9 @@ spec:
               subPath: {{ .Values.persistence.subPath }}
               {{- end }}
             {{- include "gitea.container-additional-mounts" . | nindent 12 }}
+        {{- if .Values.extraContainers }}
+        {{- toYaml .Values.extraContainers | nindent 8 }}
+        {{- end }}
       {{- with .Values.global.hostAliases }}
       hostAliases:
         {{- toYaml . | nindent 8 }}
