@@ -1180,11 +1180,11 @@ If this happened to you by accident, you can still recover your data by setting 
 
 If you want to stay with a `memcache` instead of `redis-cluster`, you need to deploy `memcache` manually (e.g. from [bitnami](https://github.com/bitnami/charts/tree/main/bitnami/memcached)) and set
 
-- `cache.HOST = "<memcache connection string>"`
+- `cache.HOST = "<memcache service name>:<memcache service port>"`
 - `cache.ADAPTER = "memcache"`
 - `session.PROVIDER = "memcache"`
-- `session.PROVIDER_CONFIG = "<memcache connection string>"`
-- `queue.TYPE = "memcache"`
+- `session.PROVIDER_CONFIG = "<memcache service name>:<memcache service port>"`
+- `queue.TYPE = "channel"`
 - `queue.CONN_STR = "<memcache connection string>"`
 
 The `memcache` connection string has the scheme `memcache://<memcache service name>:<memcache service port>`, e.g. `gitea-memcached.gitea.svc.cluster.local:11211`.
