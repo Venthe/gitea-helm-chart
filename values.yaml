@@ -488,6 +488,8 @@ gitea:
 
 ## @section redis-cluster
 ## @param redis-cluster.enabled Enable redis cluster
+# ⚠️ The redis charts do not work well with special characters in the password (<https://gitea.com/gitea/helm-chart/issues/690>).
+# Consider omitting such or open an issue in the Bitnami repo and let us know once this got fixed.
 ## @param redis-cluster.usePassword Whether to use password authentication
 ## @param redis-cluster.cluster.nodes Number of redis cluster master nodes
 ## @param redis-cluster.cluster.replicas Number of redis cluster master node replicas
@@ -504,6 +506,8 @@ redis-cluster:
 ## @section redis
 ## @param redis.enabled Enable redis standalone or replicated
 ## @param redis.architecture Whether to use standalone or replication
+# ⚠️ The redis charts do not work well with special characters in the password (<https://gitea.com/gitea/helm-chart/issues/690>).
+# Consider omitting such or open an issue in the Bitnami repo and let us know once this got fixed.
 ## @param redis.global.redis.password Required password
 ## @param redis.master.count Number of Redis master instances to deploy
 ## @descriptionStart

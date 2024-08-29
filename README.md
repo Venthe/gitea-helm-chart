@@ -498,6 +498,9 @@ redis-cluster:
   enabled: true
 ```
 
+⚠️ The redis charts [do not work well with special characters in the password](https://gitea.com/gitea/helm-chart/issues/690).
+Consider omitting such or open an issue in the Bitnami repo and let us know once this got fixed.
+
 ### Persistence
 
 Gitea will be deployed as a deployment.
