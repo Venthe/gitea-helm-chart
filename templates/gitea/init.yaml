@@ -24,8 +24,6 @@ stringData:
     # END: initPreScript
     {{- end }}
 
-    set -x
-
     {{- if not .Values.image.rootless }}
     chown 1000:1000 /data
     {{- end }}
