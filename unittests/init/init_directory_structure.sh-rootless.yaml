@@ -28,7 +28,6 @@ tests:
             #!/usr/bin/env bash
 
             set -euo pipefail
-
             mkdir -pv /data/git/.ssh
             chmod -Rv 700 /data/git/.ssh
             [ ! -d /data/gitea/conf ] && mkdir -pv /data/gitea/conf
@@ -50,7 +49,6 @@ tests:
             #!/usr/bin/env bash
 
             set -euo pipefail
-
             mkdir -pv /data/git/.ssh
             chmod -Rv 700 /data/git/.ssh
             [ ! -d /data/gitea/conf ] && mkdir -pv /data/gitea/conf
@@ -75,7 +73,6 @@ tests:
             #!/usr/bin/env bash
 
             set -euo pipefail
-
             mkdir -pv /data/git/.ssh
             chmod -Rv 700 /data/git/.ssh
             [ ! -d /data/gitea/conf ] && mkdir -pv /data/gitea/conf
