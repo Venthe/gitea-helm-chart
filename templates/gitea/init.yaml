@@ -29,14 +29,14 @@ stringData:
     {{- end }}
     mkdir -pv /data/git/.ssh
     chmod -Rv 700 /data/git/.ssh
-    [ ! -d /data/gitea/conf ] && mkdir -p /data/gitea/conf
+    [ ! -d /data/gitea/conf ] && mkdir -pv /data/gitea/conf
 
     # prepare temp directory structure
     mkdir -pv "${GITEA_TEMP}"
     {{- if not .Values.image.rootless }}
     chown -v 1000:1000 "${GITEA_TEMP}"
     {{- end }}
-    chmod ug+rwx "${GITEA_TEMP}"
+    chmod -v ug+rwx "${GITEA_TEMP}"
 
     {{ if .Values.signing.enabled -}}
     if [ ! -d "${GNUPGHOME}" ]; then
