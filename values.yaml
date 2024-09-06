@@ -535,7 +535,7 @@ redis:
 ## @param postgresql-ha.postgresql.postgresPassword postgres Password
 ## @param postgresql-ha.pgpool.adminPassword pgpool adminPassword
 ## @param postgresql-ha.service.ports.postgresql PostgreSQL service port (overrides `service.ports.postgresql`)
-## @param postgresql-ha.primary.persistence.size PVC Storage Request for PostgreSQL HA volume
+## @param postgresql-ha.persistence.size PVC Storage Request for PostgreSQL HA volume
 postgresql-ha:
   global:
     postgresql:
@@ -552,9 +552,8 @@ postgresql-ha:
   service:
     ports:
       postgresql: 5432
-  primary:
-    persistence:
-      size: 10Gi
+  persistence:
+    size: 10Gi
 
 ## @section PostgreSQL
 #
