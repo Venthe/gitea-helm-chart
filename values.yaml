@@ -357,12 +357,22 @@ gitea:
 
   ## @param gitea.metrics.enabled Enable Gitea metrics
   ## @param gitea.metrics.serviceMonitor.enabled Enable Gitea metrics service monitor
+  ## @param gitea.metrics.serviceMonitor.interval Interval at which metrics should be scraped If not specified Prometheus' global scrape interval is used.
+  ## @param gitea.metrics.serviceMonitor.relabelings RelabelConfigs to apply to samples before scraping.
+  ## @param gitea.metrics.serviceMonitor.scheme HTTP scheme to use for scraping. For example `http` or `https`. Default is http.
+  ## @param gitea.metrics.serviceMonitor.scrapeTimeout Timeout after which the scrape is ended If not specified, global prometheus scrape timeout is used.
+  ## @param gitea.metrics.serviceMonitor.tlsConfig TLS configuration to use when scraping the metric endpoint by prometheus.
   metrics:
     enabled: false
     serviceMonitor:
       enabled: false
       #  additionalLabels:
       #    prometheus-release: prom1
+      interval: ""
+      relabelings: []
+      scheme: ""
+      scrapeTimeout: ""
+      tlsConfig: {}
 
   ## @param gitea.ldap LDAP configuration
   ldap:
