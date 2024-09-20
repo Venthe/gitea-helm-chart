@@ -14,8 +14,8 @@ tests:
           image: busybox
     asserts:
       - equal:
-          path: spec.template.spec.containers[0].name
+          path: spec.template.spec.containers[1].name
           value: "sidecar-bob"
       - equal:
-          path: spec.template.spec.containers[0].image
+          path: spec.template.spec.containers[1].image
           value: "busybox"
