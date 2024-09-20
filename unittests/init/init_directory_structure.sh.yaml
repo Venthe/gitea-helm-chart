@@ -31,17 +31,15 @@ tests:
             #!/usr/bin/env bash
 
             set -euo pipefail
-
-            set -x
-            chown 1000:1000 /data
-            mkdir -p /data/git/.ssh
-            chmod -R 700 /data/git/.ssh
-            [ ! -d /data/gitea/conf ] && mkdir -p /data/gitea/conf
+            chown -v 1000:1000 /data
+            mkdir -pv /data/git/.ssh
+            chmod -Rv 700 /data/git/.ssh
+            [ ! -d /data/gitea/conf ] && mkdir -pv /data/gitea/conf
 
             # prepare temp directory structure
-            mkdir -p "${GITEA_TEMP}"
-            chown 1000:1000 "${GITEA_TEMP}"
-            chmod ug+rwx "${GITEA_TEMP}"
+            mkdir -pv "${GITEA_TEMP}"
+            chown -v 1000:1000 "${GITEA_TEMP}"
+            chmod -v ug+rwx "${GITEA_TEMP}"
   - it: adds gpg script block for enabled signing
     set:
       image.rootless: false
@@ -57,20 +55,18 @@ tests:
             #!/usr/bin/env bash
 
             set -euo pipefail
-
-            set -x
-            chown 1000:1000 /data
-            mkdir -p /data/git/.ssh
-            chmod -R 700 /data/git/.ssh
-            [ ! -d /data/gitea/conf ] && mkdir -p /data/gitea/conf
+            chown -v 1000:1000 /data
+            mkdir -pv /data/git/.ssh
+            chmod -Rv 700 /data/git/.ssh
+            [ ! -d /data/gitea/conf ] && mkdir -pv /data/gitea/conf
 
             # prepare temp directory structure
-            mkdir -p "${GITEA_TEMP}"
-            chown 1000:1000 "${GITEA_TEMP}"
-            chmod ug+rwx "${GITEA_TEMP}"
+            mkdir -pv "${GITEA_TEMP}"
+            chown -v 1000:1000 "${GITEA_TEMP}"
+            chmod -v ug+rwx "${GITEA_TEMP}"
 
             if [ ! -d "${GNUPGHOME}" ]; then
-              mkdir -p "${GNUPGHOME}"
-              chmod 700 "${GNUPGHOME}"
-              chown 1000:1000 "${GNUPGHOME}"
+              mkdir -pv "${GNUPGHOME}"
+              chmod -v 700 "${GNUPGHOME}"
+              chown -v 1000:1000 "${GNUPGHOME}"
             fi
