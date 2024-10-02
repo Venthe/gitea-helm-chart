@@ -3,6 +3,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ include "gitea.fullname" . }}
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
   labels:
     {{- include "gitea.labels" . | nindent 4 }}
     {{- if .Values.gitea.metrics.serviceMonitor.additionalLabels }}

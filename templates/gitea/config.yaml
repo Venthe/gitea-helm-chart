@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: {{ include "gitea.fullname" . }}-inline-config
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
   labels:
     {{- include "gitea.labels" . | nindent 4 }}
 type: Opaque
@@ -12,6 +13,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: {{ include "gitea.fullname" . }}
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
   labels:
     {{- include "gitea.labels" . | nindent 4 }}
 type: Opaque

@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ .Values.persistence.claimName }}
-  namespace: {{ $.Release.Namespace }}
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
   annotations:
 {{ .Values.persistence.annotations | toYaml | indent 4}}
   labels:
