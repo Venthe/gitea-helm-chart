@@ -91,7 +91,12 @@ spec:
               {{- end }}
             {{- include "gitea.init-additional-mounts" . | nindent 12 }}
           securityContext:
+            {{- /* Honor the initContainerSecurityContext variable when defined */ -}}
+            {{- if .Values.initContainerSecurityContext -}}
+            {{- toYaml .Values.initContainerSecurityContext | nindent 12 }}
+            {{- else -}}
             {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+            {{- end }}
           resources:
             {{- toYaml .Values.initContainers.resources | nindent 12 }}
         - name: init-app-ini
@@ -131,7 +136,12 @@ spec:
             {{- end }}
             {{- include "gitea.init-additional-mounts" . | nindent 12 }}
           securityContext:
+            {{- /* Honor the initContainerSecurityContext variable when defined */ -}}
+            {{- if .Values.initContainerSecurityContext -}}
+            {{- toYaml .Values.initContainerSecurityContext | nindent 12 }}
+            {{- else -}}
             {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+            {{- end }}
           resources:
             {{- toYaml .Values.initContainers.resources | nindent 12 }}
         {{- if .Values.signing.enabled }}
@@ -140,8 +150,12 @@ spec:
           command: ["/usr/sbin/configure_gpg_environment.sh"]
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
-            {{- /* By default this container runs as user 1000 unless otherwise stated */ -}}
             {{- $csc := deepCopy .Values.containerSecurityContext -}}
+            {{- /* Honor the initContainerSecurityContext variable when defined */ -}}
+            {{- if .Values.initContainerSecurityContext -}}
+            {{- $csc = deepCopy .Values.initContainerSecurityContext -}}
+            {{- end }}
+            {{- /* By default this container runs as user 1000 unless otherwise stated */ -}}
             {{- if not (hasKey $csc "runAsUser") -}}
             {{- $_ := set $csc "runAsUser" 1000 -}}
             {{- end -}}
@@ -171,8 +185,12 @@ spec:
           command: ["/usr/sbin/configure_gitea.sh"]
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
-            {{- /* By default this container runs as user 1000 unless otherwise stated */ -}}
             {{- $csc := deepCopy .Values.containerSecurityContext -}}
+            {{- /* Honor the initContainerSecurityContext variable when defined */ -}}
+            {{- if .Values.initContainerSecurityContext -}}
+            {{- $csc = deepCopy .Values.initContainerSecurityContext -}}
+            {{- end }}
+            {{- /* By default this container runs as user 1000 unless otherwise stated */ -}}
             {{- if not (hasKey $csc "runAsUser") -}}
             {{- $_ := set $csc "runAsUser" 1000 -}}
             {{- end -}}

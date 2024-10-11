@@ -885,12 +885,13 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 
 ### Security
 
-| Name                         | Description                                                     | Value  |
-| ---------------------------- | --------------------------------------------------------------- | ------ |
-| `podSecurityContext.fsGroup` | Set the shared file system group for all containers in the pod. | `1000` |
-| `containerSecurityContext`   | Security context                                                | `{}`   |
-| `securityContext`            | Run init and Gitea containers as a specific securityContext     | `{}`   |
-| `podDisruptionBudget`        | Pod disruption budget                                           | `{}`   |
+| Name                           | Description                                                     | Value  |
+| ------------------------------ | --------------------------------------------------------------- | ------ |
+| `podSecurityContext.fsGroup`   | Set the shared file system group for all containers in the pod. | `1000` |
+| `containerSecurityContext`     | Security context                                                | `{}`   |
+| `initContainerSecurityContext` | Override containerSecurityContext for init containers           | `{}`   |
+| `securityContext`              | Run init and Gitea containers as a specific securityContext     | `{}`   |
+| `podDisruptionBudget`          | Pod disruption budget                                           | `{}`   |
 
 ### Service
 

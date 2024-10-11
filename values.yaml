@@ -85,6 +85,9 @@ containerSecurityContext: {}
 #   runAsNonRoot: true
 #   runAsUser: 1000
 
+## @param initContainerSecurityContext Override containerSecurityContext for init containers
+initContainerSecurityContext: {}
+
 ## @deprecated The securityContext variable has been split two:
 ## - containerSecurityContext
 ## - podSecurityContext.
