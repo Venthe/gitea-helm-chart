@@ -420,6 +420,9 @@ gitea:
 
 postgresql:
   enabled: false
+
+postgresql-ha:
+  enabled: false
 ```
 
 ### Ports and external url
