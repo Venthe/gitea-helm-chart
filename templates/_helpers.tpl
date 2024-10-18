@@ -408,3 +408,21 @@ https
 {{ printf "gitea.admin.passwordMode must be set to one of 'keepUpdated', 'initialOnlyNoReset', or 'initialOnlyRequireReset'. Received: '%s'" .Values.gitea.admin.passwordMode | fail }}
 {{- end -}}
 {{- end -}}
+
+{{/* Create a functioning probe object for rendering. Given argument must be either a livenessProbe, readinessProbe, or startupProbe */}}
+{{- define "gitea.deployment.probe" -}}
+  {{- $probe := unset . "enabled" -}}
+  {{- $probeKeys := keys $probe -}}
+  {{- $containsCustomMethod := false -}}
+  {{- $chartDefaultMethod := "tcpSocket" -}}
+  {{- $nonChartDefaultMethods := list "exec" "httpGet" "grpc" -}}
+  {{- range $probeKeys -}}
+    {{- if has . $nonChartDefaultMethods -}}
+      {{- $containsCustomMethod = true -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if $containsCustomMethod -}}
+    {{- $probe = unset . $chartDefaultMethod -}}
+  {{- end -}}
+  {{- toYaml $probe -}}
+{{- end -}}
