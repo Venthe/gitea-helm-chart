@@ -9,6 +9,8 @@ tests:
   - it: renders default liveness probe
     template: templates/gitea/deployment.yaml
     asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].livenessProbe.enabled
       - isSubset:
           path: spec.template.spec.containers[0].livenessProbe
           content:
@@ -22,6 +24,8 @@ tests:
   - it: renders default readiness probe
     template: templates/gitea/deployment.yaml
     asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].readinessProbe.enabled
       - isSubset:
           path: spec.template.spec.containers[0].readinessProbe
           content:
@@ -42,6 +46,8 @@ tests:
     set:
       gitea.startupProbe.enabled: true
     asserts:
+      - notExists:
+          path: spec.template.spec.containers[0].startupProbe.enabled
       - isSubset:
           path: spec.template.spec.containers[0].startupProbe
           content:
