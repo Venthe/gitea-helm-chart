@@ -52,3 +52,46 @@ tests:
             tcpSocket:
               port: http
             timeoutSeconds: 1
+
+  - it: allows overwriting the default port of the liveness probe
+    template: templates/gitea/deployment.yaml
+    set:
+      gitea:
+        livenessProbe:
+          tcpSocket:
+            port: my-port
+    asserts:
+      - isSubset:
+          path: spec.template.spec.containers[0].livenessProbe
+          content:
+            tcpSocket:
+              port: my-port
+
+  - it: allows overwriting the default port of the readiness probe
+    template: templates/gitea/deployment.yaml
+    set:
+      gitea:
+        readinessProbe:
+          tcpSocket:
+            port: my-port
+    asserts:
+      - isSubset:
+          path: spec.template.spec.containers[0].readinessProbe
+          content:
+            tcpSocket:
+              port: my-port
+
+  - it: allows overwriting the default port of the startup probe
+    template: templates/gitea/deployment.yaml
+    set:
+      gitea:
+        startupProbe:
+          enabled: true
+          tcpSocket:
+            port: my-port
+    asserts:
+      - isSubset:
+          path: spec.template.spec.containers[0].startupProbe
+          content:
+            tcpSocket:
+              port: my-port
