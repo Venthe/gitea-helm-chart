@@ -852,13 +852,14 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 
 ### Global
 
-| Name                      | Description                                                               | Value |
-| ------------------------- | ------------------------------------------------------------------------- | ----- |
-| `global.imageRegistry`    | global image registry override                                            | `""`  |
-| `global.imagePullSecrets` | global image pull secrets override; can be extended by `imagePullSecrets` | `[]`  |
-| `global.storageClass`     | global storage class override                                             | `""`  |
-| `global.hostAliases`      | global hostAliases which will be added to the pod's hosts files           | `[]`  |
-| `replicaCount`            | number of replicas for the deployment                                     | `1`   |
+| Name                      | Description                                                                                    | Value |
+| ------------------------- | ---------------------------------------------------------------------------------------------- | ----- |
+| `global.imageRegistry`    | global image registry override                                                                 | `""`  |
+| `global.imagePullSecrets` | global image pull secrets override; can be extended by `imagePullSecrets`                      | `[]`  |
+| `global.storageClass`     | global storage class override                                                                  | `""`  |
+| `global.hostAliases`      | global hostAliases which will be added to the pod's hosts files                                | `[]`  |
+| `namespace`               | An explicit namespace to deploy Gitea into. Defaults to the release namespace if not specified | `""`  |
+| `replicaCount`            | number of replicas for the deployment                                                          | `1`   |
 
 ### strategy
 
