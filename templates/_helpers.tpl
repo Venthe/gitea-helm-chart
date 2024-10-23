@@ -426,3 +426,7 @@ https
   {{- end -}}
   {{- toYaml $probe -}}
 {{- end -}}
+
+{{- define "gitea.metrics-secret-name" -}}
+{{ default (printf "%s-metrics-secret" (include "gitea.fullname" .)) }}
+{{- end -}}

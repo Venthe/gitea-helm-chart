@@ -30,6 +30,7 @@
   - [OAuth2 Settings](#oauth2-settings)
 - [Configure commit signing](#configure-commit-signing)
 - [Metrics and profiling](#metrics-and-profiling)
+  - [Secure Metrics Endpoint](#secure-metrics-endpoint)
 - [Pod annotations](#pod-annotations)
 - [Themes](#themes)
 - [Renovate](#renovate)
@@ -744,6 +745,24 @@ gitea:
   config:
     server:
       ENABLE_PPROF: true
+```
+
+### Secure Metrics Endpoint
+
+Metrics endpoint `/metrics` can be secured by using `Bearer` token authentication.
+
+**Note:** Providing non-empty `TOKEN` value will also require authentication for `ServiceMonitor`.
+
+```yaml
+gitea:
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+
+  config:
+    metrics:
+      TOKEN: "secure-token"
 ```
 
 ## Pod annotations

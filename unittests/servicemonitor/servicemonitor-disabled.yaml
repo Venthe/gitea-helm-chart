@@ -1,0 +1,23 @@
+suite: ServiceMonitor template (monitoring disabled)
+release:
+  name: gitea-unittests
+  namespace: testing
+templates:
+  - templates/gitea/servicemonitor.yaml
+tests:
+  - it: renders nothing if gitea.metrics.serviceMonitor disabled and gitea.config.metrics.TOKEN empty
+    set:
+      gitea.metrics.enabled: false
+      gitea.metrics.serviceMonitor.enabled: false
+      gitea.config.metrics.TOKEN: ""
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: renders nothing if gitea.metrics.serviceMonitor disabled and gitea.config.metrics.TOKEN not empty
+    set:
+      gitea.metrics.enabled: false
+      gitea.metrics.serviceMonitor.enabled: false
+      gitea.config.metrics.TOKEN: "test-token"
+    asserts:
+      - hasDocuments:
+          count: 0
