@@ -17,3 +17,29 @@ tests:
           value: |-
             ENABLED=true
             TOKEN=somepassword
+  - it: metrics token is empty
+    template: templates/gitea/config.yaml
+    set:
+      gitea:
+        metrics:
+          enabled: true
+          token: ""
+    asserts:
+      - documentIndex: 0
+        equal:
+          path: stringData.metrics
+          value: |-
+            ENABLED=true
+  - it: metrics token is nil
+    template: templates/gitea/config.yaml
+    set:
+      gitea:
+        metrics:
+          enabled: true
+          token:
+    asserts:
+      - documentIndex: 0
+        equal:
+          path: stringData.metrics
+          value: |-
+            ENABLED=true
