@@ -278,6 +278,9 @@ https
   {{- if not (hasKey .Values.gitea.config.metrics "ENABLED") -}}
     {{- $_ := set .Values.gitea.config.metrics "ENABLED" .Values.gitea.metrics.enabled -}}
   {{- end -}}
+  {{- if not (hasKey .Values.gitea.config.metrics "TOKEN") -}}
+    {{- $_ := set .Values.gitea.config.metrics "TOKEN" .Values.gitea.metrics.token -}}
+  {{- end -}}
   {{- /* redis queue */ -}}
   {{- if or ((index .Values "redis-cluster").enabled) ((index .Values "redis").enabled) -}}
     {{- $_ := set .Values.gitea.config.queue "TYPE" "redis" -}}

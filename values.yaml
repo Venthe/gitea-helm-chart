@@ -365,6 +365,7 @@ gitea:
     passwordMode: keepUpdated
 
   ## @param gitea.metrics.enabled Enable Gitea metrics
+  ## @param gitea.metrics.token used for `bearer` token authentication on metrics endpoint. If not specified or empty metrics endpoint is public.
   ## @param gitea.metrics.serviceMonitor.enabled Enable Gitea metrics service monitor. Requires, that `gitea.metrics.enabled` is also set to true, to enable metrics generally.
   ## @param gitea.metrics.serviceMonitor.interval Interval at which metrics should be scraped. If not specified Prometheus' global scrape interval is used.
   ## @param gitea.metrics.serviceMonitor.relabelings RelabelConfigs to apply to samples before scraping.
@@ -373,6 +374,7 @@ gitea:
   ## @param gitea.metrics.serviceMonitor.tlsConfig TLS configuration to use when scraping the metric endpoint by Prometheus.
   metrics:
     enabled: false
+    token:
     serviceMonitor:
       enabled: false
       #  additionalLabels:

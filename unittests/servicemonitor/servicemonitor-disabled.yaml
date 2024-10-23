@@ -5,19 +5,19 @@ release:
 templates:
   - templates/gitea/servicemonitor.yaml
 tests:
-  - it: renders nothing if gitea.metrics.serviceMonitor disabled and gitea.config.metrics.TOKEN empty
+  - it: renders nothing if gitea.metrics.serviceMonitor disabled and gitea.metrics.token empty
     set:
       gitea.metrics.enabled: false
+      gitea.metrics.token: ""
       gitea.metrics.serviceMonitor.enabled: false
-      gitea.config.metrics.TOKEN: ""
     asserts:
       - hasDocuments:
           count: 0
-  - it: renders nothing if gitea.metrics.serviceMonitor disabled and gitea.config.metrics.TOKEN not empty
+  - it: renders nothing if gitea.metrics.serviceMonitor disabled and gitea.metrics.token not empty
     set:
       gitea.metrics.enabled: false
+      gitea.metrics.token: "test-token"
       gitea.metrics.serviceMonitor.enabled: false
-      gitea.config.metrics.TOKEN: "test-token"
     asserts:
       - hasDocuments:
           count: 0

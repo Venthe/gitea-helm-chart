@@ -32,7 +32,7 @@ spec:
     tlsConfig:
       {{- . | toYaml | nindent 6 }}
     {{- end }}
-    {{- if and (.Values.gitea.config.metrics) (.Values.gitea.config.metrics.TOKEN) }}
+    {{- if .Values.gitea.metrics.token }}
     authorization:
       type: Bearer
       credentials:

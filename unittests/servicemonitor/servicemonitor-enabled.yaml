@@ -5,11 +5,11 @@ release:
 templates:
   - templates/gitea/servicemonitor.yaml
 tests:
-  - it: renders unsecure ServiceMonitor if gitea.config.metrics.TOKEN empty
+  - it: renders unsecure ServiceMonitor if gitea.metrics.token nil
     set:
       gitea.metrics.enabled: true
+      gitea.metrics.token:
       gitea.metrics.serviceMonitor.enabled: true
-      gitea.config.metrics.TOKEN: ""
     asserts:
       - hasDocuments:
           count: 1
@@ -24,11 +24,30 @@ tests:
           path: spec.endpoints
           value:
             - port: http
-  - it: renders secure ServiceMonitor if gitea.config.metrics.TOKEN not empty
+  - it: renders unsecure ServiceMonitor if gitea.metrics.token empty
     set:
       gitea.metrics.enabled: true
+      gitea.metrics.token: ""
       gitea.metrics.serviceMonitor.enabled: true
-      gitea.config.metrics.TOKEN: "test-token"
+    asserts:
+      - hasDocuments:
+          count: 1
+      - documentIndex: 0
+        containsDocument:
+          kind: ServiceMonitor
+          apiVersion: monitoring.coreos.com/v1
+          name: gitea-unittests
+      - isNotNullOrEmpty:
+          path: metadata.labels
+      - equal:
+          path: spec.endpoints
+          value:
+            - port: http
+  - it: renders secure ServiceMonitor if gitea.metrics.token not empty
+    set:
+      gitea.metrics.enabled: true
+      gitea.metrics.token: "test-token"
+      gitea.metrics.serviceMonitor.enabled: true
     asserts:
       - hasDocuments:
           count: 1
