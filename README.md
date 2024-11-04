@@ -421,6 +421,9 @@ gitea:
 
 postgresql:
   enabled: false
+
+postgresql-ha:
+  enabled: false
 ```
 
 ### Ports and external url
@@ -498,6 +501,9 @@ Many cloud providers offer a managed redis service, which can be used instead of
 redis-cluster:
   enabled: true
 ```
+
+⚠️ The redis charts [do not work well with special characters in the password](https://gitea.com/gitea/helm-chart/issues/690).
+Consider omitting such or open an issue in the Bitnami repo and let us know once this got fixed.
 
 ### Persistence
 
@@ -850,13 +856,14 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 
 ### Global
 
-| Name                      | Description                                                               | Value |
-| ------------------------- | ------------------------------------------------------------------------- | ----- |
-| `global.imageRegistry`    | global image registry override                                            | `""`  |
-| `global.imagePullSecrets` | global image pull secrets override; can be extended by `imagePullSecrets` | `[]`  |
-| `global.storageClass`     | global storage class override                                             | `""`  |
-| `global.hostAliases`      | global hostAliases which will be added to the pod's hosts files           | `[]`  |
-| `replicaCount`            | number of replicas for the deployment                                     | `1`   |
+| Name                      | Description                                                                                    | Value |
+| ------------------------- | ---------------------------------------------------------------------------------------------- | ----- |
+| `global.imageRegistry`    | global image registry override                                                                 | `""`  |
+| `global.imagePullSecrets` | global image pull secrets override; can be extended by `imagePullSecrets`                      | `[]`  |
+| `global.storageClass`     | global storage class override                                                                  | `""`  |
+| `global.hostAliases`      | global hostAliases which will be added to the pod's hosts files                                | `[]`  |
+| `namespace`               | An explicit namespace to deploy Gitea into. Defaults to the release namespace if not specified | `""`  |
+| `replicaCount`            | number of replicas for the deployment                                                          | `1`   |
 
 ### strategy
 
@@ -977,6 +984,7 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 | `persistence.storageClass`                        | Name of the storage class to use                                                                      | `nil`                  |
 | `persistence.subPath`                             | Subdirectory of the volume to mount at                                                                | `nil`                  |
 | `persistence.volumeName`                          | Name of persistent volume in PVC                                                                      | `""`                   |
+| `extraContainers`                                 | Additional sidecar containers to run in the pod                                                       | `[]`                   |
 | `extraVolumes`                                    | Additional volumes to mount to the Gitea deployment                                                   | `[]`                   |
 | `extraContainerVolumeMounts`                      | Mounts that are only mapped into the Gitea runtime/main container, to e.g. override custom templates. | `[]`                   |
 | `extraInitVolumeMounts`                           | Mounts that are only mapped into the init-containers. Can be used for additional preconfiguration.    | `[]`                   |
@@ -1036,23 +1044,28 @@ To comply with the Gitea helm chart definition of the digest parameter, a "custo
 
 ### Gitea
 
-| Name                                   | Description                                                                                                                   | Value                |
-| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | -------------------- |
-| `gitea.admin.username`                 | Username for the Gitea admin user                                                                                             | `gitea_admin`        |
-| `gitea.admin.existingSecret`           | Use an existing secret to store admin user credentials                                                                        | `nil`                |
-| `gitea.admin.password`                 | Password for the Gitea admin user                                                                                             | `r8sA8CPHD9!bt6d`    |
-| `gitea.admin.email`                    | Email for the Gitea admin user                                                                                                | `gitea@local.domain` |
-| `gitea.admin.passwordMode`             | Mode for how to set/update the admin user password. Options are: initialOnlyNoReset, initialOnlyRequireReset, and keepUpdated | `keepUpdated`        |
-| `gitea.metrics.enabled`                | Enable Gitea metrics                                                                                                          | `false`              |
-| `gitea.metrics.serviceMonitor.enabled` | Enable Gitea metrics service monitor                                                                                          | `false`              |
-| `gitea.ldap`                           | LDAP configuration                                                                                                            | `[]`                 |
-| `gitea.oauth`                          | OAuth configuration                                                                                                           | `[]`                 |
-| `gitea.config.server.SSH_PORT`         | SSH port for rootlful Gitea image                                                                                             | `22`                 |
-| `gitea.config.server.SSH_LISTEN_PORT`  | SSH port for rootless Gitea image                                                                                             | `2222`               |
-| `gitea.additionalConfigSources`        | Additional configuration from secret or configmap                                                                             | `[]`                 |
-| `gitea.additionalConfigFromEnvs`       | Additional configuration sources from environment variables                                                                   | `[]`                 |
-| `gitea.podAnnotations`                 | Annotations for the Gitea pod                                                                                                 | `{}`                 |
-| `gitea.ssh.logLevel`                   | Configure OpenSSH's log level. Only available for root-based Gitea image.                                                     | `INFO`               |
+| Name                                         | Description                                                                                                                    | Value                |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------------- |
+| `gitea.admin.username`                       | Username for the Gitea admin user                                                                                              | `gitea_admin`        |
+| `gitea.admin.existingSecret`                 | Use an existing secret to store admin user credentials                                                                         | `nil`                |
+| `gitea.admin.password`                       | Password for the Gitea admin user                                                                                              | `r8sA8CPHD9!bt6d`    |
+| `gitea.admin.email`                          | Email for the Gitea admin user                                                                                                 | `gitea@local.domain` |
+| `gitea.admin.passwordMode`                   | Mode for how to set/update the admin user password. Options are: initialOnlyNoReset, initialOnlyRequireReset, and keepUpdated  | `keepUpdated`        |
+| `gitea.metrics.enabled`                      | Enable Gitea metrics                                                                                                           | `false`              |
+| `gitea.metrics.serviceMonitor.enabled`       | Enable Gitea metrics service monitor. Requires, that `gitea.metrics.enabled` is also set to true, to enable metrics generally. | `false`              |
+| `gitea.metrics.serviceMonitor.interval`      | Interval at which metrics should be scraped. If not specified Prometheus' global scrape interval is used.                      | `""`                 |
+| `gitea.metrics.serviceMonitor.relabelings`   | RelabelConfigs to apply to samples before scraping.                                                                            | `[]`                 |
+| `gitea.metrics.serviceMonitor.scheme`        | HTTP scheme to use for scraping. For example `http` or `https`. Default is http.                                               | `""`                 |
+| `gitea.metrics.serviceMonitor.scrapeTimeout` | Timeout after which the scrape is ended. If not specified, global Prometheus scrape timeout is used.                           | `""`                 |
+| `gitea.metrics.serviceMonitor.tlsConfig`     | TLS configuration to use when scraping the metric endpoint by Prometheus.                                                      | `{}`                 |
+| `gitea.ldap`                                 | LDAP configuration                                                                                                             | `[]`                 |
+| `gitea.oauth`                                | OAuth configuration                                                                                                            | `[]`                 |
+| `gitea.config.server.SSH_PORT`               | SSH port for rootlful Gitea image                                                                                              | `22`                 |
+| `gitea.config.server.SSH_LISTEN_PORT`        | SSH port for rootless Gitea image                                                                                              | `2222`               |
+| `gitea.additionalConfigSources`              | Additional configuration from secret or configmap                                                                              | `[]`                 |
+| `gitea.additionalConfigFromEnvs`             | Additional configuration sources from environment variables                                                                    | `[]`                 |
+| `gitea.podAnnotations`                       | Annotations for the Gitea pod                                                                                                  | `{}`                 |
+| `gitea.ssh.logLevel`                         | Configure OpenSSH's log level. Only available for root-based Gitea image.                                                      | `INFO`               |
 
 ### LivenessProbe
 
@@ -1125,7 +1138,7 @@ Redis and [Redis cluster](#redis-cluster) cannot be enabled at the same time.
 | `postgresql-ha.postgresql.postgresPassword` | postgres Password                                                | `changeme1` |
 | `postgresql-ha.pgpool.adminPassword`        | pgpool adminPassword                                             | `changeme3` |
 | `postgresql-ha.service.ports.postgresql`    | PostgreSQL service port (overrides `service.ports.postgresql`)   | `5432`      |
-| `postgresql-ha.primary.persistence.size`    | PVC Storage Request for PostgreSQL HA volume                     | `10Gi`      |
+| `postgresql-ha.persistence.size`            | PVC Storage Request for PostgreSQL HA volume                     | `10Gi`      |
 
 ### PostgreSQL
 

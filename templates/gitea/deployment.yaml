@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "gitea.fullname" . }}
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
   annotations:
     {{- if .Values.deployment.annotations }}
     {{- toYaml .Values.deployment.annotations | nindent 4 }}
@@ -311,15 +312,15 @@ spec:
             {{- end }}
           {{- if .Values.gitea.livenessProbe.enabled }}
           livenessProbe:
-            {{- toYaml (omit .Values.gitea.livenessProbe "enabled") | nindent 12 }}
+            {{- include "gitea.deployment.probe" .Values.gitea.livenessProbe | nindent 12 }}
           {{- end }}
           {{- if .Values.gitea.readinessProbe.enabled }}
           readinessProbe:
-            {{- toYaml (omit .Values.gitea.readinessProbe "enabled") | nindent 12 }}
+            {{- include "gitea.deployment.probe" .Values.gitea.readinessProbe | nindent 12 }}
           {{- end }}
           {{- if .Values.gitea.startupProbe.enabled }}
           startupProbe:
-            {{- toYaml (omit .Values.gitea.startupProbe "enabled") | nindent 12 }}
+            {{- include "gitea.deployment.probe" .Values.gitea.startupProbe | nindent 12 }}
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -339,6 +340,9 @@ spec:
               subPath: {{ .Values.persistence.subPath }}
               {{- end }}
             {{- include "gitea.container-additional-mounts" . | nindent 12 }}
+        {{- if .Values.extraContainers }}
+        {{- toYaml .Values.extraContainers | nindent 8 }}
+        {{- end }}
       {{- with .Values.global.hostAliases }}
       hostAliases:
         {{- toYaml . | nindent 8 }}

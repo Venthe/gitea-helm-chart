@@ -20,6 +20,9 @@ global:
   #   hostnames:
   #   - example.com
 
+## @param namespace An explicit namespace to deploy gitea into. Defaults to the release namespace if not specified
+namespace: ""
+
 ## @param replicaCount number of replicas for the deployment
 replicaCount: 1
 
@@ -280,6 +283,12 @@ persistence:
   annotations:
     helm.sh/resource-policy: keep
 
+## @param extraContainers Additional sidecar containers to run in the pod
+extraContainers: []
+#  - name: sidecar-bob
+#    image: busybox
+#    command: [/bin/sh, -c, 'echo "Hello world"; sleep 86400']
+
 ## @param extraVolumes Additional volumes to mount to the Gitea deployment
 extraVolumes: []
 # - name: postgres-ssl-vol
@@ -446,13 +455,23 @@ gitea:
     passwordMode: keepUpdated
 
   ## @param gitea.metrics.enabled Enable Gitea metrics
-  ## @param gitea.metrics.serviceMonitor.enabled Enable Gitea metrics service monitor
+  ## @param gitea.metrics.serviceMonitor.enabled Enable Gitea metrics service monitor. Requires, that `gitea.metrics.enabled` is also set to true, to enable metrics generally.
+  ## @param gitea.metrics.serviceMonitor.interval Interval at which metrics should be scraped. If not specified Prometheus' global scrape interval is used.
+  ## @param gitea.metrics.serviceMonitor.relabelings RelabelConfigs to apply to samples before scraping.
+  ## @param gitea.metrics.serviceMonitor.scheme HTTP scheme to use for scraping. For example `http` or `https`. Default is http.
+  ## @param gitea.metrics.serviceMonitor.scrapeTimeout Timeout after which the scrape is ended. If not specified, global Prometheus scrape timeout is used.
+  ## @param gitea.metrics.serviceMonitor.tlsConfig TLS configuration to use when scraping the metric endpoint by Prometheus.
   metrics:
     enabled: false
     serviceMonitor:
       enabled: false
       #  additionalLabels:
       #    prometheus-release: prom1
+      interval: ""
+      relabelings: []
+      scheme: ""
+      scrapeTimeout: ""
+      tlsConfig: {}
 
   ## @param gitea.ldap LDAP configuration
   ldap:
@@ -578,6 +597,8 @@ gitea:
 
 ## @section redis-cluster
 ## @param redis-cluster.enabled Enable redis cluster
+# ⚠️ The redis charts do not work well with special characters in the password (<https://gitea.com/gitea/helm-chart/issues/690>).
+# Consider omitting such or open an issue in the Bitnami repo and let us know once this got fixed.
 ## @param redis-cluster.usePassword Whether to use password authentication
 ## @param redis-cluster.cluster.nodes Number of redis cluster master nodes
 ## @param redis-cluster.cluster.replicas Number of redis cluster master node replicas
@@ -594,6 +615,8 @@ redis-cluster:
 ## @section redis
 ## @param redis.enabled Enable redis standalone or replicated
 ## @param redis.architecture Whether to use standalone or replication
+# ⚠️ The redis charts do not work well with special characters in the password (<https://gitea.com/gitea/helm-chart/issues/690>).
+# Consider omitting such or open an issue in the Bitnami repo and let us know once this got fixed.
 ## @param redis.global.redis.password Required password
 ## @param redis.master.count Number of Redis master instances to deploy
 ## @descriptionStart
@@ -619,7 +642,7 @@ redis:
 ## @param postgresql-ha.postgresql.postgresPassword postgres Password
 ## @param postgresql-ha.pgpool.adminPassword pgpool adminPassword
 ## @param postgresql-ha.service.ports.postgresql PostgreSQL service port (overrides `service.ports.postgresql`)
-## @param postgresql-ha.primary.persistence.size PVC Storage Request for PostgreSQL HA volume
+## @param postgresql-ha.persistence.size PVC Storage Request for PostgreSQL HA volume
 postgresql-ha:
   global:
     postgresql:
@@ -636,9 +659,8 @@ postgresql-ha:
   service:
     ports:
       postgresql: 5432
-  primary:
-    persistence:
-      size: 10Gi
+  persistence:
+    size: 10Gi
 
 ## @section PostgreSQL
 #
