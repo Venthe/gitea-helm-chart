@@ -1,0 +1,69 @@
+suite: actions template | consistency checks
+release:
+  name: gitea-unittests
+  namespace: testing
+templates:
+  - templates/gitea/act_runner/01-consistency-checks.yaml
+tests:
+  - it: fails when provisioning is enabled BUT persistence is completely disabled
+    set:
+      persistence:
+        enabled: false
+      actions:
+        enabled: true
+        provisioning:
+          enabled: true
+    asserts:
+      - failedTemplate:
+          errorMessage: "persistence.enabled and persistence.mount are required when provisioning is enabled"
+  - it: fails when provisioning is enabled BUT mount is disabled, although persistence is enabled
+    set:
+      persistence:
+        enabled: true
+        mount: false
+      actions:
+        enabled: true
+        provisioning:
+          enabled: true
+    asserts:
+      - failedTemplate:
+          errorMessage: "persistence.enabled and persistence.mount are required when provisioning is enabled"
+  - it: fails when provisioning is enabled AND existingSecret is given
+    set:
+      actions:
+        enabled: true
+        provisioning:
+          enabled: true
+        existingSecret: "secret-reference"
+    asserts:
+      - failedTemplate:
+          errorMessage: "Can't specify both actions.provisioning.enabled and actions.existingSecret"
+  - it: fails when provisioning is disabled BUT existingSecret and existingSecretKey are missing
+    set:
+      actions:
+        enabled: true
+        provisioning:
+          enabled: false
+    asserts:
+      - failedTemplate:
+          errorMessage: "actions.existingSecret and actions.existingSecretKey are required when provisioning is disabled"
+  - it: fails when provisioning is disabled BUT existingSecretKey is missing
+    set:
+      actions:
+        enabled: true
+        provisioning:
+          enabled: false
+        existingSecret: "my-secret"
+    asserts:
+      - failedTemplate:
+          errorMessage: "actions.existingSecret and actions.existingSecretKey are required when provisioning is disabled"
+  - it: fails when provisioning is disabled BUT existingSecret is missing
+    set:
+      actions:
+        enabled: true
+        provisioning:
+          enabled: false
+        existingSecretKey: "my-secret-key"
+    asserts:
+      - failedTemplate:
+          errorMessage: "actions.existingSecret and actions.existingSecretKey are required when provisioning is disabled"

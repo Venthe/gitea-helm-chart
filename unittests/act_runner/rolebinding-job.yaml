@@ -5,10 +5,16 @@ release:
 templates:
   - templates/gitea/act_runner/rolebinding-job.yaml
 tests:
+  - it: doesn't renders a RoleBinding by default
+    template: templates/gitea/act_runner/rolebinding-job.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
   - it: renders a RoleBinding
     template: templates/gitea/act_runner/rolebinding-job.yaml
     set:
       actions:
+        enabled: true
         provisioning:
           enabled: true
       persistence:
@@ -21,3 +27,16 @@ tests:
           kind: RoleBinding
           apiVersion: rbac.authorization.k8s.io/v1
           name: gitea-unittests-actions-token-job
+  - it: doesn't renders a RoleBinding when criteria met BUT actions are not enabled
+    template: templates/gitea/act_runner/rolebinding-job.yaml
+    set:
+      actions:
+        enabled: false
+        provisioning:
+          enabled: true
+      persistence:
+        enabled: true
+        mount: true
+    asserts:
+      - hasDocuments:
+          count: 0

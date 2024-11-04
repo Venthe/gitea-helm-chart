@@ -3,7 +3,7 @@ release:
   name: gitea-unittests
   namespace: testing
 chart:
-  # Override appVersion to be consistent with used digest :)
+  # Override appVersion to have a pinned version for comparison
   appVersion: 1.19.3
 templates:
   - templates/gitea/act_runner/job.yaml
@@ -12,6 +12,7 @@ tests:
     template: templates/gitea/act_runner/job.yaml
     set:
       actions:
+        enabled: true
         provisioning:
           enabled: true
       persistence:
@@ -32,6 +33,7 @@ tests:
     set:
       image.tag: "1.19.4"
       actions:
+        enabled: true
         provisioning:
           enabled: true
           publish:
@@ -46,3 +48,18 @@ tests:
       - equal:
           path: spec.template.spec.containers[1].image
           value: "bitnami/kubectl:1.29.0"
+  - it: doesn't renders a Job by default
+    template: templates/gitea/act_runner/job.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: doesn't renders a Job when provisioning is enabled BUT actions are not enabled
+    template: templates/gitea/act_runner/job.yaml
+    set:
+      actions:
+        enabled: false
+        provisioning:
+          enabled: true
+    asserts:
+      - hasDocuments:
+          count: 0

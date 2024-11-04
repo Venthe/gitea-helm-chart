@@ -1,3 +1,4 @@
+{{- if .Values.actions.enabled }}
 {{- if and (and .Values.actions.provisioning.enabled .Values.persistence.enabled) .Values.persistence.mount }}
 ---
 apiVersion: v1
@@ -8,4 +9,5 @@ metadata:
     {{- include "gitea.labels" . | nindent 4 }}
 data:
 {{ (.Files.Glob "scripts/*.sh").AsConfig | indent 2 }}
+{{- end }}
 {{- end }}

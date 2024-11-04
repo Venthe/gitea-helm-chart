@@ -1,0 +1,61 @@
+suite: config template | actions config
+release:
+  name: gitea-unittests
+  namespace: testing
+templates:
+  - templates/gitea/config.yaml
+tests:
+  - it: "actions are not enabled by default"
+    template: templates/gitea/config.yaml
+    asserts:
+      - documentIndex: 0
+        equal:
+          path: stringData.actions
+          value: |-
+            ENABLED=false
+
+  - it: "actions can be enabled via inline config"
+    template: templates/gitea/config.yaml
+    set:
+      gitea.config.actions.ENABLED: true
+    asserts:
+      - documentIndex: 0
+        equal:
+          path: stringData.actions
+          value: |-
+            ENABLED=true
+
+  - it: "actions can be enabled via dedicated values object"
+    template: templates/gitea/config.yaml
+    set:
+      actions:
+        enabled: true
+    asserts:
+      - documentIndex: 0
+        equal:
+          path: stringData.actions
+          value: |-
+            ENABLED=true
+
+  - it: "defines LOCAL_ROOT_URL when actions are enabled"
+    template: templates/gitea/config.yaml
+    set:
+      actions:
+        enabled: true
+    asserts:
+      - documentIndex: 0
+        matchRegex:
+          path: stringData.server
+          pattern: \nLOCAL_ROOT_URL=http://gitea-unittests-http:3000
+
+  - it: "respects custom LOCAL_ROOT_URL, even when actions are enabled"
+    template: templates/gitea/config.yaml
+    set:
+      actions:
+        enabled: true
+      gitea.config.server.LOCAL_ROOT_URL: "http://git.example.com"
+    asserts:
+      - documentIndex: 0
+        matchRegex:
+          path: stringData.server
+          pattern: \nLOCAL_ROOT_URL=http://git.example.com

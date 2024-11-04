@@ -54,7 +54,7 @@ spec:
                   name: "{{ .Values.actions.existingSecret | default $secretName }}"
                   key: "{{ .Values.actions.existingSecretKey | default "token" }}"
             - name: GITEA_INSTANCE_URL
-              value: {{ .Values.gitea.config.server.LOCAL_ROOT_URL | quote }}
+              value: {{ include "gitea.act_runner.local_root_url" . }}
             - name: CONFIG_FILE
               value: /actrunner/config.yaml
           resources:

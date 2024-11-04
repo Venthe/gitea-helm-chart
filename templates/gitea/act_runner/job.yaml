@@ -1,7 +1,5 @@
+{{- if .Values.actions.enabled }}
 {{- if and (and .Values.actions.provisioning.enabled .Values.persistence.enabled) .Values.persistence.mount }}
-{{- if .Values.actions.existingSecret }}
-{{- fail "Can't specify both actions.provisioning.enabled and actions.existingSecret" }}
-{{- end }}
 {{- $name := include "gitea.workername" (dict "global" . "worker" "actions-token-job") }}
 {{- $secretName := include "gitea.workername" (dict "global" . "worker" "actions-token") }}
 ---
@@ -112,4 +110,5 @@ spec:
   parallelism: 1
   completions: 1
   backoffLimit: 1
+{{- end }}
 {{- end }}

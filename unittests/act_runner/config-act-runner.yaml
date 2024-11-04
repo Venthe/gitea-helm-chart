@@ -6,6 +6,11 @@ release:
 templates:
   - templates/gitea/act_runner/config-act-runner.yaml
 tests:
+  - it: doesn't renders a ConfigMap by default
+    template: templates/gitea/act_runner/config-act-runner.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
   - it: renders a ConfigMap
     template: templates/gitea/act_runner/config-act-runner.yaml
     set:
