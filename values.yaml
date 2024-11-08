@@ -393,7 +393,7 @@ actions:
 
     actRunner:
       repository: gitea/act_runner
-      tag: 0.2.6
+      tag: 0.2.11
       pullPolicy: IfNotPresent
 
       config: |
