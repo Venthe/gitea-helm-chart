@@ -5,6 +5,9 @@
         ]
     },
     "yaml.schemaStore.enable": true,
+    "[bats]": {
+        "editor.tabSize": 2
+    },
     "[shellscript]": {
         "files.eol": "\n",
         "editor.tabSize": 2
