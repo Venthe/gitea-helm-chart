@@ -32,6 +32,7 @@ jobs:
       - name: unit tests
         run: |
           helm plugin install --version ${{ env.HELM_UNITTEST_VERSION }} https://github.com/helm-unittest/helm-unittest
+          git submodule update --init --recursive
           make unittests
       - name: verify readme
         run: |
