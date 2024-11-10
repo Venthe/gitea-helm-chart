@@ -77,6 +77,9 @@ spec:
               value: "1"
             - name: DOCKER_CERT_PATH
               value: /certs/server
+            {{- if .Values.actions.statefulset.dind.extraEnvs }}
+            {{- toYaml .Values.actions.statefulset.dind.extraEnvs | nindent 12 }}
+            {{- end }}
           securityContext:
             privileged: true
           resources:
