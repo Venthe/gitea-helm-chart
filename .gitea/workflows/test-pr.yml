@@ -21,7 +21,7 @@ jobs:
       - name: install tools
         run: |
           apk update
-          apk add --update make nodejs npm yamllint ncurses
+          apk add --update bash make nodejs npm yamllint ncurses
       - uses: actions/checkout@v4
       - name: install chart dependencies
         run: helm dependency build
@@ -34,6 +34,7 @@ jobs:
           helm plugin install --version ${{ env.HELM_UNITTEST_VERSION }} https://github.com/helm-unittest/helm-unittest
           git submodule update --init --recursive
       - name: unit tests
+        shell: bash
         run: |
           make unittests
       - name: verify readme
