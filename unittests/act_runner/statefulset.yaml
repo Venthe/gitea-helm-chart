@@ -93,3 +93,19 @@ tests:
           value:
             name: GITEA_INSTANCE_URL
             value: "http://git.example.com"
+  - it: allows adding custom environment variables to the docker-in-docker container
+    template: templates/gitea/act_runner/statefulset.yaml
+    set:
+      actions:
+        enabled: true
+        statefulset:
+          dind:
+            extraEnvs:
+              - name: "CUSTOM_ENV_NAME"
+                value: "custom env value"
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[1].env[3]
+          value:
+            name: "CUSTOM_ENV_NAME"
+            value: "custom env value"
