@@ -31,3 +31,8 @@ Makefile
 .drone.yml
 CONTRIBUTING.md
 unittests/
+.editorconfig
+.prettierignore
+.yamllint
+CODEOWNERS
+renovate.json5
