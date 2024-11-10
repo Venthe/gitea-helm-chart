@@ -29,10 +29,12 @@ jobs:
         run: helm lint
       - name: template
         run: helm template --debug gitea-helm .
-      - name: unit tests
+      - name: prepare unit test environment
         run: |
           helm plugin install --version ${{ env.HELM_UNITTEST_VERSION }} https://github.com/helm-unittest/helm-unittest
           git submodule update --init --recursive
+      - name: unit tests
+        run: |
           make unittests
       - name: verify readme
         run: |
