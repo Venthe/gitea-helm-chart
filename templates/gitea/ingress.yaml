@@ -1,3 +1,4 @@
+{{- if .Values.gitea.enabled }}
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "gitea.fullname" . -}}
 {{- $httpPort := .Values.service.http.port -}}
@@ -56,4 +57,5 @@ spec:
             {{- end }}
           {{- end }}
     {{- end }}
+{{- end }}
 {{- end }}

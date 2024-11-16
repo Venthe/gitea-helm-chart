@@ -20,6 +20,8 @@ global:
   #   hostnames:
   #   - example.com
 
+
+
 ## @param namespace An explicit namespace to deploy gitea into. Defaults to the release namespace if not specified
 namespace: ""
 
@@ -353,6 +355,7 @@ signing:
 ## @section Gitea Actions
 #
 ## @param actions.enabled Create an act runner StatefulSet.
+## @param actions.remoteInstanceUrl Connect to a remote instance of gitea, in the event that you are using a separately hosted gitea instance for self-hosted runners. Leave empty to disable. Values look like "https://gitea.com/" or "http://192.168.8.8:3000/"
 ## @param actions.init.image.repository The image used for the init containers
 ## @param actions.init.image.tag The image tag used for the init containers
 ## @param actions.statefulset.annotations Act runner annotations
@@ -384,6 +387,7 @@ signing:
 ## @param actions.existingSecretKey Secret key
 actions:
   enabled: false
+  remoteInstanceUrl: ""
   statefulset:
     annotations: {}
     labels: {}
@@ -447,6 +451,10 @@ actions:
 ## @section Gitea
 #
 gitea:
+
+  ## @param gitea.enabled Enable main gitea server deployment. Set this to false if you want to only deploy actions.
+  enabled: true
+
   ## @param gitea.admin.username Username for the Gitea admin user
   ## @param gitea.admin.existingSecret Use an existing secret to store admin user credentials
   ## @param gitea.admin.password Password for the Gitea admin user

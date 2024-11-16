@@ -221,7 +221,9 @@ https
 {{- end -}}
 
 {{- define "gitea.act_runner.local_root_url" -}}
-{{- if not .Values.gitea.config.server.LOCAL_ROOT_URL -}}
+{{- if gt (len .Values.actions.remoteInstanceUrl) 0 -}}
+  {{- .Values.actions.remoteInstanceUrl -}}
+{{- else if not .Values.gitea.config.server.LOCAL_ROOT_URL -}}
     {{- printf "http://%s-http:%.0f" (include "gitea.fullname" .) .Values.service.http.port -}}
 {{- else -}}
   {{/* fallback for allowing to overwrite this value via inline config */}}

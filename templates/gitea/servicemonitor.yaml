@@ -1,3 +1,4 @@
+{{- if .Values.gitea.enabled }}
 {{- if and .Values.gitea.metrics.enabled .Values.gitea.metrics.serviceMonitor.enabled -}}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -32,4 +33,5 @@ spec:
     tlsConfig:
       {{- . | toYaml | nindent 6 }}
     {{- end }}
+{{- end -}}
 {{- end -}}

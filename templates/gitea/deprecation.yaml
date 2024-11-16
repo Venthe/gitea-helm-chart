@@ -1,3 +1,4 @@
+{{- if .Values.gitea.enabled }}
 {{- if .Values.checkDeprecation -}}
   {{/* CUSTOM PROBES */}}
   {{- if .Values.gitea.customLivenessProbe -}}
@@ -31,4 +32,5 @@
       {{- fail "`gitea.database.builtIn` does no longer exist. Builtin databases can be configured inside the dependencies itself. Please refer to the changelog." -}}
     {{- end -}}
   {{- end -}}
+{{- end -}}
 {{- end -}}

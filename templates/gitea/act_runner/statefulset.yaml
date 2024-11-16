@@ -26,6 +26,7 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.gitea.enabled }}
       initContainers:
         - name: init-gitea
           image: "{{ .Values.actions.init.image.repository }}:{{ .Values.actions.init.image.tag }}"
@@ -36,6 +37,7 @@ spec:
               while ! nc -z {{ include "gitea.fullname" . }}-http {{ .Values.service.http.port }}; do
                 sleep 5
               done
+      {{- end }}
       containers:
         - name: act-runner
           image: "{{ .Values.actions.statefulset.actRunner.repository }}:{{ .Values.actions.statefulset.actRunner.tag }}"

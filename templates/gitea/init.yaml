@@ -1,3 +1,4 @@
+{{- if .Values.gitea.enabled }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -230,3 +231,4 @@ stringData:
     configure_oauth
 
     echo '==== END GITEA CONFIGURATION ===='
+{{- end }}
