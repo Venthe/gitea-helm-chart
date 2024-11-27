@@ -214,6 +214,20 @@ The Prometheus `/metrics` endpoint is disabled by default.
 ENABLED = false
 ```
 
+#### Actions defaults
+
+The Gitea Actions are disabled by default in the chart, unless `actions.enabled` is set to `true`, which installs an act_runner Statefulset along Gitea.
+
+If you want to activate Gitea Actions without installing the runner, use the `gitea.config` like so:
+
+````
+gitea:
+  config:
+    # [... ]
+    actions:
+      ENABLED: true
+```
+
 #### Rootless Defaults
 
 If `.Values.image.rootless: true`, then the following will occur. In case you use `.Values.image.fullOverride`, check that this works in your image:
