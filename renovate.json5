@@ -63,6 +63,25 @@
         'patch',
         'digest',
       ],
+      matchFileNames: [
+        '!Chart.yaml',
+      ],
+    },
+    {
+      description: 'Update README.md on changes in values.yaml',
+      matchManagers: [
+        'helm-values',
+      ],
+      postUpgradeTasks: {
+        commands: [
+          'install-tool node',
+          'make readme',
+        ],
+        fileFilters: [
+          'README.md',
+        ],
+        executionMode: 'update',
+      },
     },
     {
       description: 'Override changelog url for Helm image, to have release notes in our PRs',
