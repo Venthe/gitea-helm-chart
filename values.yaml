@@ -397,14 +397,12 @@ actions:
       tag: 0.2.11
       pullPolicy: IfNotPresent
 
+      # See full example here: https://gitea.com/gitea/act_runner/src/branch/main/internal/pkg/config/config.example.yaml
       config: |
         log:
           level: debug
         cache:
           enabled: false
-        runner:
-          labels:
-            - "ubuntu-latest"
 
     dind:
       repository: docker

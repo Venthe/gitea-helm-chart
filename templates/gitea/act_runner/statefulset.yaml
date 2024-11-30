@@ -21,6 +21,8 @@ spec:
       {{- include "gitea.selectorLabels.actRunner" . | nindent 6 }}
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/gitea/act_runner/config-act-runner.yaml") . | sha256sum }}
       labels:
         {{- include "gitea.labels.actRunner" . | nindent 8 }}
         {{- with .Values.actions.statefulset.labels }}
