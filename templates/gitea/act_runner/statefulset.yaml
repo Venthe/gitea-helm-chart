@@ -14,6 +14,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
   name: {{ include "gitea.fullname" . }}-act-runner
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
 spec:
   selector:
     matchLabels:
