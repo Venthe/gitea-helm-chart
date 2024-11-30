@@ -38,6 +38,6 @@ spec:
       credentials:
         name: {{ include "gitea.metrics-secret-name" . }}
         key: token
-        optional: true
+        optional: false
     {{- end }}
 {{- end -}}

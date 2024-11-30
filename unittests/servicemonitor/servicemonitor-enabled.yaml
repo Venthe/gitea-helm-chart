@@ -67,4 +67,4 @@ tests:
                 credentials:
                   name: gitea-unittests-metrics-secret
                   key: token
-                  optional: true
+                  optional: false
