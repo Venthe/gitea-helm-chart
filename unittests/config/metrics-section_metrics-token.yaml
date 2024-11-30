@@ -43,3 +43,16 @@ tests:
           path: stringData.metrics
           value: |-
             ENABLED=true
+  - it: does not configures a token if metrics are disabled
+    template: templates/gitea/config.yaml
+    set:
+      gitea:
+        metrics:
+          enabled: false
+          token: "somepassword"
+    asserts:
+      - documentIndex: 0
+        equal:
+          path: stringData.metrics
+          value: |-
+            ENABLED=false
