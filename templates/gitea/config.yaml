@@ -8,6 +8,12 @@ metadata:
 type: Opaque
 stringData:
   {{- include "gitea.inline_configuration" . | nindent 2 }}
+  database:
+    TYPE: {{ .Values.gitea.config.database.type | quote }}
+    HOST: {{ tpl .Values.gitea.config.database.host . | quote }}
+    NAME: {{ tpl .Values.gitea.config.database.name . | quote }}
+    USER: {{ tpl .Values.gitea.config.database.user . | quote }}
+    PASSWORD: {{ tpl .Values.gitea.config.database.password . | quote }}
 ---
 apiVersion: v1
 kind: Secret
