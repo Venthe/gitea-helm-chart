@@ -58,6 +58,7 @@ tests:
   - it: renders a StatefulSet (that tracks changes of the runner configuration as annotation)
     template: templates/gitea/act_runner/statefulset.yaml
     set:
+      image.tag: "1.22.3" # lock image tag to prevent test failures on future Gitea upgrades
       actions:
         enabled: true
         existingSecret: "my-secret"
