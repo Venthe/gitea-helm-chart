@@ -89,3 +89,33 @@ tests:
         equal:
           path: spec.ports[0].port
           value: 1234
+  - it: "[postgresql-ha] renders the referenced service"
+    template: charts/postgresql-ha/templates/pgpool/service.yaml
+    asserts:
+      - containsDocument:
+          kind: Service
+          apiVersion: v1
+          name: gitea-unittests-postgresql-ha-pgpool
+          namespace: testing
+  - it: "[gitea] connects to pgpool service"
+    template: templates/gitea/config.yaml
+    asserts:
+      - documentIndex: 0
+        matchRegex:
+          path: stringData.database
+          pattern: HOST=gitea-unittests-postgresql-ha-pgpool.testing.svc.cluster.local:1234
+  - it: "[gitea] connects to configured database"
+    template: templates/gitea/config.yaml
+    asserts:
+      - documentIndex: 0
+        matchRegex:
+          path: stringData.database
+          pattern: NAME=gitea-database
+      - documentIndex: 0
+        matchRegex:
+          path: stringData.database
+          pattern: USER=gitea-username
+      - documentIndex: 0
+        matchRegex:
+          path: stringData.database
+          pattern: PASSWD=gitea-password
