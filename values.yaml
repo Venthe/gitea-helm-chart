@@ -19,13 +19,6 @@ global:
   # - ip: 192.168.137.2
   #   hostnames:
   #   - example.com
-  
-  #Add the support variables for database configuration
-  #This allows for easy templating and DRY principles
-databaseHost: "localhost"
-databaseName: "gitea"
-databaseUser: "gitea_user"
-databasePassword: "secure_password"  
 
 ## @param namespace An explicit namespace to deploy gitea into. Defaults to the release namespace if not specified
 namespace: ""
@@ -529,13 +522,6 @@ gitea:
     server:
       SSH_PORT: 22 # rootful image
       SSH_LISTEN_PORT: 2222 # rootless image
-    #Adding tpl funtion in helm allows rendering Go template stored as values. this ensures dynamic configuration without repitition
-    database:
-      type: postgresql
-      host: "{{ .Values.databaseHost }}"
-      name: "{{ .Values.databaseName }}"
-      user: "{{ .Values.databaseUser }}"
-      password: "{{ .Values.databasePassword }}"
   #
   #  security:
   #    PASSWORD_COMPLEXITY: spec
