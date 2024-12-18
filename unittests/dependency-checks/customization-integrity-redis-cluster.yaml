@@ -1,0 +1,83 @@
+suite: Dependency checks | Customization integrity | redis-cluster
+release:
+  name: gitea-unittests
+  namespace: testing
+set:
+  redis:
+    enabled: false
+  redis-cluster:
+    enabled: true
+    usePassword: false
+    cluster:
+      nodes: 5
+      replicas: 2
+tests:
+  - it: "[redis-cluster] configures correct nodes/replicas"
+    template: charts/redis-cluster/templates/redis-statefulset.yaml
+    asserts:
+      - documentIndex: 0
+        equal:
+          path: spec.replicas
+          value: 5
+      - documentIndex: 0
+        matchRegex:
+          path: spec.template.spec.containers[0].args[0]
+          pattern: REDIS_CLUSTER_REPLICAS="2"
+  - it: "[redis-cluster] support auth-less connections"
+    asserts:
+      - template: charts/redis-cluster/templates/secret.yaml
+        hasDocuments:
+          count: 0
+      - template: charts/redis-cluster/templates/redis-statefulset.yaml
+        documentIndex: 0
+        contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ALLOW_EMPTY_PASSWORD
+            value: "yes"
+  - it: "[redis-cluster] support auth-full connections"
+    set:
+      redis-cluster:
+        usePassword: true
+    asserts:
+      - template: charts/redis-cluster/templates/secret.yaml
+        containsDocument:
+          kind: Secret
+          apiVersion: v1
+          name: gitea-unittests-redis-cluster
+          namespace: testing
+      - template: charts/redis-cluster/templates/redis-statefulset.yaml
+        documentIndex: 0
+        contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REDISCLI_AUTH
+            valueFrom:
+              secretKeyRef:
+                name: gitea-unittests-redis-cluster
+                key: redis-password
+      - template: charts/redis-cluster/templates/redis-statefulset.yaml
+        documentIndex: 0
+        contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: REDIS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: gitea-unittests-redis-cluster
+                key: redis-password
+  - it: "[redis-cluster] renders the referenced service"
+    template: charts/redis-cluster/templates/headless-svc.yaml
+    asserts:
+      - containsDocument:
+          kind: Service
+          apiVersion: v1
+          name: gitea-unittests-redis-cluster-headless
+          namespace: testing
+      - documentIndex: 0
+        contains:
+          path: spec.ports
+          content:
+            name: tcp-redis
+            port: 6379
+            targetPort: tcp-redis
