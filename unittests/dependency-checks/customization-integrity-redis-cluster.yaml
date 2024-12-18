@@ -81,3 +81,10 @@ tests:
             name: tcp-redis
             port: 6379
             targetPort: tcp-redis
+  - it: "[gitea] waits for redis-cluster to be up and running"
+    template: templates/gitea/init.yaml
+    asserts:
+      - documentIndex: 0
+        matchRegex:
+          path: stringData["configure_gitea.sh"]
+          pattern: nc -vz -w2 gitea-unittests-redis-cluster-headless.testing.svc.cluster.local 6379
