@@ -56,3 +56,33 @@ tests:
         equal:
           path: spec.ports[0].port
           value: 1234
+  - it: "[postgresql] renders the referenced service"
+    template: charts/postgresql/templates/primary/svc.yaml
+    asserts:
+      - containsDocument:
+          kind: Service
+          apiVersion: v1
+          name: gitea-unittests-postgresql
+          namespace: testing
+  - it: "[gitea] connects to postgresql service"
+    template: templates/gitea/config.yaml
+    asserts:
+      - documentIndex: 0
+        matchRegex:
+          path: stringData.database
+          pattern: HOST=gitea-unittests-postgresql.testing.svc.cluster.local:1234
+  - it: "[gitea] connects to configured database"
+    template: templates/gitea/config.yaml
+    asserts:
+      - documentIndex: 0
+        matchRegex:
+          path: stringData.database
+          pattern: NAME=gitea-database
+      - documentIndex: 0
+        matchRegex:
+          path: stringData.database
+          pattern: USER=gitea-username
+      - documentIndex: 0
+        matchRegex:
+          path: stringData.database
+          pattern: PASSWD=gitea-password
