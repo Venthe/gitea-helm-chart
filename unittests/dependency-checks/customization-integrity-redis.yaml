@@ -1,0 +1,45 @@
+suite: Dependency checks | Customization integrity | redis
+release:
+  name: gitea-unittests
+  namespace: testing
+set:
+  redis-cluster:
+    enabled: false
+  redis:
+    enabled: true
+    architecture: standalone
+    global:
+      redis:
+        password: gitea-password
+    master:
+      count: 2
+tests:
+  - it: "[redis] configures correct 'master' nodes"
+    template: charts/redis/templates/master/application.yaml
+    asserts:
+      - documentIndex: 0
+        equal:
+          path: spec.replicas
+          value: 2
+  - it: "[redis] redis.global.redis.password is applied as expected"
+    template: charts/redis/templates/secret.yaml
+    asserts:
+      - documentIndex: 0
+        equal:
+          path: data["redis-password"]
+          value: "Z2l0ZWEtcGFzc3dvcmQ="
+  - it: "[redis] renders the referenced service"
+    template: charts/redis/templates/headless-svc.yaml
+    asserts:
+      - containsDocument:
+          kind: Service
+          apiVersion: v1
+          name: gitea-unittests-redis-headless
+          namespace: testing
+      - documentIndex: 0
+        contains:
+          path: spec.ports
+          content:
+            name: tcp-redis
+            port: 6379
+            targetPort: redis
