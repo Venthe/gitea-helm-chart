@@ -9,7 +9,7 @@ readme: prepare-environment
 
 .PHONY: unittests
 unittests:
-	helm unittest --strict -f 'unittests/**/*.yaml' -f 'unittests/values-conflicting-checks.yaml' ./
+	helm unittest --strict -f 'unittests/helm/**/*.yaml' -f 'unittests/helm/values-conflicting-checks.yaml' ./
 
 .PHONY: helm
 update-helm-dependencies:
