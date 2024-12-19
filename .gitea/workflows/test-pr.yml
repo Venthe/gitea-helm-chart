@@ -7,7 +7,6 @@ on:
   push:
     branches:
       - main
-      - "renovate/**"
 
 env:
   # renovate: datasource=github-releases depName=helm-unittest/helm-unittest
