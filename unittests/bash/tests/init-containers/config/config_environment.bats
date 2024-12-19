@@ -35,7 +35,7 @@ function expect_environment_to_ini_call() {
 
 function execute_test_script() {
   currentEnvsBefore=$(env | sort)
-  source $PROJECT_ROOT/scripts/init-containers/config_environment.sh
+  source $PROJECT_ROOT/scripts/init-containers/config/config_environment.sh
   local exitCode=$?
   currentEnvsAfter=$(env | sort)
 
@@ -58,7 +58,7 @@ function write_mounted_file() {
 
 @test "works as expected when nothing is configured" {
   expect_environment_to_ini_call
-  run $PROJECT_ROOT/scripts/init-containers/config_environment.sh
+  run $PROJECT_ROOT/scripts/init-containers/config/config_environment.sh
 
   assert_success
   assert_line '...Initial secrets generated'
