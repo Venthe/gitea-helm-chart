@@ -153,6 +153,8 @@ spec:
           env:
             - name: GNUPGHOME
               value: {{ .Values.signing.gpgHome }}
+            - name: TMP_RAW_GPG_KEY
+              value: /raw/private.asc
           volumeMounts:
             - name: init
               mountPath: /usr/sbin
