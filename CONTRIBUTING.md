@@ -70,6 +70,8 @@ git submodule update --init --recursive
 make unittests-bash
 ```
 
+See [bats documentation](https://bats-core.readthedocs.io/en/stable/) for usage instructions.
+
 ## Release process
 
 1. Create a tag following the tagging schema
