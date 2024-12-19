@@ -16,7 +16,7 @@ tests:
     asserts:
       - equal:
           path: stringData["configure_gpg_environment.sh"]
-          value: |-
+          value: |
             #!/usr/bin/env bash
             set -eu
 
