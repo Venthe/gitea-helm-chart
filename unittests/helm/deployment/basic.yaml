@@ -29,3 +29,11 @@ tests:
           path: spec.template.metadata.labels
           content:
             hello: world
+  - it: "injects TMP_EXISTING_ENVS_FILE as environment variable to 'init-app-ini' init container"
+    template: templates/gitea/deployment.yaml
+    asserts:
+      - contains:
+          path: spec.template.spec.initContainers[1].env
+          content:
+            name: TMP_EXISTING_ENVS_FILE
+            value: /tmp/existing-envs

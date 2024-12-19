@@ -107,6 +107,8 @@ spec:
               value: /data
             - name: GITEA_TEMP
               value: /tmp/gitea
+            - name: TMP_EXISTING_ENVS_FILE
+              value: /tmp/existing-envs
             {{- if .Values.deployment.env }}
             {{- toYaml .Values.deployment.env | nindent 12 }}
             {{- end }}
