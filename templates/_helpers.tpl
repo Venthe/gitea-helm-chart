@@ -56,9 +56,9 @@ Create image name and tag used by the deployment.
 {{- if $fullOverride }}
     {{- printf "%s" $fullOverride -}}
 {{- else if $registry }}
-    {{- printf "%s/%s%s%s%s%s" (tpl $registry .) (tpl $repository .) $separator $tag $rootless $digest -}}
+    {{- printf "%s/%s%s%s%s%s" $registry $repository $separator $tag $rootless $digest -}}
 {{- else -}}
-    {{- printf "%s%s%s%s%s" (tpl $repository .) $separator $tag $rootless $digest -}}
+    {{- printf "%s%s%s%s%s" $repository $separator $tag $rootless $digest -}}
 {{- end -}}
 {{- end -}}
 
@@ -94,7 +94,7 @@ Common labels
 helm.sh/chart: {{ include "gitea.chart" . }}
 app: {{ include "gitea.name" . }}
 {{ include "gitea.selectorLabels" . }}
-app.kubernetes.io/version: {{ tpl .Values.image.tag . | default .Chart.AppVersion | quote }}
+app.kubernetes.io/version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
 version: {{ .Values.image.tag | default .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end -}}
@@ -400,7 +400,7 @@ https
   {{- if (index .Values "postgresql-ha" "enabled") -}}
     {{- $_ := set .Values.gitea.config.database "DB_TYPE"   "postgres" -}}
     {{- if not (.Values.gitea.config.database.HOST) -}}
-      {{- $_ := set .Values.gitea.config.database "HOST"      (tpl (include "postgresql-ha.dns" .) $) -}}
+      {{- $_ := set .Values.gitea.config.database "HOST"      (include "postgresql-ha.dns" .) -}}
     {{- end -}}
     {{- $_ := set .Values.gitea.config.database "NAME"      (index .Values "postgresql-ha" "global" "postgresql" "database") -}}
     {{- $_ := set .Values.gitea.config.database "USER"      (index .Values "postgresql-ha" "global" "postgresql" "username") -}}
