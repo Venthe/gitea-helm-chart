@@ -241,13 +241,17 @@ https
       {{- if gt (len $value) 0 }}
         {{- $section := default list (get $inlines $key) -}}
         {{- range $n_key, $n_value := $value }}
-          {{- $section = append $section (printf "%s=%v" $n_key (tpl $n_value $)) -}}
+          {{- $template := printf "%s=%v" $n_key $n_value -}}
+          {{- $rendered := tpl $template . -}}
+          {{- $section = append $section $rendered -}}
         {{- end }}
         {{- $_ := set $inlines $key (join "\n" $section) -}}
       {{- end -}}
     {{- else }}
       {{- if or (eq $key "APP_NAME") (eq $key "RUN_USER") (eq $key "RUN_MODE") -}}
-        {{- $generals = append $generals (printf "%s=%s" $key (tpl $value $)) -}}
+        {{- $template := printf "%s=%s" $key $value -}}
+        {{- $rendered := tpl $template . -}}
+        {{- $generals = append $generals $rendered -}}
       {{- else -}}
         {{- (printf "Key %s cannot be on top level of configuration" $key) | fail -}}
       {{- end -}}
