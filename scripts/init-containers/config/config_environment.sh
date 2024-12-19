@@ -129,8 +129,8 @@ env | (grep -e '^GITEA__' || [[ $? == 1 ]]) > $TMP_EXISTING_ENVS_FILE
 # MUST BE CALLED BEFORE OTHER CONFIGURATION
 env2ini::generate_initial_secrets
 
-env2ini::load_config_sources '/env-to-ini-mounts/inlines/'
-env2ini::load_config_sources '/env-to-ini-mounts/additionals/'
+env2ini::load_config_sources "$ENV_TO_INI_MOUNT_POINT/inlines/"
+env2ini::load_config_sources "$ENV_TO_INI_MOUNT_POINT/additionals/"
 
 # load existing envs to override auto generated envs
 env2ini::reload_preset_envs
