@@ -4,5 +4,9 @@
             "/unittests/**/*.yaml"
         ]
     },
-    "yaml.schemaStore.enable": true
+    "yaml.schemaStore.enable": true,
+    "[shellscript]": {
+        "files.eol": "\n",
+        "editor.tabSize": 2
+    }
 }
