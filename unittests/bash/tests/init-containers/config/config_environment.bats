@@ -6,7 +6,6 @@ function setup() {
   load "$TEST_ROOT/test_helper/common-setup"
   common_setup
 
-  # export x_GITEA__LET_FIRST_GREP_SUCCEED="1"
   export GITEA_APP_INI="$BATS_TEST_TMPDIR/app.ini"
   export TMP_EXISTING_ENVS_FILE="$BATS_TEST_TMPDIR/existing-envs"
   export ENV_TO_INI_MOUNT_POINT="$BATS_TEST_TMPDIR/env-to-ini-mounts"
