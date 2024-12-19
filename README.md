@@ -1204,6 +1204,10 @@ If you miss this, blindly upgrading may delete your Postgres instance and you ma
   Although there are no breaking changes in the Redis Chart itself, it updates Redis from `7.2` to `7.4`. We recommend checking the release notes:
   - [Redis Chart release notes (starting with v20.0.0)](https://github.com/bitnami/charts/blob/HEAD/bitnami/redis/CHANGELOG.md#2000-2024-08-09).
   - [Redis 7.4 release notes](https://raw.githubusercontent.com/redis/redis/7.4/00-RELEASENOTES).
+- Update Redis Cluster sub-chart to version 11.x (appVersion 7.4)  
+  Although there are no breaking changes in the Redis Chart itself, it updates Redis from `7.2` to `7.4`. We recommend checking the release notes:
+  - [Redis Chart release notes (starting with v11.0.0)](https://github.com/bitnami/charts/blob/HEAD/bitnami/redis-cluster/CHANGELOG.md#1100-2024-08-09).
+  - [Redis 7.4 release notes](https://raw.githubusercontent.com/redis/redis/7.4/00-RELEASENOTES).
 
 </details>
 
