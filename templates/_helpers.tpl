@@ -247,7 +247,7 @@ https
             {{- $section = append $section (printf "%s=%v" $n_key $n_value) -}}
           {{- end }}
         {{- end }}
-        {{- $_ := set $inlines $key (join "\n" $section) -}}
+        {{- set $inlines $key (join "\n" $section) -}}
       {{- end -}}
     {{- else }}
       {{- if or (eq $key "APP_NAME") (eq $key "RUN_USER") (eq $key "RUN_MODE") -}}
