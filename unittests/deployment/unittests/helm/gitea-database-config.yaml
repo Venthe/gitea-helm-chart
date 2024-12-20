@@ -1,0 +1,32 @@
+suite: gitea configuration template
+release:
+  name: gitea-unittests
+  namespace: testing
+templates:
+  - templates/gitea/_helpers.tpl
+tests:
+  - it: Inline configuration with TPL
+    set:
+      gitea.config:
+        APP_NAME: "MyGiteaApp"
+        RUN_USER: "{{ .Release.Name }}-user"
+        RUN_MODE: "production"
+        server:
+          ROOT_URL: "http://{{ .Release.Name }}.example.com"
+    asserts:
+      - template: gitea.inline_configuration
+        equal:
+          path: _generals_.APP_NAME
+          value: "APP_NAME=MyGiteaApp"
+      - template: gitea.inline_configuration
+        equal:
+          path: _generals_.RUN_USER
+          value: "RUN_USER=gitea-unittests-user"
+      - template: gitea.inline_configuration
+        equal:
+          path: _generals_.RUN_MODE
+          value: "RUN_MODE=production"
+      - template: gitea.inline_configuration
+        equal:
+          path: server.ROOT_URL
+          value: "ROOT_URL=http://gitea-unittests.example.com"
