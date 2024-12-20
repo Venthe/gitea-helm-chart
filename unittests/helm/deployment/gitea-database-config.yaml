@@ -3,7 +3,7 @@ release:
   name: gitea-unittests
   namespace: testing
 templates:
-  - templates/gitea/_helpers.tpl
+  - templates/_helpers.tpl
 tests:
   - it: Inline configuration with TPL
     set:
