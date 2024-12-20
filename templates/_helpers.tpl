@@ -241,19 +241,27 @@ https
       {{- if gt (len $value) 0 }}
         {{- $section := default list (get $inlines $key) -}}
         {{- range $n_key, $n_value := $value }}
-          {{- $section = append $section (printf "%s=%v" $n_key (tpl $n_value $)) -}}
+          {{- if kindIs "string" $n_value }}
+            {{- $section = append $section (printf "%s=%v" $n_key (tpl $n_value $)) -}}
+          {{- else }}
+            {{- $section = append $section (printf "%s=%v" $n_key $n_value) -}}
+          {{- end }}
         {{- end }}
         {{- $_ := set $inlines $key (join "\n" $section) -}}
       {{- end -}}
     {{- else }}
       {{- if or (eq $key "APP_NAME") (eq $key "RUN_USER") (eq $key "RUN_MODE") -}}
-        {{- $generals = append $generals (printf "%s=%s" $key (tpl $value $)) -}}
+        {{- if kindIs "string" $value }}
+          {{- $generals = append $generals (printf "%s=%s" $key (tpl $value $)) -}}
+        {{- else }}
+          {{- $generals = append $generals (printf "%s=%s" $key $value) -}}
+        {{- end }}
       {{- else -}}
         {{- (printf "Key %s cannot be on top level of configuration" $key) | fail -}}
       {{- end -}}
-
     {{- end }}
   {{- end }}
+{{- end }}
 
   {{- $_ := set $inlines "_generals_" (join "\n" $generals) -}}
   {{- toYaml $inlines -}}
