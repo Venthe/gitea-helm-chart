@@ -236,20 +236,18 @@ https
   {{- $generals := list -}}
   {{- $inlines := dict -}}
 
-  {{- range $key, $value := .Values.gitea.config }}
+  {{- range $key, $value := .Values.gitea.config  }}
     {{- if kindIs "map" $value }}
       {{- if gt (len $value) 0 }}
         {{- $section := default list (get $inlines $key) -}}
         {{- range $n_key, $n_value := $value }}
-          {{- $renderedValue := tpl (printf "%s" $n_value) $ -}}
-          {{- $section = append $section (printf "%s=%v" $n_key $renderedValue) -}}
+          {{- $section = append $section (tpl (printf "%s=%v" $n_key $n_value) $) -}}
         {{- end }}
         {{- $_ := set $inlines $key (join "\n" $section) -}}
-      {{- end }}
+      {{- end -}}
     {{- else }}
       {{- if or (eq $key "APP_NAME") (eq $key "RUN_USER") (eq $key "RUN_MODE") -}}
-        {{- $renderedValue := tpl (printf "%s" $value) $ -}}
-        {{- $generals = append $generals (printf "%s=%s" $key $renderedValue) -}}
+        {{- $generals = append $generals (tpl (printf "%s=%s" $key $value) $) -}}
       {{- else -}}
         {{- (printf "Key %s cannot be on top level of configuration" $key) | fail -}}
       {{- end -}}
