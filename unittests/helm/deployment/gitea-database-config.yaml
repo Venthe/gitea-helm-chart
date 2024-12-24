@@ -1,39 +1,40 @@
-suite: gitea inline configuration
-release:
-  name: gitea-unittests
-  namespace: testing
+suite: Test gitea.inline_configuration
 templates:
-- _helpers.tpl
+  - templates/_helpers.tpl
+
 tests:
-- it: should render inline configuration with TPL
-  set:
-    gitea:
-      config:
-        server:
-          PROTOCOL: "https"
-        database:
-          HOST: "localhost"
-  asserts:
-  - contains:
-      path: gitea.inline_configuration
-      value: "server:\n  PROTOCOL=https"
-  - contains:
-      path: gitea.inline_configuration
-      value: "database:\n  HOST=localhost"
-- it: handles general settings with TPL
-  set:
-    gitea:
-      config:
-        APP_NAME: "Gitea Test"
-        RUN_USER: "gitea"
-        RUN_MODE: "prod"
-  asserts:
-  - contains:
-      path: gitea.inline_configuration
-      value: "_generals_:
+  - it: should render inline configuration with correct APP_NAME
+    set:
+      gitea.config.APP_NAME: "TestApp"
+    asserts:
+      - equal:
+          path: data.gitea.config.APP_NAME
+          value: "TestApp"
 
-        \  - APP_NAME=Gitea Test
+  - it: should render inline configuration with correct RUN_USER
+    set:
+      gitea.config.RUN_USER: "testuser"
+    asserts:
+      - equal:
+          path: data.gitea.config.RUN_USER
+          value: "testuser"
 
-        \  - RUN_USER=gitea
-
-        \  - RUN_MODE=prod"
+  - it: should render inline configuration with default values
+    set:
+      gitea.config.APP_NAME: "TestApp"
+      gitea.config.RUN_USER: "testuser"
+      gitea.config.RUN_MODE: "dev"
+      gitea.config.repository.ROOT: "~/test-repositories"
+      gitea.config.repository.pull-request.WORK_IN_PROGRESS_PREFIXES: "WIP:,[WIP]:"
+    asserts:
+      - hasKey:
+          path: data.gitea.config.repository
+      - equal:
+          path: data.gitea.config.APP_NAME
+          value: "TestApp"
+      - equal:
+          path: data.gitea.config.RUN_USER
+          value: "testuser"
+      - equal:
+          path: data.gitea.config.RUN_MODE
+          value: "dev"
