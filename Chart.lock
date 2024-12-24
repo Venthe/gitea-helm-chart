@@ -4,12 +4,12 @@ dependencies:
   version: 15.5.38
 - name: postgresql-ha
   repository: oci://registry-1.docker.io/bitnamicharts
-  version: 14.3.10
+  version: 15.1.4
 - name: redis-cluster
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 11.2.1
 - name: redis
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 20.6.1
-digest: sha256:cf214a54f49e6f468fd672a6c0f794751b4b0f6a0a492f37ee580271487f4758
-generated: "2024-12-22T00:07:46.005634297Z"
+digest: sha256:86d3c15ed6e867497bc64550e834cc2914c3fb0b91aed6fa802093851cd2c494
+generated: "2024-12-24T00:14:54.217993042Z"
