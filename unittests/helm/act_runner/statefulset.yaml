@@ -128,3 +128,55 @@ tests:
           value:
             name: "CUSTOM_ENV_NAME"
             value: "custom env value"
+  - it: should mount an extra volume in the act runner container
+    template: templates/gitea/act_runner/statefulset.yaml
+    set:
+      actions:
+        enabled: true
+        statefulset:
+          extraVolumes:
+            - name: my-act-runner-volume
+              emptyDir: {}
+          actRunner:
+            extraVolumeMounts:
+              - mountPath: /mnt
+                name: my-act-runner-volume
+    asserts:
+      - hasDocuments:
+          count: 1
+      - containsDocument:
+          kind: StatefulSet
+          apiVersion: apps/v1
+          name: gitea-unittests-act-runner
+      - contains:
+          any: true
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            mountPath: /mnt
+            name: my-act-runner-volume
+  - it: should mount an extra volume in the docker-in-docker container
+    template: templates/gitea/act_runner/statefulset.yaml
+    set:
+      actions:
+        enabled: true
+        statefulset:
+          extraVolumes:
+            - name: my-dind-volume
+              emptyDir: {}
+          dind:
+            extraVolumeMounts:
+              - mountPath: /mnt
+                name: my-dind-volume
+    asserts:
+      - hasDocuments:
+          count: 1
+      - containsDocument:
+          kind: StatefulSet
+          apiVersion: apps/v1
+          name: gitea-unittests-act-runner
+      - contains:
+          any: true
+          path: spec.template.spec.containers[1].volumeMounts
+          content:
+            mountPath: /mnt
+            name: my-dind-volume

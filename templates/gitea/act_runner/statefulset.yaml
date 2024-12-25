@@ -70,6 +70,9 @@ spec:
               name: docker-certs
             - mountPath: /data
               name: data-act-runner
+            {{- with .Values.actions.statefulset.actRunner.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
         - name: dind
           image: "{{ .Values.actions.statefulset.dind.repository }}:{{ .Values.actions.statefulset.dind.tag }}"
           imagePullPolicy: {{ .Values.actions.statefulset.dind.pullPolicy }}
@@ -90,6 +93,9 @@ spec:
           volumeMounts:
             - mountPath: /certs/server
               name: docker-certs
+            {{- with .Values.actions.statefulset.dind.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
       {{- with .Values.actions.statefulset.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -108,6 +114,9 @@ spec:
             name: {{ include "gitea.fullname" . }}-act-runner-config
         - name: docker-certs
           emptyDir: {}
+        {{- with .Values.actions.statefulset.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: data-act-runner
