@@ -88,6 +88,16 @@ storageClassName: {{ $storageClass | quote }}
 {{- end -}}
 
 {{/*
+Storage Class
+*/}}
+{{- define "gitea.backup.storageClass" -}}
+{{- $storageClass :=  (tpl ( default "" .Values.backup.pvc.storageClass) .) | default (tpl ( default "" .Values.global.storageClass) .) }}
+{{- if $storageClass }}
+storageClassName: {{ $storageClass | quote }}
+{{- end }}
+{{- end -}}
+
+{{/*
 Common labels
 */}}
 {{- define "gitea.labels" -}}

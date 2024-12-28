@@ -1,0 +1,37 @@
+# TODO for backup / restore
+
+## Backup
+
+### templates/gitea/init.yaml
+
+- Can we extract the .sh scripts into dedicated .sh files? Like scripts/init-containers/init/configure_gpg_environment.sh?
+
+#### restore_gitea.sh
+
+- MAX_WAIT, INTERVAL as values.yaml variables
+- Clarify that /backup/latest.zip should be a symlink
+- Clarify that on very first restore there is no backup on the PVC
+- kubectl cp should be used, then on shell ln -s <zipfile.zip> latest.zip
+- Use templates/gitea/backup/restore-cm.yaml to determine whether or not should run restore
+- After restore set CM value to false to prevent accidental restore on upgrade
+  - See Longhorn delete process as example
+
+#### restore_gitea_db.sh
+
+- Same as above
+- latest.sql is copied from previous init script
+
+### templates/gitea/deployment.yaml
+
+#### initContainer: restore-backup-psq
+
+- Extract postgres image from Chart.yaml
+- Check for best practices
+
+## Restore
+
+### templates/gitea/cronjob.yaml
+
+- Make cronjob
+- Use value to determine how often backup should be made
+- Rotate amount of backups on pvc

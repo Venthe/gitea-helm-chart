@@ -24,3 +24,26 @@ spec:
     requests:
       storage: {{ .Values.persistence.size }}
 {{- end }}
+---
+{{- if and .Values.backup.enabled }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.backup.pvc.claimName }}
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+  annotations:
+{{ .Values.backup.annotations | toYaml | indent 4}}
+  labels:
+{{ .Values.backup.pvc.labels | toYaml | indent 4}}
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  {{- include "gitea.backup.storageClass" . | nindent 2 }}
+  {{- with .Values.backup.pvc.volumeName }}
+  volumeName: {{ . }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.backup.pvc.size }}
+{{- end }}

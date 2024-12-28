@@ -283,6 +283,24 @@ persistence:
   annotations:
     helm.sh/resource-policy: keep
 
+backup:
+  enabled: false
+  restore:
+    enabled: false
+    toRestore: false
+  pvc:
+    claimName: gitea-backup-storage
+    storageClass:
+    enabled: true
+    volumeName: ""
+    labels: {}
+    size: 10Gi
+  schedule: "0 2 * * *" # CronJob schedule
+  keep: 5 # Number of backups to retain
+  annotations:
+    helm.sh/resource-policy: keep
+
+
 ## @param extraContainers Additional sidecar containers to run in the pod
 extraContainers: []
 #  - name: sidecar-bob
@@ -355,6 +373,7 @@ signing:
 ## @param actions.enabled Create an act runner StatefulSet.
 ## @param actions.init.image.repository The image used for the init containers
 ## @param actions.init.image.tag The image tag used for the init containers
+## @param actions.statefulset.replicas Act runner annotations
 ## @param actions.statefulset.annotations Act runner annotations
 ## @param actions.statefulset.labels Act runner labels
 ## @param actions.statefulset.resources Act runner resources

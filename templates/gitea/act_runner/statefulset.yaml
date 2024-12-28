@@ -16,6 +16,7 @@ metadata:
   name: {{ include "gitea.fullname" . }}-act-runner
   namespace: {{ .Values.namespace | default .Release.Namespace }}
 spec:
+  replicas: {{ default 1 .Values.actions.statefulset.replicas }}
   selector:
     matchLabels:
       {{- include "gitea.selectorLabels.actRunner" . | nindent 6 }}

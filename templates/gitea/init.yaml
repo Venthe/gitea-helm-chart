@@ -43,6 +43,88 @@ stringData:
     fi
     {{- end }}
 
+  restore_gitea.sh: |-
+    #!/usr/bin/env bash
+
+    set -euo pipefail
+
+    RESTORE_DIR=/tmp/restore
+    echo '==== BEGIN GITEA BACKUP RESTORE ===='
+
+    MAX_WAIT=300
+    INTERVAL=5
+    elapsed_time=0
+    if [[ -f /backup/latest.zip ]]; then
+      MAX_WAIT=0 #skip while loop
+    else
+      echo "/backup/latests.zip does not exists please add it to the PVC, you have ${MAX_WAIT} seconds"
+    fi
+    while [ $elapsed_time -lt $MAX_WAIT ]; do
+        if [[ -f /backup/latest.zip ]]; then
+            echo "File /backup/latest.zip found. Exiting loop."
+            break
+        fi
+        
+        echo "File not found. Checking again in $INTERVAL seconds... (${elapsed_time} / ${MAX_WAIT})"
+        sleep $INTERVAL
+        elapsed_time=$((elapsed_time + INTERVAL))
+    done
+
+    if [[ ! -f /backup/latest.zip ]] ; then
+      echo 'File "/backup/latest.zip" is not there, aborting.'
+      exit 1
+    fi
+    unzip /backup/latest.zip -d $RESTORE_DIR
+    echo "cp -a ${RESTORE_DIR}/data ${GITEA_WORK_DIR}"
+    cp -a $RESTORE_DIR/data $GITEA_WORK_DIR
+    
+    echo "cp ${RESTORE_DIR}/data/gitea/conf/app.ini ${GITEA_APP_INI}"
+    cp $RESTORE_DIR/data/gitea/conf/app.ini $GITEA_APP_INI
+
+    echo "cp -a ${RESTORE_DIR}/repos ${GITEA_REPO_DIR}"
+    cp -a $RESTORE_DIR/repos ${GITEA_REPO_DIR}
+
+    cp ${RESTORE_DIR}/gitea-db.sql /backup/latest.sql
+    echo '==== END GITEA BACKUP  RESTORE ===='
+
+  restore_gitea_db.sh: |-
+    #!/usr/bin/env bash
+
+    set -euo pipefail
+
+    RESTORE_DIR=/tmp/restore
+    echo '==== BEGIN GITEA DATABASE RESTORE ===='
+    
+    MAX_WAIT=300
+    INTERVAL=5
+    elapsed_time=0
+    if [[ -f /backup/latest.sql ]]; then
+      MAX_WAIT=0 #skip while loop
+    else
+      echo "/backup/latests.sql does not exists please add it to the PVC, you have ${MAX_WAIT} seconds"
+    fi
+    while [ $elapsed_time -lt $MAX_WAIT ]; do
+        if [[ -f /backup/latest.sql ]]; then
+            echo "File /backup/latest.sql found. Exiting loop."
+            break
+        fi
+        
+        echo "File not found. Checking again in $INTERVAL seconds... (${elapsed_time} / ${MAX_WAIT})"
+        sleep $INTERVAL
+        elapsed_time=$((elapsed_time + INTERVAL))
+    done
+
+    if [[ ! -f /backup/latest.sql ]] ; then
+      echo 'File "/backup/latest.sql" is not there, aborting.'
+      exit 1
+    fi
+    source /env-to-ini-mounts/inlines/database
+    echo "psql -U <username> -d <database> -h <hostname> < /backup/latest.sql"
+    psql -U $USER -d $NAME -h "${HOST%%:*}" < /backup/latest.sql
+    # set configmap value to false
+    echo '==== END GITEA DATABASE RESTORE ===='
+    rm /backup/latest.sql
+
   configure_gitea.sh: |-
     #!/usr/bin/env bash
 

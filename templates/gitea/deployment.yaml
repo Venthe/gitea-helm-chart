@@ -172,6 +172,107 @@ spec:
           resources:
             {{- toYaml .Values.initContainers.resources | nindent 12 }}
         {{- end }}
+        {{- if .Values.backup.enabled }}
+        - name: restore-backup-gitea
+          image: "{{ include "gitea.image" . }}"
+          command: ["/usr/sbin/restore_gitea.sh"]
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- /* By default this container runs as user 1000 unless otherwise stated */ -}}
+            {{- $csc := deepCopy .Values.containerSecurityContext -}}
+            {{- if not (hasKey $csc "runAsUser") -}}
+            {{- $_ := set $csc "runAsUser" 1000 -}}
+            {{- end -}}
+            {{- toYaml $csc | nindent 12 }}
+          env:
+            - name: GITEA_APP_INI
+              value: /data/gitea/conf/app.ini
+            - name: GITEA_CUSTOM
+              value: /data/gitea
+            - name: GITEA_WORK_DIR
+              value: /data
+            - name: GITEA_TEMP
+              value: /tmp/gitea
+            - name: GITEA_REPO_DIR
+              value: {{ .Values.gitea.config.repository.ROOT }}
+            {{- if .Values.image.rootless }}
+            - name: HOME
+              value: /data/gitea/git
+            {{- end }}
+            - name: GITEA_ADMIN_PASSWORD_MODE
+              value: {{ include "gitea.admin.passwordMode" $ }}
+            {{- if .Values.deployment.env }}
+            {{- toYaml .Values.deployment.env | nindent 12 }}
+            {{- end }}
+          volumeMounts:
+            - name: init
+              mountPath: /usr/sbin
+            - name: temp
+              mountPath: /tmp
+            - name: data
+              mountPath: /data
+              {{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+              {{- end }}
+            - name: backup
+              mountPath: /backup
+            {{- include "gitea.init-additional-mounts" . | nindent 12 }}
+          resources:
+            {{- toYaml .Values.initContainers.resources | nindent 12 }}
+        {{- if .Values.postgresql.enabled }}
+        - name: restore-backup-psq
+          image: "bitnami/postgresql:16" # TODO: extract major version from Chart.yaml
+          command: ["/usr/sbin/restore_gitea_db.sh"]
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- /* By default this container runs as user 1000 unless otherwise stated */ -}}
+            {{- $csc := deepCopy .Values.containerSecurityContext -}}
+            {{- if not (hasKey $csc "runAsUser") -}}
+            {{- $_ := set $csc "runAsUser" 1000 -}}
+            {{- end -}}
+            {{- toYaml $csc | nindent 12 }}
+          env:
+            - name: GITEA_APP_INI
+              value: /data/gitea/conf/app.ini
+            - name: GITEA_CUSTOM
+              value: /data/gitea
+            - name: GITEA_WORK_DIR
+              value: /data
+            - name: GITEA_TEMP
+              value: /tmp/gitea
+            {{- if .Values.image.rootless }}
+            - name: HOME
+              value: /data/gitea/git
+            {{- end }}
+            - name: GITEA_ADMIN_PASSWORD_MODE
+              value: {{ include "gitea.admin.passwordMode" $ }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gitea-postgresql
+                  key: password
+            {{- if .Values.deployment.env }}
+            {{- toYaml .Values.deployment.env | nindent 12 }}
+            {{- end }}
+          volumeMounts:
+            - name: init
+              mountPath: /usr/sbin
+            - name: temp
+              mountPath: /tmp
+            - name: data
+              mountPath: /data
+              {{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+              {{- end }}
+            - name: backup
+              mountPath: /backup
+            - name: inline-config-sources
+              mountPath: /env-to-ini-mounts/inlines/
+            {{- include "gitea.init-additional-mounts" . | nindent 12 }}
+          resources:
+            {{- toYaml .Values.initContainers.resources | nindent 12 }}
+        {{- end}}
+        {{- end}}
         - name: configure-gitea
           image: "{{ include "gitea.image" . }}"
           command: ["/usr/sbin/configure_gitea.sh"]
@@ -411,5 +512,15 @@ spec:
     {{- end }}
   {{- else if not .Values.persistence.enabled }}
         - name: data
+          emptyDir: {}
+  {{- end }}
+  {{- if .Values.backup.enabled }}
+    {{- if .Values.backup.pvc.enabled }}
+        - name: backup
+          persistentVolumeClaim:
+            claimName: {{ .Values.backup.pvc.claimName }}
+    {{- end }}
+  {{- else if not .Values.backup.enabled }}
+        - name: backup
           emptyDir: {}
   {{- end }}
