@@ -400,20 +400,20 @@ https
   {{- if (index .Values "postgresql-ha" "enabled") -}}
     {{- $_ := set .Values.gitea.config.database "DB_TYPE"   "postgres" -}}
     {{- if not (.Values.gitea.config.database.HOST) -}}
-      {{- $_ := set .Values.gitea.config.database "HOST"      (include "postgresql-ha.dns" .) -}}
+      {{- $_ := set .Values.gitea.config.database "HOST"      (tpl (include "postgresql-ha.dns" .) .) -}}
     {{- end -}}
-    {{- $_ := set .Values.gitea.config.database "NAME"      (index .Values "postgresql-ha" "global" "postgresql" "database") -}}
-    {{- $_ := set .Values.gitea.config.database "USER"      (index .Values "postgresql-ha" "global" "postgresql" "username") -}}
-    {{- $_ := set .Values.gitea.config.database "PASSWD"    (index .Values "postgresql-ha" "global" "postgresql" "password") -}}
+    {{- $_ := set .Values.gitea.config.database "NAME"      (tpl (index .Values "postgresql-ha" "global" "postgresql" "database") .) -}}
+    {{- $_ := set .Values.gitea.config.database "USER"      (tpl (index .Values "postgresql-ha" "global" "postgresql" "username") .) -}}
+    {{- $_ := set .Values.gitea.config.database "PASSWD"    (tpl (index .Values "postgresql-ha" "global" "postgresql" "password") .) -}}
   {{- end -}}
   {{- if (index .Values "postgresql" "enabled") -}}
     {{- $_ := set .Values.gitea.config.database "DB_TYPE"   "postgres" -}}
     {{- if not (.Values.gitea.config.database.HOST) -}}
-      {{- $_ := set .Values.gitea.config.database "HOST"      (include "postgresql.dns" .) -}}
+      {{- $_ := set .Values.gitea.config.database "HOST"      (tpl (include "postgresql.dns" .) .) -}}
     {{- end -}}
-    {{- $_ := set .Values.gitea.config.database "NAME"      .Values.postgresql.global.postgresql.auth.database -}}
-    {{- $_ := set .Values.gitea.config.database "USER"      .Values.postgresql.global.postgresql.auth.username -}}
-    {{- $_ := set .Values.gitea.config.database "PASSWD"    .Values.postgresql.global.postgresql.auth.password -}}
+    {{- $_ := set .Values.gitea.config.database "NAME"      (tpl .Values.postgresql.global.postgresql.auth.database .) -}}
+    {{- $_ := set .Values.gitea.config.database "USER"      (tpl .Values.postgresql.global.postgresql.auth.username .) -}}
+    {{- $_ := set .Values.gitea.config.database "PASSWD"    (tpl .Values.postgresql.global.postgresql.auth.password .) -}}
   {{- end -}}
 {{- end -}}
 

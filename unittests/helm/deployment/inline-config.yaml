@@ -31,3 +31,58 @@ tests:
         matchRegex:
           path: stringData.server
           pattern: SSH_DOMAIN=gitea\.example\.com
+
+  - it: PostgreSQL HA with hardcoded values using TPL
+    set:
+      postgresql-ha.enabled: true
+      postgresql-ha.global.postgresql.database: "giteadb"
+      postgresql-ha.global.postgresql.username: "giteausr"
+      postgresql-ha.global.postgresql.password: "giteapsswd"
+      postgresql-ha.service.ports.postgresql: 1234
+      clusterDomain: test.local
+
+    asserts:
+      - documentIndex: 0
+        matchRegex:
+          path: stringData.database
+          pattern: NAME=giteadb
+      - documentIndex: 0
+        matchRegex:
+          path: stringData.database
+          pattern: PASSWD=giteapsswd
+      - documentIndex: 0
+        matchRegex:
+          path: stringData.database
+          pattern: USER=giteausr
+      - documentIndex: 0
+        matchRegex:
+          path: stringData.database
+          pattern: HOST=gitea-unittests-postgresql-ha-pgpool.testing.svc.test.local:1234
+
+  - it: PostgreSQL with hardcoded values using TPL
+    set:
+      postgresql-ha.enabled: false
+      postgresql.enabled: true
+      postgresql.global.postgresql.auth.database: "giteadb"
+      postgresql.global.postgresql.auth.username: "giteausr"
+      postgresql.global.postgresql.auth.password: "giteapsswd"
+      postgresql.global.postgresql.service.ports.postgresql: 1234
+      clusterDomain: test.local
+
+    asserts:
+      - documentIndex: 0
+        matchRegex:
+          path: stringData.database
+          pattern: NAME=giteadb
+      - documentIndex: 0
+        matchRegex:
+          path: stringData.database
+          pattern: PASSWD=giteapsswd
+      - documentIndex: 0
+        matchRegex:
+          path: stringData.database
+          pattern: USER=giteausr
+      - documentIndex: 0
+        matchRegex:
+          path: stringData.database
+          pattern: HOST=gitea-unittests-postgresql.testing.svc.test.local:1234
