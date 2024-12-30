@@ -5,7 +5,7 @@ ignore: |
   .yamllint
   node_modules
   templates
-
+  unittests/bash
 
 rules:
   truthy:

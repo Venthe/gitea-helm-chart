@@ -28,6 +28,8 @@ tests:
           value:
             - name: GNUPGHOME
               value: /data/git/.gnupg
+            - name: TMP_RAW_GPG_KEY
+              value: /raw/private.asc
       - equal:
           path: spec.template.spec.initContainers[2].volumeMounts
           value:

@@ -10,6 +10,9 @@
     'kind/dependency',
   ],
   automergeStrategy: 'squash',
+  'git-submodules': {
+    'enabled': true
+  },
   customManagers: [
     {
       description: 'Gitea-version of https://docs.renovatebot.com/presets-regexManagers/#regexmanagersgithubactionsversions',

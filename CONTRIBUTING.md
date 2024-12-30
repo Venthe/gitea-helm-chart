@@ -48,15 +48,29 @@ default port-forward svc/gitea-http 3000:3000`.
 
 ### Unit tests
 
+#### Helm templating tests
+
 ```bash
 # install the unittest plugin
 $ helm plugin install https://github.com/helm-unittest/helm-unittest
 
-# run the unittests
-make unittests
+# run the Helm unittests
+make unittests-helm
 ```
 
 See [plugin documentation](https://github.com/helm-unittest/helm-unittest/blob/main/DOCUMENT.md) for usage instructions.
+
+#### Bash script tests
+
+```bash
+# setup the environment
+git submodule update --init --recursive
+
+# run the bash tests
+make unittests-bash
+```
+
+See [bats documentation](https://bats-core.readthedocs.io/en/stable/) for usage instructions.
 
 ## Release process
 

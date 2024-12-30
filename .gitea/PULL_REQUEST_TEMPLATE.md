@@ -23,7 +23,7 @@
 ### Applicable issues
 
 <!-- Enter any applicable Issues here (You can reference an issue using #). Please remove this section if there is no referenced issue. -->
-  - fixes #
+- Fixes #
 
 ### Additional information
 
@@ -39,5 +39,6 @@
 
 - [ ] Parameters are documented in the `values.yaml` and added to the `README.md` using [readme-generator-for-helm](https://github.com/bitnami-labs/readme-generator-for-helm)
 - [ ] Breaking changes are documented in the `README.md`
-- [ ] Templating unittests are added
+- [ ] Helm templating unittests are added (required when changing anything in `templates` folder)
+- [ ] Bash unittests are added (required when changing anything in `scripts` folder)
 - [ ] All added template resources MUST render a namespace in metadata

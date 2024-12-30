@@ -7,6 +7,7 @@ templates:
 tests:
   - it: runs gpg in batch mode
     set:
+      image.rootless: false
       signing.enabled: true
       signing.privateKey: |-
         -----BEGIN PGP PRIVATE KEY BLOCK-----
@@ -15,12 +16,14 @@ tests:
     asserts:
       - equal:
           path: stringData["configure_gpg_environment.sh"]
-          value: |-
+          value: |
             #!/usr/bin/env bash
             set -eu
 
-            gpg --batch --import /raw/private.asc
+            gpg --batch --import "$TMP_RAW_GPG_KEY"
   - it: skips gpg script block for disabled signing
+    set:
+      image.rootless: false
     asserts:
       - equal:
           path: stringData["init_directory_structure.sh"]
@@ -28,15 +31,18 @@ tests:
             #!/usr/bin/env bash
 
             set -euo pipefail
+            chown -v 1000:1000 /data
             mkdir -pv /data/git/.ssh
             chmod -Rv 700 /data/git/.ssh
             [ ! -d /data/gitea/conf ] && mkdir -pv /data/gitea/conf
 
             # prepare temp directory structure
             mkdir -pv "${GITEA_TEMP}"
+            chown -v 1000:1000 "${GITEA_TEMP}"
             chmod -v ug+rwx "${GITEA_TEMP}"
   - it: adds gpg script block for enabled signing
     set:
+      image.rootless: false
       signing.enabled: true
       signing.privateKey: |-
         -----BEGIN PGP PRIVATE KEY BLOCK-----
@@ -49,12 +55,14 @@ tests:
             #!/usr/bin/env bash
 
             set -euo pipefail
+            chown -v 1000:1000 /data
             mkdir -pv /data/git/.ssh
             chmod -Rv 700 /data/git/.ssh
             [ ! -d /data/gitea/conf ] && mkdir -pv /data/gitea/conf
 
             # prepare temp directory structure
             mkdir -pv "${GITEA_TEMP}"
+            chown -v 1000:1000 "${GITEA_TEMP}"
             chmod -v ug+rwx "${GITEA_TEMP}"
 
             if [ ! -d "${GNUPGHOME}" ]; then
@@ -62,21 +70,3 @@ tests:
               chmod -v 700 "${GNUPGHOME}"
               chown -v 1000:1000 "${GNUPGHOME}"
             fi
-  - it: it does not chown /data even when image.fullOverride is set
-    template: templates/gitea/init.yaml
-    set:
-      image.fullOverride: gitea/gitea:1.20.5
-    asserts:
-      - equal:
-          path: stringData["init_directory_structure.sh"]
-          value: |-
-            #!/usr/bin/env bash
-
-            set -euo pipefail
-            mkdir -pv /data/git/.ssh
-            chmod -Rv 700 /data/git/.ssh
-            [ ! -d /data/gitea/conf ] && mkdir -pv /data/gitea/conf
-
-            # prepare temp directory structure
-            mkdir -pv "${GITEA_TEMP}"
-            chmod -v ug+rwx "${GITEA_TEMP}"
