@@ -86,3 +86,4 @@ tests:
         matchRegex:
           path: stringData.database
           pattern: HOST=gitea-unittests-postgresql.testing.svc.test.local:1234
+          
