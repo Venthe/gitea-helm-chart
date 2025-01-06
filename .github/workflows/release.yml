@@ -26,7 +26,7 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           draft: false
-          body_path: CHANGELOG.md
+          # body_path: CHANGELOG.md
           tag_name: ${{ github.sha }}
           fail_on_unmatched_files: true
           files: dist/*
