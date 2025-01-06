@@ -1,0 +1,30 @@
+name: Build and Release Helm Chart
+on:
+  push:
+    branches:
+      - main  # Adjust to your release branch
+  pull_request:
+    branches:
+      - main
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Build Helm dependencies
+        run: |
+          helm dependency build .
+      - name: Package Helm chart
+        run: |
+          helm package . --destination dist
+      - name: Upload Helm chart artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: helm-chart
+          path: dist/*.tgz
