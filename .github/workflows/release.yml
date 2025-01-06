@@ -12,9 +12,9 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install Helm
-        uses: azure/setup-helm@v4
+        uses: azure/setup-helm@v4.2.0
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: Build Helm dependencies
@@ -23,8 +23,11 @@ jobs:
       - name: Package Helm chart
         run: |
           helm package . --destination dist
-      - name: Upload Helm chart artifact
-        uses: actions/upload-artifact@v3
+      - uses: softprops/action-gh-release@v2
         with:
-          name: helm-chart
-          path: dist/*.tgz
+          draft: false
+          body_path: CHANGELOG.md
+          tag_name: ${{ steps.data.outputs.PACKAGE_VERSION }}
+          fail_on_unmatched_files: true
+          files: dist/*
+          generate_release_notes: true
