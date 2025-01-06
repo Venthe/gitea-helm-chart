@@ -23,11 +23,15 @@ jobs:
       - name: Package Helm chart
         run: |
           helm package . --destination dist
+      - uses: benjlevesque/short-sha@v3.0
+        id: short-sha
+        with:
+          length: 6
       - uses: softprops/action-gh-release@v2
         with:
           draft: false
           # body_path: CHANGELOG.md
-          tag_name: ${{ github.sha }}
+          tag_name: ${{ steps.short-sha.outputs.sha }}
           fail_on_unmatched_files: true
           files: dist/*
-          generate_release_notes: true
+          # generate_release_notes: true
