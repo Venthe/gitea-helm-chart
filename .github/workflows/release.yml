@@ -27,7 +27,7 @@ jobs:
         with:
           draft: false
           body_path: CHANGELOG.md
-          tag_name: ${{ steps.data.outputs.PACKAGE_VERSION }}
+          tag_name: ${{ github.sha }}
           fail_on_unmatched_files: true
           files: dist/*
           generate_release_notes: true
